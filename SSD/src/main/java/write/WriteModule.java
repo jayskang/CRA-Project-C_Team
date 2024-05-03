@@ -5,6 +5,7 @@ import cores.AddressConstraint;
 public class WriteModule implements WriteCore {
 
     private final SsdFileWriter fileWriter;
+    private Exception exception;
 
     public WriteModule() {
         this.fileWriter = new SsdFileWriter();
@@ -16,12 +17,21 @@ public class WriteModule implements WriteCore {
 
             return Integer.parseUnsignedInt(inputValue, 16);
         } catch (NumberFormatException numberFormatException) {
+            this.exception = numberFormatException;
             return -1;
         }
     }
 
     private boolean checkAddressBoundary(int address) {
-        return address >= AddressConstraint.MIN_BOUNDARY && AddressConstraint.MAX_BOUNDARY > address;
+        try {
+            if (AddressConstraint.MIN_BOUNDARY <= address && address < AddressConstraint.MAX_BOUNDARY) {
+                return true;
+            }
+            throw new IllegalArgumentException();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            this.exception = illegalArgumentException;
+            return false;
+        }
     }
 
     @Override
@@ -33,5 +43,9 @@ public class WriteModule implements WriteCore {
                 this.fileWriter.store(address, convertedValue);
             }
         }
+    }
+
+    public Exception getErrorLog() {
+        return this.exception;
     }
 }
