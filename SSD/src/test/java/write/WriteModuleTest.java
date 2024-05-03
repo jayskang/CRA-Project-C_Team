@@ -1,24 +1,29 @@
 package write;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class WriteModuleTest {
 
+    private WriteModule writeModule;
+
+    @BeforeEach
+    void setUp() {
+        this.writeModule = new WriteModule();
+    }
+
     @Test
     void 기본_생성자_함수() {
-        WriteModule writeModule = new WriteModule();
-        assertNotNull(writeModule);
+        assertNotNull(this.writeModule);
     }
 
     @Test
     void 정상적인_데이터_쓰기() {
-        WriteModule writeModule = new WriteModule();
-
         int address = 0;
         String value = "0x00000001";
 
-        writeModule.write(address, value);
+        this.writeModule.write(address, value);
     }
 }
