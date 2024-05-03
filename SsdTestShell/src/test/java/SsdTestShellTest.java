@@ -26,38 +26,37 @@ class SsdTestShellTest {
         shell.read("0");
         verify(mockSsd, times(1)).read("0");
     }
-  
     @Test
     void read_함수_LAB_문자열_음수인_경우(){
         shell.read("-1");
-        verify(mockSsd, times(1)).read("-1");
+        verify(mockSsd, times(0)).read("-1");
+        verify(shell, times(1)).printError(any());
     }
-  
     @Test
     void read_함수_LAB_문자열_99_초과인_경우(){
         shell.read("100");
-        verify(mockSsd, times(1)).read("100");
+        verify(mockSsd, times(0)).read("100");
+        verify(shell, times(1)).printError(any());
     }
-  
     @Test
     void read_함수_LAB_문자열_정수가_아닌_경우(){
         shell.read("A");
-        verify(mockSsd, times(1)).read("A");
+        verify(mockSsd, times(0)).read("A");
+        verify(shell, times(1)).printError(any());
     }
-  
     @Test
     void read_함수_LAB_문자열_null인_경우(){
         shell.read(null);
-        verify(mockSsd, times(1)).read(null);
-    }
-  
-    @Test
-    void read_함수_driver_예외_catch_경우(){
-        doThrow(new IllegalArgumentException("INVALID Argument")).when(mockSsd).read("A");
-        shell.read("A");
+        verify(mockSsd, times(0)).read(null);
         verify(shell, times(1)).printError(any());
     }
-  
+    @Test
+    void read_함수_driver_예외_catch_경우() {
+        lenient().doThrow(new IllegalArgumentException("INVALID Argument")).when(mockSsd).read("A");
+        shell.read("A");
+        verify(mockSsd, times(0)).read("A");
+        verify(shell, times(1)).printError(any());
+    }
     @Test
     void SsdTestShell_객체_정상적으로_생성() {
         assertNotNull(shell);
