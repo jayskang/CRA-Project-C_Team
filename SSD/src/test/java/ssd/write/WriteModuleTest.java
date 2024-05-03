@@ -73,10 +73,10 @@ class WriteModuleTest {
         int address = 0;
         String value = "0x1234ABCD";
 
-        String[] readFildContents = new String[]{"0x1234ABCD"};
+        String[] readFileContents = new String[]{"0x1234ABCD"};
         String expected = "0x1234ABCD";
 
-        when(this.ssdFileReader.readFile()).thenReturn(readFildContents);
+        when(this.ssdFileReader.readFile()).thenReturn(readFileContents);
 
         this.writeModule.write(address, value);
         this.readModule.read(address);
