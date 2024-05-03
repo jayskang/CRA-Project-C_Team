@@ -1,8 +1,9 @@
 package write;
 
+import cores.AddressConstraint;
 import cores.ExceptionMessage;
 
-public class WriteModule {
+public class WriteModule implements WriteCore {
 
     private final NandWriteModule nandWriteModule;
 
@@ -20,9 +21,19 @@ public class WriteModule {
         }
     }
 
-    public void write(int address, String value) {
-        int convertedValue = convertHexToUnsignedInt(value);
+    private boolean checkAddressBoundary(int address) {
+        if(address < AddressConstraint.MIN_BOUNDARY || AddressConstraint.MAX_BOUNDARY < address) {
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
+        }
+        return true;
+    }
 
-        this.nandWriteModule.store(address, convertedValue);
+    @Override
+    public void write(int address, String value) {
+        if(checkAddressBoundary(address)) {
+            int convertedValue = convertHexToUnsignedInt(value);
+
+            this.nandWriteModule.store(address, convertedValue);
+        }
     }
 }
