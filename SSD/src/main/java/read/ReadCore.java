@@ -1,6 +1,6 @@
 package read;
 
 public interface ReadCore {
-    public void read(String request);
+    public void read(int request);
 
 }
