@@ -7,7 +7,7 @@ import static java.lang.Integer.parseInt;
 
 public class ReadModule implements ReadCore {
 
-    public void read(String lba) {
+    public void read(int lba) {
 
         if(isValidAddress(lba)){
            return;
@@ -16,7 +16,7 @@ public class ReadModule implements ReadCore {
 
     }
 
-    public boolean isValidAddress(String lba) {
-        return parseInt(lba) >= AddressConstraint.MAX_BOUNDARY || parseInt(lba) <AddressConstraint.MIN_BOUNDARY;
+    public boolean isValidAddress(int lba) {
+        return lba >= AddressConstraint.MAX_BOUNDARY || lba <AddressConstraint.MIN_BOUNDARY;
     }
 }
