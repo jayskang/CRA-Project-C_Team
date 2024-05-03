@@ -1,14 +1,13 @@
 package write;
 
 import cores.AddressConstraint;
-import cores.ExceptionMessage;
 
 public class WriteModule implements WriteCore {
 
     private final SsdFileWriter fileWriter;
 
-    public WriteModule(SsdFileWriter fileWriter) {
-        this.fileWriter = fileWriter;
+    public WriteModule() {
+        this.fileWriter = new SsdFileWriter();
     }
 
     private int convertHexToUnsignedInt(String value) {
@@ -17,15 +16,12 @@ public class WriteModule implements WriteCore {
 
             return Integer.parseUnsignedInt(inputValue, 16);
         } catch (NumberFormatException numberFormatException) {
-            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_STORE_TO_VALUE_EXCEPTION_MSG);
+            return -1;
         }
     }
 
     private boolean checkAddressBoundary(int address) {
-        if(address < AddressConstraint.MIN_BOUNDARY || AddressConstraint.MAX_BOUNDARY <= address) {
-            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
-        }
-        return true;
+        return address >= AddressConstraint.MIN_BOUNDARY && AddressConstraint.MAX_BOUNDARY > address;
     }
 
     @Override
@@ -33,7 +29,9 @@ public class WriteModule implements WriteCore {
         if(checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
-            this.fileWriter.store(address, convertedValue);
+            if(convertedValue >= 0) {
+                this.fileWriter.store(address, convertedValue);
+            }
         }
     }
 }
