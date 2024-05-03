@@ -54,7 +54,7 @@ public class WriteModule implements WriteCore {
 
             if(convertedValue >= 0) {
                 this.errorLog = null;
-                this.fileWriter.store(address, convertedValue);
+                this.fileWriter.store(address, value);
             }
         }
     }
