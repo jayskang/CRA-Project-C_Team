@@ -11,4 +11,14 @@ class WriteModuleTest {
         WriteModule writeModule = new WriteModule();
         assertNotNull(writeModule);
     }
+
+    @Test
+    void 정상적인_데이터_쓰기() {
+        WriteModule writeModule = new WriteModule();
+
+        int address = 0;
+        String value = "0x00000001";
+
+        writeModule.write(address, value);
+    }
 }
