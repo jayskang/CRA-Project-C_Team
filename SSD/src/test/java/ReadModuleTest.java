@@ -1,5 +1,4 @@
-import cores.AddressConstraint;
-import org.junit.jupiter.api.Assertions;
+import cores.SSDConstraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,19 +23,18 @@ class ReadModuleTest {
     private ReadModule readModule;
 
     private  File file;
-    private FileWriter fw;
+    private FileWriter fileWriter;
     private  SsdFileReader ssdFileReader;
-    private String result[];
+    private String fileReadResult[];
 
     @BeforeEach
     void setUp() throws IOException {
-        file = new File("nand.txt");
+        file = new File(SSDConstraint.FILENAME);
         file.createNewFile();
-        fw = new FileWriter(file);
+        fileWriter = new FileWriter(file);
 
         ssdFileReader = new SsdFileReader();
-
-        result = new String[100];
+        fileReadResult = new String[100];
     }
 
     @Test
@@ -50,20 +47,25 @@ class ReadModuleTest {
     @Test
     void 빈파일_호출했을때() throws IOException {
         createWriteSampleFile("");
-        String expected[] = new String[100];
-        for(int index=0;index< AddressConstraint.MAX_BOUNDARY;index++){
-            expected[index]=null;
-        }
+        String[] expected = setArrayWithNull();
 
-        result = ssdFileReader.readFile();
+        fileReadResult = ssdFileReader.readFile();
 
-        assertArrayEquals(expected,result);
+        assertArrayEquals(expected, fileReadResult);
     }
 
     private void createWriteSampleFile(String writeSample) throws IOException {
-        BufferedWriter writer = new BufferedWriter(fw);
+        BufferedWriter writer = new BufferedWriter(fileWriter);
         writer.write(writeSample);
         writer.close();
+    }
+
+    private static String[] setArrayWithNull() {
+        String expected[] = new String[100];
+        for(int index = 0; index< SSDConstraint.MAX_BOUNDARY; index++){
+            expected[index]=null;
+        }
+        return expected;
     }
 
 
