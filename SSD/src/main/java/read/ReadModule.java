@@ -8,15 +8,14 @@ import static java.lang.Integer.parseInt;
 
 public class ReadModule implements ReadCore {
 
-    public void read(String request) {
-        String command[] = request.split(" ");
+    public void read(String lba) {
 
-        if(isValidAddress(command)){
+        if(isValidAddress(lba)){
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
         }
     }
 
-    private static boolean isValidAddress(String[] command) {
-        return parseInt(command[2]) >= AddressConstraint.MAX_BOUNDARY || parseInt(command[2]) <AddressConstraint.MIN_BOUNDARY;
+    private static boolean isValidAddress(String lba) {
+        return parseInt(lba) >= AddressConstraint.MAX_BOUNDARY || parseInt(lba) <AddressConstraint.MIN_BOUNDARY;
     }
 }

@@ -17,14 +17,14 @@ class ReadModuleTest {
     @Test
     void 주소입력범위예외체크() {
         try {
-            this.readModule.read("ssd R 192");
+            this.readModule.read("192");
         } catch (IllegalArgumentException illegalArgumentException) {
             assertThat(illegalArgumentException.getMessage()).isEqualTo(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
         }
     }
 
 //    @Test
-//    void read할때_파일을_읽어오는지_체크(){
+//    void 빈파일_(){
 //        ReadNandModule readModule = new ReadNandModule();
 //        readModule.readFile();
 //
