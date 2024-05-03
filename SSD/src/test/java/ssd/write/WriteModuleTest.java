@@ -1,7 +1,9 @@
 package ssd.write;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import read.ReadModule;
@@ -14,15 +16,18 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class WriteModuleTest {
 
-    @Spy
     private WriteModule writeModule;
 
-    @Spy
-    private ReadModule readModule;
+    @Mock
+    private ReadModule READ_MODULE;
 
     @Spy
     private SsdFileReader ssdFileReader;
 
+    @BeforeEach
+    void setUp() {
+        this.writeModule = new WriteModule();
+    }
 
     @Test
     void 주소값이_0_미만일때() {
@@ -79,7 +84,7 @@ class WriteModuleTest {
         when(this.ssdFileReader.readFile()).thenReturn(readFileContents);
 
         this.writeModule.write(address, value);
-        this.readModule.read(address);
+        this.READ_MODULE.read(address);
 
         String[] readFileResult = this.ssdFileReader.readFile();
 
