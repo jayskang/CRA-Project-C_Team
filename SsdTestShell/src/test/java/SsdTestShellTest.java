@@ -50,7 +50,7 @@ class SsdTestShellTest {
     }
 //    private SsdTestShell spyShell;
     @Test
-    void read_함수_driver_예외_catch_경우(){
+    void read_함수_driver_잘못된_인자값_예외_catch(){
 //        spyShell.setSsd(any());
         doThrow(new IllegalArgumentException("INVALID Argument")).when(mockSsd).read("A");
         shell.read("A");
