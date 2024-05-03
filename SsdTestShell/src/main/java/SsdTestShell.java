@@ -9,7 +9,11 @@ public class SsdTestShell {
         try{
             ssd.read(lba);
         } catch (IllegalArgumentException e){
-            System.out.println("INVALID Argument." + e.getMessage());
+            printError(e);
         }
+    }
+
+    public void printError(IllegalArgumentException e) {
+        System.out.println(e.getMessage());
     }
 }
