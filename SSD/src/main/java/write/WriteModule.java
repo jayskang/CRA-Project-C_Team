@@ -11,11 +11,21 @@ public class WriteModule implements WriteCore {
         this.fileWriter = new SsdFileWriter();
     }
 
-    private int convertHexToUnsignedInt(String value) {
+    private boolean checkValueFormat(String value) {
         try {
-            if(!value.contains("0x")) {
+            if (!value.startsWith("0x")) {
                 throw new NumberFormatException();
             }
+            return true;
+        }
+        catch (NumberFormatException numberFormatException) {
+            this.errorLog = numberFormatException;
+            return false;
+        }
+    }
+
+    private int convertHexToUnsignedInt(String value) {
+        try {
             String inputValue = value.substring(2);
             return Integer.parseUnsignedInt(inputValue, 16);
         } catch (NumberFormatException numberFormatException) {
@@ -39,7 +49,7 @@ public class WriteModule implements WriteCore {
 
     @Override
     public void write(int address, String value) {
-        if(checkAddressBoundary(address)) {
+        if(checkValueFormat(value) && checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
             if(convertedValue >= 0) {
