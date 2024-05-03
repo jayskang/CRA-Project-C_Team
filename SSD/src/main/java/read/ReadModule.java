@@ -1,6 +1,8 @@
 package read;
 
 import cores.AddressConstraint;
+import cores.ExceptionMessage;
+
 import static java.lang.Integer.parseInt;
 
 class RequestFailException extends RuntimeException {
@@ -9,17 +11,17 @@ class RequestFailException extends RuntimeException {
     }
 }
 
-public class ReadModule implements AddressConstraint {
+public class ReadModule implements ReadCore {
 
     public void read(String request) {
         String command[] = request.split(" ");
 
         if(isValidAddress(command)){
-            throw new RequestFailException("주소 입력이 잘못되었습니다.");
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
         }
     }
 
     private static boolean isValidAddress(String[] command) {
-        return parseInt(command[2]) > MAX_BOUNDARY;
+        return parseInt(command[2]) >= AddressConstraint.MAX_BOUNDARY || parseInt(command[2]) <AddressConstraint.MIN_BOUNDARY;
     }
 }
