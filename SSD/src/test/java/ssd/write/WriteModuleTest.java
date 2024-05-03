@@ -1,19 +1,15 @@
 package ssd.write;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import read.ReadModule;
+import read.SsdFileReader;
 import write.WriteModule;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class WriteModuleTest {
@@ -24,11 +20,9 @@ class WriteModuleTest {
     @Spy
     private ReadModule readModule;
 
-    @BeforeEach
-    void setUp() {
-        this.writeModule = new WriteModule();
-        this.readModule = new ReadModule();
-    }
+    @Spy
+    private SsdFileReader ssdFileReader;
+
 
     @Test
     void 주소값이_0_미만일때() {
@@ -71,5 +65,24 @@ class WriteModuleTest {
         this.writeModule.write(address, value);
 
         assertThat(this.writeModule.getErrorLog().getClass()).isEqualTo(NumberFormatException.class);
+    }
+
+    @Test
+    void 값이_제대로_저장되었는지_테스트() {
+
+        int address = 0;
+        String value = "0x1234ABCD";
+
+        String[] readFildContents = new String[]{"0x1234ABCD"};
+        String expected = "0x1234ABCD";
+
+        this.writeModule.write(address, value);
+        this.readModule.read(address);
+
+        when(this.ssdFileReader.readFile()).thenReturn(readFildContents);
+
+        String[] readFileResult = this.ssdFileReader.readFile();
+
+        assertThat(readFileResult[address]).isEqualTo(expected);
     }
 }
