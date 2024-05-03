@@ -18,7 +18,5 @@ public class SsdTestShell {
         } catch (NumberFormatException e){
             System.out.println("Wrong Lba. Try again.");
         }
-
     }
-
 }
