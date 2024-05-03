@@ -5,11 +5,6 @@ import cores.ExceptionMessage;
 
 import static java.lang.Integer.parseInt;
 
-class RequestFailException extends RuntimeException {
-    public RequestFailException(String message) {
-        super(message);
-    }
-}
 
 public class ReadModule implements ReadCore {
 
