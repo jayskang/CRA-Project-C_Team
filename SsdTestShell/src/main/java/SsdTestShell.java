@@ -1,11 +1,11 @@
 public class SsdTestShell {
-    SSD ssd;
+    private SSD ssd;
 
-    void setSsd(SSD ssd) {
+    public void setSsd(SSD ssd) {
         this.ssd = ssd;
     }
 
-    void write(String lba, String data) {
+    public void write(String lba, String data) {
         try {
             ssd.write(lba, data);
         } catch(IllegalArgumentException e) {
@@ -13,7 +13,15 @@ public class SsdTestShell {
         }
     }
 
-    void printError(Exception e) {
+    public void read(String lba) {
+        try{
+            ssd.read(lba);
+        } catch (IllegalArgumentException e){
+            printError(e);
+        }
+    }
+
+    public void printError(Exception e) {
         System.out.println(e.getMessage());
     }
 }
