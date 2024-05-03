@@ -1,6 +1,6 @@
 package write;
 
-import cores.AddressConstraint;
+import cores.SSDConstraint;
 
 public class WriteModule implements WriteCore {
 
@@ -21,7 +21,7 @@ public class WriteModule implements WriteCore {
     }
 
     private boolean checkAddressBoundary(int address) {
-        return address >= AddressConstraint.MIN_BOUNDARY && AddressConstraint.MAX_BOUNDARY > address;
+        return address >= SSDConstraint.MIN_BOUNDARY && SSDConstraint.MAX_BOUNDARY > address;
     }
 
     @Override
