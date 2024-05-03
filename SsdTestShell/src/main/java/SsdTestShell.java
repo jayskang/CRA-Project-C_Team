@@ -21,8 +21,8 @@ public class SsdTestShell implements ISsdCommand{
         try{
             param = Integer.parseInt(lba);
             if(param > MAX_LBA || param < MIN_LBA)
-                throw new NumberFormatException();
-            ssd.read(lba);
+                throw new NumberFormatException("INVALID Argument. 명령 중단.");
+            ssd.read(param);
             System.out.println("read success: "+ lba);
         } catch (NumberFormatException e){
             printError(e);
