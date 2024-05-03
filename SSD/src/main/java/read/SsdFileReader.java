@@ -2,6 +2,23 @@ package read;
 
 import cores.AddressConstraint;
 
-public class SsdFileReader {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
+
+public class SsdFileReader {
+    public String[] readFile() throws FileNotFoundException {
+        String[] result = new String[AddressConstraint.MAX_BOUNDARY];
+
+        Scanner scanner = new Scanner(new File("nand.txt"));
+
+        while(scanner.hasNext()){
+            int address = parseInt(scanner.next());
+            String value = scanner.next();
+        }
+
+        return result;
+    }
 }
