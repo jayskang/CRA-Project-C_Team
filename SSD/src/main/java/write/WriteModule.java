@@ -5,10 +5,10 @@ import cores.ExceptionMessage;
 
 public class WriteModule implements WriteCore {
 
-    private final NandWriteModule nandWriteModule;
+    private final SsdFileWriter fileWriter;
 
-    public WriteModule() {
-        this.nandWriteModule = new NandWriteModule();
+    public WriteModule(SsdFileWriter fileWriter) {
+        this.fileWriter = fileWriter;
     }
 
     private int convertHexToUnsignedInt(String value) {
@@ -22,7 +22,7 @@ public class WriteModule implements WriteCore {
     }
 
     private boolean checkAddressBoundary(int address) {
-        if(address < AddressConstraint.MIN_BOUNDARY || AddressConstraint.MAX_BOUNDARY < address) {
+        if(address < AddressConstraint.MIN_BOUNDARY || AddressConstraint.MAX_BOUNDARY <= address) {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_ADDRESS_VALUE_EXCEPTION_MSG);
         }
         return true;
@@ -33,7 +33,7 @@ public class WriteModule implements WriteCore {
         if(checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
-            this.nandWriteModule.store(address, convertedValue);
+            this.fileWriter.store(address, convertedValue);
         }
     }
 }
