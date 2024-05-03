@@ -1,4 +1,7 @@
 public class SSD {
+
+    void write(String lbs, String data) {}
+
     public void read(String lba) {
         // Mock으로 실제 수행되지 않음
         int param = -1;
