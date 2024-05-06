@@ -1,6 +1,6 @@
 package write;
 
-import cores.AddressConstraint;
+import cores.SSDConstraint;
 
 public class WriteModule implements WriteCore {
 
@@ -13,13 +13,12 @@ public class WriteModule implements WriteCore {
 
     private boolean checkValueFormat(String value) {
         try {
-            if (!value.startsWith("0x")) {
-                throw new NumberFormatException();
+            if (!value.matches(SSDConstraint.VALUE_FORMAT_REGEX)) {
+                throw new IllegalArgumentException(SSDConstraint.VALUE_FORMAT_EXCEPTION_MSG);
             }
             return true;
-        }
-        catch (NumberFormatException numberFormatException) {
-            this.errorLog = numberFormatException;
+        } catch (IllegalArgumentException illegalArgumentException) {
+            this.errorLog = illegalArgumentException;
             return false;
         }
     }
@@ -36,11 +35,11 @@ public class WriteModule implements WriteCore {
 
     private boolean checkAddressBoundary(int address) {
         try {
-            if (AddressConstraint.MIN_BOUNDARY <= address && address < AddressConstraint.MAX_BOUNDARY) {
+            if (SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY) {
                 this.errorLog = null;
                 return true;
             }
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(SSDConstraint.ADDRESS_FORMAT_EXCEPTION_MSG);
         } catch (IllegalArgumentException illegalArgumentException) {
             this.errorLog = illegalArgumentException;
             return false;
@@ -49,10 +48,10 @@ public class WriteModule implements WriteCore {
 
     @Override
     public void write(int address, String value) {
-        if(checkValueFormat(value) && checkAddressBoundary(address)) {
+        if (checkValueFormat(value) && checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
-            if(convertedValue >= 0) {
+            if (convertedValue >= 0) {
                 this.errorLog = null;
                 this.fileWriter.store(address, value);
             }

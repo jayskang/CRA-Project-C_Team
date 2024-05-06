@@ -1,6 +1,6 @@
 package ssd.write;
 
-import cores.AddressConstraint;
+import cores.SSDConstraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ class WriteModuleTest {
 
     private final String COLLECT_VALUE = "0x00000001";
     private final String WRONG_FORMAT_VALUE = "00000001";
-    private final String NOT_ALLOWED_VALUE = "!@#$%";
+    private final String NOT_ALLOWED_VALUE = "0x!@#$%";
     private final int COLLECT_ADDRESS = 0;
     private final int NOT_ALLOWED_ADDRESS = -1;
 
@@ -40,28 +40,28 @@ class WriteModuleTest {
     void 주소값이_0_미만일때() {
         this.writeModule.write(NOT_ALLOWED_ADDRESS, COLLECT_VALUE);
 
-        assertThat(this.writeModule.getErrorLog().getClass()).isEqualTo(IllegalArgumentException.class);
+        assertThat(this.writeModule.getErrorLog().getMessage()).isEqualTo(SSDConstraint.ADDRESS_FORMAT_EXCEPTION_MSG);
     }
 
     @Test
     void 주소값이_100_이상일때() {
-        writeModule.write(AddressConstraint.MAX_BOUNDARY, COLLECT_VALUE);
+        writeModule.write(SSDConstraint.MAX_BOUNDARY, COLLECT_VALUE);
 
-        assertThat(this.writeModule.getErrorLog().getClass()).isEqualTo(IllegalArgumentException.class);
+        assertThat(this.writeModule.getErrorLog().getMessage()).isEqualTo(SSDConstraint.ADDRESS_FORMAT_EXCEPTION_MSG);
     }
 
     @Test
     void 저장할_입력값이_포맷을_벗어났을때() {
         this.writeModule.write(COLLECT_ADDRESS, WRONG_FORMAT_VALUE);
 
-        assertThat(this.writeModule.getErrorLog().getClass()).isEqualTo(NumberFormatException.class);
+        assertThat(this.writeModule.getErrorLog().getMessage()).isEqualTo(SSDConstraint.VALUE_FORMAT_EXCEPTION_MSG);
     }
 
     @Test
     void 입력값에_이상한_값이_있을때() {
         this.writeModule.write(COLLECT_ADDRESS, NOT_ALLOWED_VALUE);
 
-        assertThat(this.writeModule.getErrorLog().getClass()).isEqualTo(NumberFormatException.class);
+        assertThat(this.writeModule.getErrorLog().getMessage()).isEqualTo(SSDConstraint.VALUE_FORMAT_EXCEPTION_MSG);
     }
 
     @Test
