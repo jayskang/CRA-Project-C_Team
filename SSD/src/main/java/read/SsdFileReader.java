@@ -1,10 +1,10 @@
 package read;
 
-import cores.AddressConstraint;
+import cores.SSDConstraint;
 
 public class SsdFileReader {
     public String[] readFile() {
-        String[] result = new String[AddressConstraint.MAX_BOUNDARY];
+        String[] result = new String[SSDConstraint.MAX_BOUNDARY];
 
         return result;
     }
