@@ -2,16 +2,21 @@ package read;
 
 import cores.SSDConstraint;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.*;
 
 
 public class SsdFileReader {
-    public String[] readFile() throws FileNotFoundException {
+    public String[] readFile() throws IOException {
         String[] result = new String[SSDConstraint.MAX_BOUNDARY];
 
-        Scanner scanner = new Scanner(new File(SSDConstraint.FILENAME));
+
+        BufferedReader reader = new BufferedReader(new FileReader(SSDConstraint.FILENAME));
+        String str;
+        while ((str = reader.readLine()) != null) {
+
+        }
+        reader.close();
+
 
 
         return result;
