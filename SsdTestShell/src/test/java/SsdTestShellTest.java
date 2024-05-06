@@ -30,24 +30,28 @@ class SsdTestShellTest {
         shell.read("0");
         verify(mockSsd, times(1)).read("0");
     }
+
     @Test
     void read_함수_LAB_문자열_음수인_경우(){
         shell.read("-1");
         verify(mockSsd, times(0)).read("-1");
         verify(shell, times(1)).printError(any());
     }
+
     @Test
     void read_함수_LAB_문자열_99_초과인_경우(){
         shell.read("100");
         verify(mockSsd, times(0)).read("100");
         verify(shell, times(1)).printError(any());
     }
+
     @Test
     void read_함수_LAB_문자열_정수가_아닌_경우(){
         shell.read("A");
         verify(mockSsd, times(0)).read(any());
         verify(shell, times(1)).printError(any());
     }
+
     @Test
     void read_함수_LAB_문자열_null인_경우(){
         shell.read(null);
@@ -78,7 +82,8 @@ class SsdTestShellTest {
 
     @Test
     void write_함수_lba에_숫자가_아닌_값이_들어오면_예외처리() {
-        String[] nonNumericStrs = {"??", "0a", ""};
+        String[] nonNumericStrs = {"not number", "include number 0", "", null};
+
         for (String nonNumeric : nonNumericStrs) {
             shell.write(nonNumeric, "0x12345678");
             verify(mockSsd, times(0)).write(nonNumeric, "0x12345678");
@@ -87,7 +92,8 @@ class SsdTestShellTest {
 
     @Test
     void write_함수_data에_숫자가_아닌_값이_들어오면_예외처리() {
-        String[] nonNumericStrs = {"??", "0a", ""};
+        String[] nonNumericStrs = {"not number", "include number 0", "", null};
+
         for (String nonNumeric : nonNumericStrs) {
             shell.write("3", nonNumeric);
             verify(mockSsd, times(0)).write("3", nonNumeric);
