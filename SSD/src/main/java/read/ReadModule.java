@@ -30,7 +30,8 @@ public class ReadModule implements ReadCore {
     }
 
     private static String getResult(int lba) throws IOException {
-        String[] result = SsdFileReader.readFile();
+        SsdFileReader ssdFileReader = new SsdFileReader();
+        String[] result = ssdFileReader.readFile();
         if (isValueExists(result[lba])) {
             return result[lba];
         }

@@ -19,16 +19,13 @@ public class SsdFileWriter {
     }
 
     public void store(int address, String value) {
-        try {
-            String[] nand = this.reader.readFile();
-            nand[address] = value;
-            saveData(nand);
-        } catch (IOException ignored) {
-        }
+        String[] nand = this.reader.readFile();
+        nand[address] = value;
+        saveData(nand);
     }
 
     private File checkFileExist() {
-        File file = new File(NAND_ABSOLUTE_LOCATION + FILENAME);
+        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
 
         if (!file.exists()) {
             try {
@@ -55,7 +52,7 @@ public class SsdFileWriter {
                 if (nand != null) {
                     stringBuilder.append(nand[i]);
                 } else {
-                    stringBuilder.append(INITIAL_STATE);
+                    stringBuilder.append(DEFAULT_VALUE);
                 }
                 stringBuilder.append("\n");
 
