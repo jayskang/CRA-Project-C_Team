@@ -89,6 +89,22 @@ public class ssdFullTest {
         }
     }
 
+    @Test
+    void 데이터를_쓰고_nand파일을_지우고_다시_데이터쓰고_조회하기() {
+        writeDataToAddressAndRead(99, VALID_VALUE);
+
+        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
+
+        if (file.delete()) {
+            writeDataToAddressAndRead(99, VALID_VALUE);
+            this.readModule.read(99);
+
+            assertThat(getReadResult()).isEqualTo(VALID_VALUE);
+        } else {
+            fail();
+        }
+    }
+
     private void writeDataToAddressAndRead(int address, String inputValue) {
         this.writeModule.write(address, inputValue);
         this.readModule.read(address);
