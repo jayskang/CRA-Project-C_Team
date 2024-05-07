@@ -104,13 +104,13 @@ class SsdTestShellTest {
     void fullWrite_함수_정상_호출시_write함수_100번_호출() {
         shell.fullwrite("0x12345678");
 
-        verify(shell, times(100)).write(anyString(), eq("0x12345678"));
+        verify(mockSsd, times(100)).write(anyString(), eq("0x12345678"));
     }
 
     @Test
     void fullWrite_함수_data값이_유효하지_않다면_write함수_0번_호출() {
         shell.fullwrite("0x1234");
 
-        verify(shell, times(0)).write(anyString(), eq("0x1234"));
+        verify(mockSsd, times(0)).write(anyString(), eq("0x1234"));
     }
 }

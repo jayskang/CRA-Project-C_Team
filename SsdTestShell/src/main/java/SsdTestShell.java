@@ -34,11 +34,12 @@ public class SsdTestShell implements ISsdCommand{
     public void fullwrite(String data) {
         try {
             checkIsDataValid(data);
-            for (int i = MIN_LBA; i <= MAX_LBA; i++) {
-                write(Integer.toString(i), data);
-            }
         } catch (Exception e) {
             printError(e);
+            return;
+        }
+        for (int i = MIN_LBA; i <= MAX_LBA; i++) {
+            ssd.write(Integer.toString(i), data);
         }
     }
 
