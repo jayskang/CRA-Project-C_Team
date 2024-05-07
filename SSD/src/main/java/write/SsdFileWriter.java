@@ -22,22 +22,12 @@ public class SsdFileWriter {
     public void store(int address, String value) {
         try {
             String[] nand = this.reader.readFile();
+            File file = checkFileExist();
 
             nand[address] = value;
 
-            File file = new File("src/main/resources/nand.txt");
-
             this.bufferedWriter = new BufferedWriter(new FileWriter(file));
             StringBuilder stringBuilder;
-
-            if (!file.exists()) {
-                try {
-                    boolean hasCreateDir = file.getParentFile().mkdirs(); // 상위 디렉토리가 없으면 생성
-                    boolean hasNewFile = file.createNewFile(); // 파일 생성
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
 
             for(int i = 0; i < MAX_BOUNDARY; i += 1) {
 
@@ -56,7 +46,7 @@ public class SsdFileWriter {
         }
     }
 
-    private void saveData() {
+    private File checkFileExist() {
         File file = new File(NAND_ABSOLUTE_LOCATION + FILENAME);
 
         if (!file.exists()) {
@@ -64,9 +54,13 @@ public class SsdFileWriter {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             } catch (IOException e) {
-                return;
             }
         }
+        return file;
+    }
+
+    private void saveData() {
+        File file = checkFileExist();
 
         try {
             this.bufferedWriter = new BufferedWriter(new FileWriter(file));
