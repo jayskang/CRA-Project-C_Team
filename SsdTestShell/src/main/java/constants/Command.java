@@ -11,7 +11,5 @@ public class Command {
     // 명령 유효성 관련 Constants
     public static final int MAX_LBA = 99;
     public static final int MIN_LBA = 0;
-
-    public static final String DATA_OPTION_HEX_PREFIX = "0x";
-    public static final int DATA_OPTION_STRING_LENGTH = 10;
+    public static final String VALUE_FORMAT_REGEX = "^0x[0-9A-Fa-f]{8}$";
 }
