@@ -11,6 +11,7 @@ public class SsdFileWriter {
     private BufferedWriter bufferedWriter;
 
     public SsdFileWriter() {
+        this.reader = new SsdFileReader();
         File file = new File("src/main/resources/nand.txt");
 
         if (!file.exists()) {
@@ -21,8 +22,6 @@ public class SsdFileWriter {
                 System.out.println(e.getMessage());
             }
         }
-
-//        this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
         try {
             this.bufferedWriter = new BufferedWriter(new FileWriter(file));
