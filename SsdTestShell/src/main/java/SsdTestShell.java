@@ -1,11 +1,13 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static constants.Command.*;
+import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
+
 public class SsdTestShell implements ISsdCommand{
-    public static final int MAX_LBA = 99;
-    public static final int MIN_LBA = 0;
-    private final String VALUE_FORMAT_REGEX = "^0x[0-9A-Fa-f]{8}$";
-    public static final String ERROR_MSG_INVALID_COMMAND = "INVALID COMMAND";
+
+
+
     private SSD ssd;
 
     public void setSsd(SSD ssd) {
@@ -53,7 +55,11 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     @Override
-    public ArrayList<String> fullread() throws IllegalArgumentException {
-        return null;
+    public ArrayList<String> fullread() throws IllegalArgumentException, IOException {
+        ArrayList<String> list = new ArrayList<>();
+        for(int lba = MIN_LBA; lba <= MAX_LBA; lba++){
+            list.add(ssd.read(String.valueOf(lba)));
+        }
+        return list;
     }
 }
