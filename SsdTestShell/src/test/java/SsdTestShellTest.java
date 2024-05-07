@@ -152,4 +152,10 @@ class SsdTestShellTest {
         }).isInstanceOf(IOException.class)
                 .hasMessageContaining(SSD.ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
     }
+
+    @Test
+    void ssd_fullread_read함수_호출_횟수() throws IOException {
+        shell.fullread();
+        verify(shell, times(100)).read(anyString());
+    }
 }
