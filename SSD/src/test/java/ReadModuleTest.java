@@ -1,4 +1,3 @@
-import cores.SSDConstraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +9,6 @@ import read.SsdFileReader;
 import java.io.*;
 
 import static cores.SSDConstraint.*;
-import static cores.SSDConstraint.RESULT_FILENAME;
-import static java.lang.Integer.parseInt;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -21,31 +17,31 @@ class ReadModuleTest {
 
     public static final String sampleValue = "0x1289CDEF";
     public static final int sampleAddress = 20;
-    @Spy
-    private ReadModule readModule;
 
-    private File file;
-    private FileWriter fileWriter;
+    @Spy
+    private ReadModule spyReadModule;
+
     private SsdFileReader ssdFileReader;
     private String fileReadResult[];
+    private ReadModule readModule;
 
     @BeforeEach
-    void setUp() throws IOException {
-        createNandSampleFile();
-
+    void setUp() {
         ssdFileReader = new SsdFileReader();
         fileReadResult = new String[100];
+        readModule = new ReadModule();
     }
 
     @Test
     void 주소입력범위예외체크() {
-        ReadModule readModule = this.readModule;
-        readModule.read(192);
-        verify(readModule, times(1)).isValidAddress(192);
+        this.spyReadModule.read(192);
+        verify(this.spyReadModule, times(1)).isValidAddress(192);
     }
 
     @Test
     void 주소값이_모두0인파일_호출했을때_파일read() throws IOException {
+
+        createDefaultNandFile();
         String[] expected = setArrayWithNull();
 
         fileReadResult = ssdFileReader.readFile();
@@ -72,7 +68,7 @@ class ReadModuleTest {
     }
 
     @Test
-    void 결과파일생성여부확인(){
+    void 결과파일생성여부확인() {
         File resultfile = new File(RESULT_FILENAME);
 
         assertNotNull(resultfile.exists());
@@ -80,29 +76,22 @@ class ReadModuleTest {
 
     @Test
     void 결과파일_값정상여부확인() throws IOException {
-        File resultfile = new File(RESULT_FILENAME);
-        BufferedReader reader = new BufferedReader(new FileReader(RESULT_FILENAME));
-        String expected = sampleValue;
+        writeAllAddressToNandFile();
 
-        String[] result = reader.readLine().split(" ");
+        readModule.read(sampleAddress);
 
-        assertEquals(expected,result[1]);
-    }
-
-    private void createNandSampleFile() throws IOException {
-        file = new File(FILENAME);
-        file.createNewFile();
-        fileWriter = new FileWriter(file);
-        createNullFile();
+        assertEquals(sampleValue,
+                new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
+                        .readLine());
     }
 
 
-    private void createNullFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(fileWriter);
+    private void createDefaultNandFile() throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
         for (int address = 0; address < 100; address++) {
             writer.write(address + " \n");
         }
-        writer.flush();
+        writer.close();
     }
 
     private static String[] setArrayWithNull() {
@@ -114,7 +103,7 @@ class ReadModuleTest {
     }
 
     private void writeAllAddressToNandFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(fileWriter);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
         for (int address = 0; address < 100; address++) {
             if (address == sampleAddress) {
                 writer.write(address + " 0x1289CDEF\n");
@@ -122,6 +111,6 @@ class ReadModuleTest {
             }
             writer.write(address + " \n");
         }
-        writer.flush();
+        writer.close();
     }
 }

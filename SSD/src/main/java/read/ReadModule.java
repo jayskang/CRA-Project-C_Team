@@ -7,12 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static cores.SSDConstraint.*;
-import static java.lang.Integer.parseInt;
 
 
 public class ReadModule implements ReadCore {
-    private File file;
-    private FileWriter fileWriter;
+    private static File file;
+    private static FileWriter fileWriter;
 
     public void read(int lba) {
 
@@ -23,14 +22,20 @@ public class ReadModule implements ReadCore {
         file = new File(RESULT_FILENAME);
         try {
             fileWriter = new FileWriter(file);
+            String[] result = SsdFileReader.readFile();
+            if(!result[lba].equals(null)){
+                fileWriter.write(result[lba]);
+            }
+            fileWriter.close();
         } catch (IOException e) {
-            return;
         }
+
+
 
 
     }
 
-    public boolean isValidAddress(int lba) {
+    public  boolean isValidAddress(int lba) {
         return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
     }
 }
