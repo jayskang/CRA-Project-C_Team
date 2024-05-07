@@ -1,4 +1,30 @@
+import java.io.IOException;
+
 public class SSD {
-    void write(String lba, String data) {}
-    void read(String lba) {}
+    public static final String ERROR_MSG_RESULT_FILE_NOT_FOUNDED = "Result File Not Founded";
+    SSDResultFileReader resultFileReader;
+
+    void setResultFileReader(SSDResultFileReader reader){
+        this.resultFileReader = reader;
+    }
+
+    public void write(String lbs, String data) {}
+
+    public String read(String lba) throws IOException{
+        execSsdReadCommand(lba);
+        return readResultFile();
+    }
+
+    public void execSsdReadCommand(String lba) {
+        // 1. ssd java 프로그램을 실행시켜야 함.
+        //    ※ 명령문 : ssd R [LBA]
+    }
+
+    public String readResultFile() throws IOException {
+        try {
+            return resultFileReader.readFile();
+        } catch (IOException e) {
+            throw new IOException(ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
+        }
+    }
 }
