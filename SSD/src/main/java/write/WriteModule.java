@@ -32,8 +32,9 @@ public class WriteModule implements WriteCore {
     public void write(int address, String value) {
         if (checkValueFormat(value) && checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
+            long unsignedValue = Long.parseLong(Integer.toUnsignedString(convertedValue));
 
-            if (convertedValue >= 0) {
+            if (unsignedValue >= 0) {
                 this.fileWriter.store(address, value);
             }
         }
