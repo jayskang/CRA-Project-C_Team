@@ -6,4 +6,6 @@ public interface SSDConstraint {
     String NAND_FILENAME = "nand.txt";
     String RESULT_FILENAME = "result.txt";
 
+    String DEFAULT_VALUE = "0x00000000";
+
 }

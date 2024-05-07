@@ -15,24 +15,26 @@ public class ReadModule implements ReadCore {
         if (isValidAddress(lba)) {
             return;
         }
+
         try {
-            fileWriter = new FileWriter(new File(RESULT_FILENAME));
-            String[] result = SsdFileReader.readFile();
-            if(result[lba]==null){
-                fileWriter.write("0x00000000");
-            }
-            else if (isValueExists(result[lba])) {
-                fileWriter.write(result[lba]);
-            }
+            fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
+            fileWriter.write(setResult(lba));
             fileWriter.close();
         } catch (IOException e) {
         }
 
+    }
 
+    private static String setResult(int lba) throws IOException {
+        String[] result = SsdFileReader.readFile();
+        if (isValueExists(result[lba])) {
+            return result[lba];
+        }
+        return DEFAULT_VALUE;
     }
 
     private static boolean isValueExists(String result) {
-        return !result.equals(null);
+        return result != null;
     }
 
     public boolean isValidAddress(int lba) {

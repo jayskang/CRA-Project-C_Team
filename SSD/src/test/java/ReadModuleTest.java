@@ -16,7 +16,6 @@ import static org.mockito.Mockito.*;
 class ReadModuleTest {
 
     public static final String sampleValue = "0x1289CDEF";
-    public static final String defualtValue = "0x00000000";
     public static final int sampleAddress = 20;
 
     @Spy
@@ -92,7 +91,7 @@ class ReadModuleTest {
 
         readModule.read(10);
 
-        assertEquals(defualtValue,
+        assertEquals(DEFAULT_VALUE,
                 new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
                         .readLine());
     }
