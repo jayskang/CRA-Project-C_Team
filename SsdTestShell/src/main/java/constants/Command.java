@@ -1,0 +1,17 @@
+package constants;
+
+public class Command {
+    // SSD 프로그램 실행관련 Constants
+    public static final String SSD_EXEC_JAVA_COMMAND = "java";
+    public static final String SSD_EXEC_JAR_OPTION = "-jar";
+    public static final String SSD_EXEC_JAR_FILE_PATH = "C:\\test\\ssd.jar";
+    public static final String SSD_EXEC_READ_OPTION = "R";
+    public static final String SSD_WRITE_OPTION_CMD = "W";
+
+    // 명령 유효성 관련 Constants
+    public static final int MAX_LBA = 99;
+    public static final int MIN_LBA = 0;
+
+    public static final String DATA_OPTION_HEX_PREFIX = "0x";
+    public static final int DATA_OPTION_STRING_LENGTH = 10;
+}

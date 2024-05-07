@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
+import static constants.Messages.ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -150,7 +151,7 @@ class SsdTestShellTest {
         assertThatThrownBy(()->{
             spySsd.readResultFile();
         }).isInstanceOf(IOException.class)
-                .hasMessageContaining(SSD.ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
+                .hasMessageContaining(ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
     }
 
     @Test
@@ -162,5 +163,12 @@ class SsdTestShellTest {
         }
         shell.fullread();
         verify(resultFileReader, times(100)).readFile();
+    }
+
+    @Test
+    void 외부_프로그램_실행_기능_테스트() throws IOException {
+        // 임시 jar파일 생성 후 로컬에서 테스트 필요. 임시 테스트 함수. 삭제해야 함.
+        SSD ssd = new SSD();
+        ssd.execSsdReadCommand("1");
     }
 }

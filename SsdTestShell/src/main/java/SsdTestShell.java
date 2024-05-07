@@ -1,10 +1,13 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static constants.Command.*;
+import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
+
 public class SsdTestShell implements ISsdCommand{
-    public static final int MAX_LBA = 99;
-    public static final int MIN_LBA = 0;
-    public static final String ERROR_MSG_INVALID_COMMAND = "INVALID COMMAND";
+
+
+
     private SSD ssd;
 
     public void setSsd(SSD ssd) {
@@ -44,7 +47,7 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     private boolean isInvalidDataFormat(String data) {
-        return data == null || !data.startsWith("0x") || data.length() != 10;
+        return data == null || !data.startsWith(DATA_OPTION_HEX_PREFIX) || data.length() != DATA_OPTION_STRING_LENGTH;
     }
 
     private void checkIsLbaValid(String lba) throws IllegalArgumentException{
@@ -69,6 +72,4 @@ public class SsdTestShell implements ISsdCommand{
         }
         return list;
     }
-
-
 }

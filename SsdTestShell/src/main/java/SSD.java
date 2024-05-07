@@ -1,7 +1,12 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import static constants.Command.*;
+import static constants.Messages.*;
 
 public class SSD {
-    public static final String ERROR_MSG_RESULT_FILE_NOT_FOUNDED = "Result File Not Founded";
+
     SSDResultFileReader resultFileReader;
 
     void setResultFileReader(SSDResultFileReader reader){
@@ -15,9 +20,14 @@ public class SSD {
         return readResultFile();
     }
 
-    public void execSsdReadCommand(String lba) {
-        // 1. ssd java 프로그램을 실행시켜야 함.
-        //    ※ 명령문 : ssd R [LBA]
+    public void execSsdReadCommand(String lba) throws IOException {
+        try {
+            Process process = new ProcessBuilder(
+                    SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, SSD_EXEC_JAR_FILE_PATH
+                    , SSD_EXEC_READ_OPTION, lba).start();
+        } catch(Exception e){
+            throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
+        }
     }
 
     public String readResultFile() throws IOException {
