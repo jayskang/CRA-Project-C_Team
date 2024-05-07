@@ -65,7 +65,7 @@ public class ssdFullTest {
 
         assertThat(actual).isEqualTo(VALID_VALUE);
     }
-    
+
     @Test
     void 유효하지않은_입력값으로_데이터_쓰기2() {
         writeDataToAddressAndRead(0, VALID_VALUE);
@@ -74,6 +74,14 @@ public class ssdFullTest {
         String actual = getReadResult();
 
         assertThat(actual).isEqualTo(VALID_VALUE);
+    }
+
+    @Test
+    void 최대값_쓰기() {
+        writeDataToAddressAndRead(0, "0xFFFFFFFF");
+        String actual = getReadResult();
+
+        assertThat(actual).isEqualTo("0xFFFFFFFF");
     }
 
     private void writeDataToAddressAndRead(int address, String inputValue) {
