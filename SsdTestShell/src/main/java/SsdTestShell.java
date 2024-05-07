@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class SsdTestShell implements ISsdCommand{
     public static final int MAX_LBA = 99;
     public static final int MIN_LBA = 0;
+    private final String VALUE_FORMAT_REGEX = "^0x[0-9A-Fa-f]{8}$";
     public static final String ERROR_MSG_INVALID_COMMAND = "INVALID COMMAND";
     private SSD ssd;
 
@@ -13,13 +14,9 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void write(String lba, String data) {
-        try {
-            checkIsLbaValid(lba);
-            checkIsDataValid(data);
-            ssd.write(lba, data);
-        } catch(IllegalArgumentException e) {
-//            printError(e);
-        }
+        checkIsLbaValid(lba);
+        checkIsDataValid(data);
+        ssd.write(lba, data);
     }
 
     @Override
@@ -30,21 +27,15 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void fullwrite(String data) {
-
+        checkIsDataValid(data);
+        for (int i = MIN_LBA; i <= MAX_LBA; i++) {
+            ssd.write(Integer.toString(i), data);
+        }
     }
+
     private void checkIsDataValid(String data) throws IllegalArgumentException {
-        if (isInvalidDataFormat(data)) {
+        if (data == null || !data.matches(VALUE_FORMAT_REGEX))
             throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
-        }
-        try {
-            Integer.parseInt(data.substring(2), 16);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
-        }
-    }
-
-    private boolean isInvalidDataFormat(String data) {
-        return data == null || !data.startsWith("0x") || data.length() != 10;
     }
 
     private void checkIsLbaValid(String lba) throws IllegalArgumentException{
@@ -65,6 +56,4 @@ public class SsdTestShell implements ISsdCommand{
     public ArrayList<String> fullread() throws IllegalArgumentException {
         return null;
     }
-
-
 }
