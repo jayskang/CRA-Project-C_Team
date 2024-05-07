@@ -25,6 +25,8 @@ class SsdFileWriterTest {
     @Spy
     private SsdFileReader reader;
 
+    private final String VALID_VALUE = VALID_VALUE;
+
     @BeforeEach
     void setUp() {
         this.writer = mock(SsdFileWriter.class);
@@ -34,26 +36,26 @@ class SsdFileWriterTest {
 
     @Test
     void 정상적인_저장() {
-        this.writer.store(0, "0x12341234");
-        this.virtualNand[0] = "0x12341234";
+        this.writer.store(0, VALID_VALUE);
+        this.virtualNand[0] = VALID_VALUE;
 
         try {
             when(this.reader.readFile()).thenReturn(this.virtualNand);
         } catch (IOException | NullPointerException ignored) {
         }
-        verify(this.writer).store(0, "0x12341234");
-        assertThat("0x12341234").isEqualTo(this.virtualNand[0]);
+        verify(this.writer).store(0, VALID_VALUE);
+        assertThat(VALID_VALUE).isEqualTo(this.virtualNand[0]);
     }
 
     @Test
     void 허용되지않는_주소값() {
-        this.writer.store(-1, "0x12341234");
+        this.writer.store(-1, VALID_VALUE);
 
         try {
             when(this.reader.readFile()).thenReturn(this.virtualNand);
         } catch (IOException | NullPointerException ignored) {
         }
-        verify(this.writer).store(-1, "0x12341234");
+        verify(this.writer).store(-1, VALID_VALUE);
         assertThat("0x00000000").isEqualTo(this.virtualNand[0]);
     }
 }
