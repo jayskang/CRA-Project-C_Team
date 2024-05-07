@@ -38,9 +38,7 @@ public class ssdFullTest {
     void 정상적인_데이터_쓰기() {
         writeDataToAddressAndRead(0, VALID_VALUE);
 
-        String actual = getReadResult();
-
-        assertThat(actual).isEqualTo(VALID_VALUE);
+        assertThat(getReadResult()).isEqualTo(VALID_VALUE);
     }
 
     @Test
@@ -50,9 +48,7 @@ public class ssdFullTest {
         // 유효하지 않은 주소값으로 동작
         writeDataToAddressAndRead(-1, "0x11111111");
 
-        String actual = getReadResult();
-
-        assertThat(actual).isEqualTo(VALID_VALUE);
+        assertThat(getReadResult()).isEqualTo(VALID_VALUE);
     }
 
     @Test
@@ -62,9 +58,7 @@ public class ssdFullTest {
         this.writeModule.write(0, "0x@%$&^#");
         this.readModule.read(0);
 
-        String actual = getReadResult();
-
-        assertThat(actual).isEqualTo(VALID_VALUE);
+        assertThat(getReadResult()).isEqualTo(VALID_VALUE);
     }
 
     @Test
@@ -72,17 +66,13 @@ public class ssdFullTest {
         writeDataToAddressAndRead(0, VALID_VALUE);
         writeDataToAddressAndRead(0, "FFFFFFFF");
 
-        String actual = getReadResult();
-
-        assertThat(actual).isEqualTo(VALID_VALUE);
+        assertThat(getReadResult()).isEqualTo(VALID_VALUE);
     }
 
     @Test
     void 최대값_쓰기() {
         writeDataToAddressAndRead(0, "0xFFFFFFFF");
-        String actual = getReadResult();
-
-        assertThat(actual).isEqualTo("0xFFFFFFFF");
+        assertThat(getReadResult()).isEqualTo("0xFFFFFFFF");
     }
 
     @Test
@@ -93,10 +83,7 @@ public class ssdFullTest {
 
         if (file.delete()) {
             this.readModule.read(99);
-
-            String actual = getReadResult();
-
-            assertThat(actual).isEqualTo(DEFAULT_VALUE);
+            assertThat(getReadResult()).isEqualTo(DEFAULT_VALUE);
         } else {
             fail();
         }
