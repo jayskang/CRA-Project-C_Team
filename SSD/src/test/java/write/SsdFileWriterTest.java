@@ -1,16 +1,14 @@
 package write;
 
-import cores.SSDConstraint;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import read.SsdFileReader;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static cores.SSDConstraint.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,8 +24,8 @@ class SsdFileWriterTest {
 
     @BeforeEach
     void setUp() {
-        this.virtualNand = new String[SSDConstraint.MAX_BOUNDARY];
-        Arrays.fill(virtualNand, "0x00000000");
+        this.virtualNand = new String[MAX_BOUNDARY];
+        Arrays.fill(virtualNand, INITIAL_STATE);
     }
 
     @Test
@@ -45,7 +43,7 @@ class SsdFileWriterTest {
         this.virtualNand[0] = "0x12341234";
         try {
             when(this.FILE_READER.readFile()).thenReturn(this.virtualNand);
-        } catch (IOException | NullPointerException exception) {
+        } catch (IOException | NullPointerException ignored) {
 
         }
         assertThat("0x12341234").isEqualTo(this.virtualNand[0]);
