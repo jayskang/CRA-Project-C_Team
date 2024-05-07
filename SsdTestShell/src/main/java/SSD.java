@@ -10,7 +10,7 @@ public class SSD {
 
     public void write(String lbs, String data) {}
 
-    public String read(String lba) {
+    public String read(String lba) throws IOException{
         execSsdReadCommand(lba);
         return readResultFile();
     }
@@ -20,11 +20,11 @@ public class SSD {
         //    ※ 명령문 : ssd R [LBA]
     }
 
-    public String readResultFile() {
+    public String readResultFile() throws IOException {
         try {
             return resultFileReader.readFile();
         } catch (IOException e) {
-            return ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
+            throw new IOException(ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
         }
     }
 }
