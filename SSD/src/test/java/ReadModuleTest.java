@@ -97,7 +97,6 @@ class ReadModuleTest {
                         .readLine());
     }
 
-
     private void createDefaultNandFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
         for (int address = 0; address < MAX_BOUNDARY; address++) {
