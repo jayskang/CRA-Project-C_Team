@@ -1,12 +1,14 @@
 package write;
 
+import cores.SSDCommonUtils;
 import cores.SSDConstraint;
 
-public class WriteModule implements WriteCore {
+public class WriteModule extends SSDCommonUtils implements WriteCore {
 
     private final SsdFileWriter fileWriter;
 
     public WriteModule() {
+        super();
         this.fileWriter = new SsdFileWriter();
     }
 
@@ -23,13 +25,9 @@ public class WriteModule implements WriteCore {
         }
     }
 
-    private boolean checkAddressBoundary(int address) {
-        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
-    }
-
     @Override
     public void write(int address, String value) {
-        if (checkValueFormat(value) && checkAddressBoundary(address)) {
+        if (checkValueFormat(value) && this.checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
             if (convertedValue >= 0) {
