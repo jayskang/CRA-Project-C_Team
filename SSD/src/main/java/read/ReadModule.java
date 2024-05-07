@@ -29,7 +29,7 @@ public class ReadModule implements ReadCore {
         return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
     }
 
-    private static String getResult(int lba) throws IOException {
+    public String getResult(int lba) throws IOException {
         SsdFileReader ssdFileReader = new SsdFileReader();
         String[] result = ssdFileReader.readFile();
         if (isValueExists(result[lba])) {

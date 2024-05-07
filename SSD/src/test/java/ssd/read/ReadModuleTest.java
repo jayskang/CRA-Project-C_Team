@@ -3,6 +3,7 @@ package ssd.read;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import read.ReadModule;
@@ -25,6 +26,9 @@ class ReadModuleTest {
     @Spy
     private ReadModule spyReadModule;
 
+    @Mock
+    private FileWriter fileWriter;
+
     private SsdFileReader ssdFileReader;
     private String fileReadResult[];
     private ReadModule readModule;
@@ -41,6 +45,13 @@ class ReadModuleTest {
         this.spyReadModule.read(OUT_OF_LBA_BOUNDARY);
 
         verify(this.spyReadModule, times(1)).isNotValidLba(OUT_OF_LBA_BOUNDARY);
+    }
+
+    @Test
+    void getResult함수호출체크() throws IOException {
+        this.spyReadModule.read(EXITST_VALUE_LBA);
+
+        verify(spyReadModule, times(1)).getResult(EXITST_VALUE_LBA);
     }
 
     @Test
