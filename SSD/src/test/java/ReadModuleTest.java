@@ -43,7 +43,7 @@ class ReadModuleTest {
     }
 
     @Test
-    void 빈파일_호출했을때() throws IOException {
+    void 주소값이_모두0인파일_호출했을때() throws IOException {
         String[] expected = setArrayWithNull();
 
         fileReadResult = ssdFileReader.readFile();
@@ -73,13 +73,15 @@ class ReadModuleTest {
         file = new File(SSDConstraint.FILENAME);
         file.createNewFile();
         fileWriter = new FileWriter(file);
-        createNullFile("");
+        createNullFile();
     }
 
 
-    private void createNullFile(String writeSample) throws IOException {
+    private void createNullFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(fileWriter);
-        writer.write(writeSample);
+        for (int address = 0; address < 100; address++) {
+            writer.write(address + " \n");
+        }
         writer.flush();
     }
 
