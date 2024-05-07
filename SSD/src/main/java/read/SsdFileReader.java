@@ -1,9 +1,12 @@
 package read;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-import static cores.SSDConstraint.*;
-import static java.lang.Integer.*;
+import static cores.SSDConstraint.MAX_BOUNDARY;
+import static cores.SSDConstraint.NAND_FILENAME;
+import static java.lang.Integer.parseInt;
 
 
 public class SsdFileReader {
@@ -22,7 +25,7 @@ public class SsdFileReader {
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
         return result;
