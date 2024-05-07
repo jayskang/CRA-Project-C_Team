@@ -6,13 +6,14 @@ import read.ReadModule;
 import write.WriteModule;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static cores.SSDConstraint.FILE_ABSOLUTE_LOCATION;
-import static cores.SSDConstraint.RESULT_FILENAME;
+import static cores.SSDConstraint.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ssdFullTest {
 
@@ -82,6 +83,23 @@ public class ssdFullTest {
         String actual = getReadResult();
 
         assertThat(actual).isEqualTo("0xFFFFFFFF");
+    }
+
+    @Test
+    void 데이터를_쓰고_nand파일을_지우고_조회하기() {
+        writeDataToAddressAndRead(99, VALID_VALUE);
+
+        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
+
+        if (file.delete()) {
+            this.readModule.read(99);
+
+            String actual = getReadResult();
+
+            assertThat(actual).isEqualTo(DEFAULT_VALUE);
+        } else {
+            fail();
+        }
     }
 
     private void writeDataToAddressAndRead(int address, String inputValue) {
