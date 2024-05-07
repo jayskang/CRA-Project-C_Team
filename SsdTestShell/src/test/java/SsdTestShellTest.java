@@ -104,6 +104,7 @@ class SsdTestShellTest {
     @Test
     void write_함수_data에_숫자가_아닌_값이_들어오면_예외처리() {
         String[] nonNumericStrs = {"not number", "include number 0", "", null};
+
         for (String nonNumeric : nonNumericStrs) {
             shell.write("3", nonNumeric);
             verify(mockSsd, times(0)).write("3", nonNumeric);
@@ -114,7 +115,9 @@ class SsdTestShellTest {
     void shell_Read_함수_파일사용_출력_결과() throws IOException {
         shell.setSsd(spySsd);
         doReturn("0 0x11111111").when(spySsd).readResultFile();
+
         shell.read("0");
+
         verify(spySsd, times(1)).execSsdReadCommand("0");
         verify(spySsd, times(1)).readResultFile();
     }
@@ -123,7 +126,9 @@ class SsdTestShellTest {
     void ssd_Read_함수_명령실행_및_파일읽기() throws IOException {
         // invalid argument일 경우 ssd의 read함수는 호출되지 않는다.
         doReturn("0 0x11111111").when(spySsd).readResultFile();
+
         spySsd.read("0");
+
         verify(spySsd, times(1)).execSsdReadCommand("0");
         verify(spySsd, times(1)).readResultFile();
     }
@@ -131,7 +136,9 @@ class SsdTestShellTest {
     @Test
     void ssd_readResultFile_함수() throws IOException {
         SSD ssd = new SSD();
+
         ssd.setResultFileReader(new SSDResultFileReader());
+
         System.out.println(ssd.readResultFile());
     }
 
@@ -139,6 +146,7 @@ class SsdTestShellTest {
     void ssd_Read_함수_파일읽기_실패() throws IOException {
         spySsd.setResultFileReader(resultFileReader);
         doThrow(new IOException()).when(resultFileReader).readFile();
+
         assertThatThrownBy(()->{
             spySsd.readResultFile();
         }).isInstanceOf(IOException.class)
