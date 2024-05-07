@@ -1,7 +1,8 @@
 import static java.lang.System.exit;
 
 public class ExitCommand extends AbstractCommand {
-    protected ExitCommand() {
+    protected ExitCommand(ISsdTestShell ssdTestShell) {
+        super(ssdTestShell);
         ERROR_MESSAGE = "Exit command need no arguments. Please check Input.";
         HELP_MASSAGE = "Usage: exit";
     }

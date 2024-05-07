@@ -2,6 +2,11 @@ public abstract class AbstractCommand implements Command {
     protected String ERROR_MESSAGE = "";
     protected String HELP_MASSAGE = "";
     protected String[] args;
+    protected ISsdTestShell ssdTestShell;
+
+    public AbstractCommand(ISsdTestShell ssdTestShell) {
+        this.ssdTestShell = ssdTestShell;
+    }
 
     @Override
     public void setArgument(String[] args) {

@@ -5,6 +5,11 @@ public class TestShellCommander {
 
     private Command command;
     private static String[] args;
+    private ISsdTestShell ssdTestShell;
+
+    private TestShellCommander(ISsdTestShell ssdTestShell) {
+        this.ssdTestShell = ssdTestShell;
+    }
 
     private static boolean isValidArgumentLength() {
         if(args.length == 0) {
@@ -20,9 +25,9 @@ public class TestShellCommander {
         return true;
     }
 
-    public static TestShellCommander getTestShellCommander(String[] args) {
+    public static TestShellCommander getTestShellCommander(String[] args, ISsdTestShell ssdTestShell) {
         if(testShellCommander == null) {
-            testShellCommander = new TestShellCommander();
+            testShellCommander = new TestShellCommander(ssdTestShell);
         }
 
         TestShellCommander.args = args;
@@ -34,7 +39,7 @@ public class TestShellCommander {
     }
 
     public void runCommand() {
-        command = CommandFactory.getCommand(args[0]);
+        command = CommandFactory.getCommand(args[0], ssdTestShell);
         command.setArgument(args);
         command.execute();
     }

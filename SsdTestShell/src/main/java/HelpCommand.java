@@ -1,6 +1,7 @@
 public class HelpCommand extends AbstractCommand {
 
-    public HelpCommand() {
+    public HelpCommand(ISsdTestShell ssdTestShell) {
+        super(ssdTestShell);
         ERROR_MESSAGE = "Please input command to print help.";
         HELP_MASSAGE = "Usage: help [command]";
     }
@@ -13,7 +14,7 @@ public class HelpCommand extends AbstractCommand {
         }
 
         String commandString = args[1];
-        Command command = CommandFactory.getCommand(commandString);
+        Command command = CommandFactory.getCommand(commandString, ssdTestShell);
         if(command == null) {
             System.out.println("Wrong command. Please check command.");
             return;
