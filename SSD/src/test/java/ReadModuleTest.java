@@ -1,3 +1,5 @@
+import cores.SSDConstraint;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -11,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,15 +22,76 @@ class ReadModuleTest {
     @Spy
     private ReadModule readModule;
 
+    private File file;
+    private FileWriter fileWriter;
+    private SsdFileReader ssdFileReader;
+    private String fileReadResult[];
+
+    @BeforeEach
+    void setUp() throws IOException {
+        createNandSampleFile();
+
+        ssdFileReader = new SsdFileReader();
+        fileReadResult = new String[100];
+    }
 
     @Test
     void 주소입력범위예외체크() {
         ReadModule readModule = this.readModule;
         readModule.read(192);
-        verify(readModule,times(1)).isValidAddress(192);
+        verify(readModule, times(1)).isValidAddress(192);
+    }
+
+    @Test
+    void 빈파일_호출했을때() throws IOException {
+        String[] expected = setArrayWithNull();
+
+        fileReadResult = ssdFileReader.readFile();
+
+        assertArrayEquals(expected, fileReadResult);
+    }
+
+    @Test
+    void 호출한_주소의_값이_있을때() throws IOException {
+        createSampleFile();
+
+        fileReadResult = ssdFileReader.readFile();
+
+        assertEquals("1289CDEF", fileReadResult[20]);
+    }
+
+    private void createNandSampleFile() throws IOException {
+        file = new File(SSDConstraint.FILENAME);
+        file.createNewFile();
+        fileWriter = new FileWriter(file);
+        createNullFile("");
     }
 
 
+    private void createNullFile(String writeSample) throws IOException {
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+        writer.write(writeSample);
+        writer.close();
+    }
 
+    private static String[] setArrayWithNull() {
+        String expected[] = new String[100];
+        for (int index = 0; index < SSDConstraint.MAX_BOUNDARY; index++) {
+            expected[index] = null;
+        }
+        return expected;
+    }
+
+    private void createSampleFile() throws IOException {
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+        for (int address = 0; address < 100; address++) {
+            if (address == 20) {
+                writer.write(address + " 1289CDEF\n");
+                continue;
+            }
+            writer.write(address + " \n");
+        }
+        writer.close();
+    }
 
 }
