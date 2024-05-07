@@ -24,20 +24,18 @@ class SsdFileWriterTest {
 
     @BeforeEach
     void setUp() {
+        this.writer = new SsdFileWriter();
         this.virtualNand = new String[MAX_BOUNDARY];
         Arrays.fill(virtualNand, INITIAL_STATE);
     }
 
     @Test
     void 기본_생성자_함수() {
-        this.writer = new SsdFileWriter();
         assertNotNull(this.writer);
     }
 
     @Test
     void 정상적인_저장(){
-        this.writer = new SsdFileWriter();
-
         this.writer.store(0, "0x12341234");
 
         this.virtualNand[0] = "0x12341234";
