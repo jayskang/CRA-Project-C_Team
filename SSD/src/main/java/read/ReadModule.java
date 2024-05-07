@@ -9,7 +9,7 @@ public class ReadModule implements ReadCore {
 
     public void read(int lba) {
 
-        if(isValidAddress(lba)){
+        if (isValidAddress(lba)) {
             return;
         }
 
