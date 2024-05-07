@@ -53,7 +53,7 @@ class ReadModuleTest {
 
     @Test
     void 호출한_주소의_값이_있을때() throws IOException {
-        createSampleFile();
+        writeAllAddressToNandFile();
 
         fileReadResult = ssdFileReader.readFile();
 
@@ -71,7 +71,7 @@ class ReadModuleTest {
     private void createNullFile(String writeSample) throws IOException {
         BufferedWriter writer = new BufferedWriter(fileWriter);
         writer.write(writeSample);
-        writer.close();
+        writer.flush();
     }
 
     private static String[] setArrayWithNull() {
@@ -82,7 +82,7 @@ class ReadModuleTest {
         return expected;
     }
 
-    private void createSampleFile() throws IOException {
+    private void writeAllAddressToNandFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(fileWriter);
         for (int address = 0; address < 100; address++) {
             if (address == 20) {
@@ -91,7 +91,6 @@ class ReadModuleTest {
             }
             writer.write(address + " \n");
         }
-        writer.close();
+        writer.flush();
     }
-
 }
