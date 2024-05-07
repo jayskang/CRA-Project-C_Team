@@ -7,7 +7,7 @@ import static java.lang.Integer.*;
 
 
 public class SsdFileReader {
-    public static String[] readFile() {
+    public String[] readFile() {
         String[] result = new String[MAX_BOUNDARY];
 
         BufferedReader reader = null;
