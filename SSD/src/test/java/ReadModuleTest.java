@@ -7,13 +7,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import read.ReadModule;
 import read.SsdFileReader;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 import static cores.SSDConstraint.*;
 import static cores.SSDConstraint.RESULT_FILENAME;
+import static java.lang.Integer.parseInt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -21,7 +19,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ReadModuleTest {
 
-     @Spy
+    public static final String sampleValue = "0x1289CDEF";
+    public static final int sampleAddress = 20;
+    @Spy
     private ReadModule readModule;
 
     private File file;
@@ -59,7 +59,7 @@ class ReadModuleTest {
 
         fileReadResult = ssdFileReader.readFile();
 
-        assertEquals("0x1289CDEF", fileReadResult[20]);
+        assertEquals(sampleValue, fileReadResult[sampleAddress]);
     }
 
     @Test
@@ -76,6 +76,17 @@ class ReadModuleTest {
         File resultfile = new File(RESULT_FILENAME);
 
         assertNotNull(resultfile.exists());
+    }
+
+    @Test
+    void 결과파일_값정상여부확인() throws IOException {
+        File resultfile = new File(RESULT_FILENAME);
+        BufferedReader reader = new BufferedReader(new FileReader(RESULT_FILENAME));
+        String expected = sampleValue;
+
+        String[] result = reader.readLine().split(" ");
+
+        assertEquals(expected,result[1]);
     }
 
     private void createNandSampleFile() throws IOException {
@@ -105,7 +116,7 @@ class ReadModuleTest {
     private void writeAllAddressToNandFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(fileWriter);
         for (int address = 0; address < 100; address++) {
-            if (address == 20) {
+            if (address == sampleAddress) {
                 writer.write(address + " 0x1289CDEF\n");
                 continue;
             }
