@@ -65,7 +65,7 @@ public class ssdFullTest {
 
     private static String getReadResult() throws IOException {
         return new BufferedReader(new FileReader(
-                new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+                (FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
                 .readLine();
     }
 

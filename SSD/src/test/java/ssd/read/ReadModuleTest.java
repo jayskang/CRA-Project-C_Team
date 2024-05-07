@@ -125,12 +125,12 @@ class ReadModuleTest {
     }
 
     private static String getReadResult() throws IOException {
-        return new BufferedReader(new FileReader(new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+        return new BufferedReader(new FileReader((FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
                 .readLine();
     }
 
     private static BufferedWriter setNandWriter() throws IOException {
         return new BufferedWriter(new FileWriter(
-                new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME), false));
+                (FILE_ABSOLUTE_LOCATION + NAND_FILENAME), false));
     }
 }
