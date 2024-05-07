@@ -154,8 +154,13 @@ class SsdTestShellTest {
     }
 
     @Test
-    void ssd_fullread_read함수_호출_횟수() throws IOException {
+    void ssd_fullread_명령시_readFile_호출_횟수() throws IOException {
+        spySsd.setResultFileReader(resultFileReader);
+        shell.setSsd(spySsd);
+        for(int i = 0; i < 100; i++){
+            when(spySsd.read(String.valueOf(i))).thenReturn(String.valueOf(i));
+        }
         shell.fullread();
-        verify(shell, times(100)).read(anyString());
+        verify(resultFileReader, times(100)).readFile();
     }
 }

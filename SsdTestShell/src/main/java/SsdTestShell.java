@@ -62,8 +62,12 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     @Override
-    public ArrayList<String> fullread() throws IllegalArgumentException {
-        return null;
+    public ArrayList<String> fullread() throws IllegalArgumentException, IOException {
+        ArrayList<String> list = new ArrayList<>();
+        for(int i = 0; i < 100; i++){
+            list.add(ssd.read(String.valueOf(i)));
+        }
+        return list;
     }
 
 
