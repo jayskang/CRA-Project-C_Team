@@ -32,8 +32,11 @@ class SsdTestShellTest {
     }
 
     @Test
-
     void read_함수_LBA_문자열_정상인_경우() throws IOException {
+
+    }
+
+    @Test
     void SsdTestShell_객체_정상적으로_생성() {
         assertNotNull(shell);
     }

@@ -37,7 +37,8 @@ public class SsdTestShell implements ISsdCommand{
     @Override
     public void fullwrite(String data) {
 
-    private static void checkIsDataValid(String data) throws IllegalArgumentException {
+    }
+    private void checkIsDataValid(String data) throws IllegalArgumentException {
         if (isInvalidDataFormat(data)) {
             throw new IllegalArgumentException("INVALID Argument. 2번째 인자가 유효하지 않습니다.");
         }
@@ -48,11 +49,11 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private static boolean isInvalidDataFormat(String data) {
-        return !data.startsWith("0x") || data.length() != 10;
+    private boolean isInvalidDataFormat(String data) {
+        return data == null || !data.startsWith("0x") || data.length() != 10;
     }
 
-    private static void checkIsLbaValid(String lba) throws IllegalArgumentException{
+    private void checkIsLbaValid(String lba) throws IllegalArgumentException{
         try {
             int lbaNum = Integer.parseInt(lba);
             if(isLbaOutOfRange(lbaNum))
@@ -71,8 +72,5 @@ public class SsdTestShell implements ISsdCommand{
         return null;
     }
 
-    @Override
-    public void fullwrite(String data) {
 
-    }
 }
