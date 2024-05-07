@@ -1,11 +1,14 @@
 package read;
 
-import cores.SSDConstraint;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import static java.lang.Integer.parseInt;
+import static cores.SSDConstraint.*;
 
 
 public class ReadModule implements ReadCore {
+    private static FileWriter fileWriter;
 
     public void read(int lba) {
 
@@ -13,10 +16,28 @@ public class ReadModule implements ReadCore {
             return;
         }
 
+        try {
+            fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
+            fileWriter.write(getResult(lba));
+            fileWriter.close();
+        } catch (IOException e) {
+        }
 
     }
 
     public boolean isValidAddress(int lba) {
-        return lba >= SSDConstraint.MAX_BOUNDARY || lba < SSDConstraint.MIN_BOUNDARY;
+        return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
+    }
+
+    private static String getResult(int lba) throws IOException {
+        String[] result = SsdFileReader.readFile();
+        if (isValueExists(result[lba])) {
+            return result[lba];
+        }
+        return DEFAULT_VALUE;
+    }
+
+    private static boolean isValueExists(String result) {
+        return result != null;
     }
 }
