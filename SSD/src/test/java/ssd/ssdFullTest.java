@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ssdFullTest {
 
+    private final String VALID_VALUE = "0x12341234";
+
     private WriteModule writeModule;
     private ReadModule readModule;
 
@@ -33,39 +35,39 @@ public class ssdFullTest {
 
     @Test
     void 정상적인_데이터_쓰기() {
-        writeDataToAddressAndRead(0);
+        writeDataToAddressAndRead(0, VALID_VALUE);
 
         String actual = getReadResult();
 
-        assertThat(actual).isEqualTo("0x12341234");
+        assertThat(actual).isEqualTo(VALID_VALUE);
     }
 
     @Test
     void 유효하지않은_주소값으로_데이터_쓰기() {
         // 정상적인 동작
-        writeDataToAddressAndRead(0);
+        writeDataToAddressAndRead(0, VALID_VALUE);
         // 유효하지 않은 주소값으로 동작
-        writeDataToAddressAndRead(-1);
+        writeDataToAddressAndRead(-1, "0x11111111");
 
         String actual = getReadResult();
 
-        assertThat(actual).isEqualTo("0x12341234");
+        assertThat(actual).isEqualTo(VALID_VALUE);
     }
 
     @Test
     void 유효하지않은_입력값으로_데이터_쓰기() {
-        writeDataToAddressAndRead(0);
+        writeDataToAddressAndRead(0, VALID_VALUE);
 
         this.writeModule.write(0, "0x@%$&^#");
         this.readModule.read(0);
 
         String actual = getReadResult();
 
-        assertThat(actual).isEqualTo("0x12341234");
+        assertThat(actual).isEqualTo(VALID_VALUE);
     }
 
-    private void writeDataToAddressAndRead(int address) {
-        this.writeModule.write(address, "0x12341234");
+    private void writeDataToAddressAndRead(int address, String inputValue) {
+        this.writeModule.write(address, inputValue);
         this.readModule.read(address);
     }
 
