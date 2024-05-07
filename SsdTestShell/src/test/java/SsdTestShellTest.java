@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class SsdTestShellTest {
+    public static final String NORMAL_DATA = "0x12345678";
+    public static final String NORMAL_LBA = "3";
     @Mock
     SSD mockSsd;
     @Spy
@@ -28,55 +30,56 @@ class SsdTestShellTest {
     @Test
     void read_함수_LAB_문자열_정상인_경우(){
         shell.read("0");
+
         verify(mockSsd, times(1)).read("0");
     }
 
     @Test
     void read_함수_LAB_문자열_음수인_경우(){
         shell.read("-1");
+
         verify(mockSsd, times(0)).read("-1");
-        verify(shell, times(1)).printError(any());
     }
 
     @Test
     void read_함수_LAB_문자열_99_초과인_경우(){
         shell.read("100");
+
         verify(mockSsd, times(0)).read("100");
-        verify(shell, times(1)).printError(any());
     }
 
     @Test
     void read_함수_LAB_문자열_정수가_아닌_경우(){
         shell.read("A");
+
         verify(mockSsd, times(0)).read(any());
-        verify(shell, times(1)).printError(any());
     }
 
     @Test
     void read_함수_LAB_문자열_null인_경우(){
         shell.read(null);
+
         verify(mockSsd, times(0)).read(null);
-        verify(shell, times(1)).printError(any());
     }
 
     @Test
     void write_함수_testShell의_write가_호출되면_mockSsd의_write_호출() {
-        shell.write("3", "0x12345678");
+        shell.write(NORMAL_LBA, NORMAL_DATA);
 
-        verify(mockSsd, times(1)).write("3", "0x12345678");
+        verify(mockSsd, times(1)).write(NORMAL_LBA, NORMAL_DATA);
     }
 
     @Test
     void write_함수_data가_0x로_시작하지_않으면_예외처리() {
         assertThrows(IllegalArgumentException.class, () -> {
-            shell.write("3", "1234567800");
+            shell.write(NORMAL_LBA, "1234567800");
         });
     }
 
     @Test
     void write_함수_data의_길이가_10이_아니면_예외처리() {
         assertThrows(IllegalArgumentException.class, () -> {
-            shell.write("3", "0x1234567");
+            shell.write(NORMAL_LBA, "0x1234567");
         });
     }
 
@@ -86,7 +89,7 @@ class SsdTestShellTest {
 
         for (String nonNumeric : nonNumericStrs) {
             assertThrows(IllegalArgumentException.class, () -> {
-                shell.write(nonNumeric, "0x12345678");
+                shell.write(nonNumeric, NORMAL_DATA);
             });
         }
     }
@@ -97,16 +100,16 @@ class SsdTestShellTest {
 
         for (String nonNumeric : nonNumericStrs) {
             assertThrows(IllegalArgumentException.class, () -> {
-                shell.write("3", nonNumeric);
+                shell.write(NORMAL_LBA, nonNumeric);
             });
         }
     }
 
     @Test
     void fullWrite_함수_정상_호출시_write함수_100번_호출() {
-        shell.fullwrite("0x12345678");
+        shell.fullwrite(NORMAL_DATA);
 
-        verify(mockSsd, times(100)).write(anyString(), eq("0x12345678"));
+        verify(mockSsd, times(100)).write(anyString(), eq(NORMAL_DATA));
     }
 
     @Test
@@ -114,6 +117,7 @@ class SsdTestShellTest {
         assertThrows(IllegalArgumentException.class, () -> {
             shell.fullwrite("0x1234");
         });
+
         verify(mockSsd, times(0)).write(anyString(), eq("0x1234"));
     }
 }

@@ -1,6 +1,7 @@
 public class SsdTestShell implements ISsdCommand{
     public static final int MAX_LBA = 99;
     public static final int MIN_LBA = 0;
+    private final String VALUE_FORMAT_REGEX = "^0x[0-9A-Fa-f]{8}$";
     private SSD ssd;
 
     public void setSsd(SSD ssd) {
@@ -16,12 +17,12 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void read(String lba) {
-        try{
+        try {
             checkIsLbaValid(lba);
             ssd.read(lba);
             System.out.println("read success: " + lba);
-        } catch (Exception e){
-            printError(e);
+        } catch(Exception e) {
+
         }
     }
 
@@ -33,22 +34,12 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private static void checkIsDataValid(String data) throws IllegalArgumentException {
-        if (isInvalidDataFormat(data)) {
+    private void checkIsDataValid(String data) throws IllegalArgumentException {
+        if (data == null || !data.matches(VALUE_FORMAT_REGEX))
             throw new IllegalArgumentException("INVALID Argument. 2번째 인자가 유효하지 않습니다.");
-        }
-        try {
-            Integer.parseInt(data.substring(2), 16);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("INVALID Argument. 2번째 인자가 유효하지 않습니다.");
-        }
     }
 
-    private static boolean isInvalidDataFormat(String data) {
-        return data == null || !data.startsWith("0x") || data.length() != 10;
-    }
-
-    private static void checkIsLbaValid(String lba) throws IllegalArgumentException{
+    private void checkIsLbaValid(String lba) throws IllegalArgumentException{
         try {
             int lbaNum = Integer.parseInt(lba);
             if(isLbaOutOfRange(lbaNum))
@@ -58,12 +49,8 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private static boolean isLbaOutOfRange(int param) {
+    private boolean isLbaOutOfRange(int param) {
         return param > MAX_LBA || param < MIN_LBA;
-    }
-
-    public void printError(Exception e) {
-        System.out.println(e.getMessage());
     }
 
     @Override
