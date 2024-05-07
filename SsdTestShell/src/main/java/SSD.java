@@ -1,4 +1,4 @@
 public class SSD {
-    void write(String lbs, String data) {}
-    void read(Integer lba) {}
+    void write(String lba, String data) {}
+    void read(String lba) {}
 }
