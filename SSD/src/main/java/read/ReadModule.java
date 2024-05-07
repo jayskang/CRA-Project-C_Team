@@ -18,7 +18,10 @@ public class ReadModule implements ReadCore {
         try {
             fileWriter = new FileWriter(new File(RESULT_FILENAME));
             String[] result = SsdFileReader.readFile();
-            if (isValueExists(result[lba])) {
+            if(result[lba]==null){
+                fileWriter.write("0x00000000");
+            }
+            else if (isValueExists(result[lba])) {
                 fileWriter.write(result[lba]);
             }
             fileWriter.close();
