@@ -1,46 +1,22 @@
 package write;
 
-import cores.SSDConstraint;
 import read.SsdFileReader;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static cores.SSDConstraint.*;
 
 public class SsdFileWriter {
 
-    private SsdFileReader reader;
+    private final SsdFileReader reader;
     private BufferedWriter bufferedWriter;
 
     public SsdFileWriter() {
         this.reader = new SsdFileReader();
-        File file = new File("src/main/resources/nand.txt");
-
-        if (!file.exists()) {
-            try {
-                boolean hasCreateDir = file.getParentFile().mkdirs(); // 상위 디렉토리가 없으면 생성
-                boolean hasNewFile = file.createNewFile(); // 파일 생성
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-        try {
-            this.bufferedWriter = new BufferedWriter(new FileWriter(file));
-            StringBuilder stringBuilder;
-
-            for (int i = 0; i < SSDConstraint.MAX_BOUNDARY; i += 1) {
-                stringBuilder = new StringBuilder();
-
-                stringBuilder.append(i);
-                stringBuilder.append(" ");
-                stringBuilder.append("0x00000000");
-                stringBuilder.append("\n");
-
-                this.bufferedWriter.write(stringBuilder.toString());
-            }
-            this.bufferedWriter.close();
-        } catch (IOException ioException) {
-            System.out.println(ioException.getMessage());
-        }
+        saveData();
     }
 
     public void store(int address, String value) {
@@ -63,7 +39,7 @@ public class SsdFileWriter {
                 }
             }
 
-            for(int i = 0; i < SSDConstraint.MAX_BOUNDARY; i += 1) {
+            for(int i = 0; i < MAX_BOUNDARY; i += 1) {
 
                 stringBuilder = new StringBuilder();
 
@@ -77,6 +53,38 @@ public class SsdFileWriter {
             this.bufferedWriter.close();
         } catch (IOException ioException) {
             System.out.println(ioException.getMessage());
+        }
+    }
+
+    private void saveData() {
+        File file = new File(NAND_ABSOLUTE_LOCATION + FILENAME);
+
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            } catch (IOException e) {
+                return;
+            }
+        }
+
+        try {
+            this.bufferedWriter = new BufferedWriter(new FileWriter(file));
+            StringBuilder stringBuilder;
+
+            for (int i = 0; i < MAX_BOUNDARY; i += 1) {
+                stringBuilder = new StringBuilder();
+
+                stringBuilder.append(i);
+                stringBuilder.append(" ");
+                stringBuilder.append(INITIAL_STATE);
+                stringBuilder.append("\n");
+
+                this.bufferedWriter.write(stringBuilder.toString());
+            }
+            this.bufferedWriter.close();
+        } catch (IOException ioException) {
+            return;
         }
     }
 }
