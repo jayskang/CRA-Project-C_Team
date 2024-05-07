@@ -24,14 +24,8 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public String read(String lba) throws IllegalArgumentException, IOException {
-        try{
-            int param = Integer.parseInt(lba);
-            if(isLbaOutOfRange(param))
-                throw new NumberFormatException(ERROR_MSG_INVALID_COMMAND);
-            return ssd.read(lba);
-        } catch (NumberFormatException ne){
-            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
-        }
+        checkIsLbaValid(lba);
+        return ssd.read(lba);
     }
 
     @Override
@@ -40,12 +34,12 @@ public class SsdTestShell implements ISsdCommand{
     }
     private void checkIsDataValid(String data) throws IllegalArgumentException {
         if (isInvalidDataFormat(data)) {
-            throw new IllegalArgumentException("INVALID Argument. 2번째 인자가 유효하지 않습니다.");
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         }
         try {
             Integer.parseInt(data.substring(2), 16);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("INVALID Argument. 2번째 인자가 유효하지 않습니다.");
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         }
     }
 
@@ -57,9 +51,9 @@ public class SsdTestShell implements ISsdCommand{
         try {
             int lbaNum = Integer.parseInt(lba);
             if(isLbaOutOfRange(lbaNum))
-                throw new IllegalArgumentException("Invalid Argument. 1 번째 인자가 유효하지 않습니다.");
+                throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid Argument. 1 번째 인자가 유효하지 않습니다.");
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         }
     }
 
