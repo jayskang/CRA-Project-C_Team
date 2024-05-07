@@ -111,6 +111,12 @@ public class ssdFullTest {
         assertThat(getReadResult()).isEqualTo("0xCCCCCCCC");
     }
 
+    @Test
+    void 값이_16진수를_벗어났을경우() {
+        writeDataToAddressAndRead(0, "0x0000000G");
+        assertThat(getReadResult()).isEqualTo("0x00000000");
+    }
+
     private boolean deleteNand() {
         File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
         return file.delete();
