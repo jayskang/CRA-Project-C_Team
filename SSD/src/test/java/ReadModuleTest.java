@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static cores.SSDConstraint.*;
 import static cores.SSDConstraint.RESULT_FILENAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,7 +79,7 @@ class ReadModuleTest {
     }
 
     private void createNandSampleFile() throws IOException {
-        file = new File(SSDConstraint.FILENAME);
+        file = new File(FILENAME);
         file.createNewFile();
         fileWriter = new FileWriter(file);
         createNullFile();
@@ -95,7 +96,7 @@ class ReadModuleTest {
 
     private static String[] setArrayWithNull() {
         String expected[] = new String[100];
-        for (int index = 0; index < SSDConstraint.MAX_BOUNDARY; index++) {
+        for (int index = 0; index < MAX_BOUNDARY; index++) {
             expected[index] = null;
         }
         return expected;
