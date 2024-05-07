@@ -18,9 +18,9 @@ public class SsdFileReader {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] addressAndValue = line.split(" ");
-                if (addressAndValue.length == 2) {
-                    result[parseInt(addressAndValue[0])] = addressAndValue[1];
+                String[] lbaAndValue = line.split(" ");
+                if (lbaAndValue.length == 2) {
+                    result[parseInt(lbaAndValue[0])] = lbaAndValue[1];
                 }
             }
             reader.close();
