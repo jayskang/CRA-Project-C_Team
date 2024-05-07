@@ -52,6 +52,18 @@ public class ssdFullTest {
         assertThat(actual).isEqualTo("0x12341234");
     }
 
+    @Test
+    void 유효하지않은_입력값으로_데이터_쓰기() {
+        writeDataToAddressAndRead(0);
+
+        this.writeModule.write(0, "0x@%$&^#");
+        this.readModule.read(0);
+
+        String actual = getReadResult();
+
+        assertThat(actual).isEqualTo("0x12341234");
+    }
+
     private void writeDataToAddressAndRead(int address) {
         this.writeModule.write(address, "0x12341234");
         this.readModule.read(address);
