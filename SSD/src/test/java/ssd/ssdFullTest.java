@@ -79,7 +79,7 @@ public class ssdFullTest {
     void 데이터를_쓰고_nand파일을_지우고_조회하기() {
         writeDataToAddressAndRead(99, VALID_VALUE);
 
-        if(deleteNand()) {
+        if (deleteNand()) {
             this.readModule.read(99);
             assertThat(getReadResult()).isEqualTo(DEFAULT_VALUE);
         } else {
@@ -91,7 +91,7 @@ public class ssdFullTest {
     void 데이터를_쓰고_nand파일을_지우고_다시_데이터쓰고_조회하기() {
         writeDataToAddressAndRead(99, VALID_VALUE);
 
-        if(deleteNand()) {
+        if (deleteNand()) {
             writeDataToAddressAndRead(99, VALID_VALUE);
             this.readModule.read(99);
 
@@ -99,6 +99,16 @@ public class ssdFullTest {
         } else {
             fail();
         }
+    }
+
+    @Test
+    void 같은곳에_5번_데이터쓰고_마지막_상태_읽어오기() {
+        String[] values = new String[]{"0x12345678", "0xFFFACD21", "0xFFFFFFFF", "0x11111111", "0xCCCCCCCC"};
+
+        for (String value : values) {
+            writeDataToAddressAndRead(50, value);
+        }
+        assertThat(getReadResult()).isEqualTo("0xCCCCCCCC");
     }
 
     private boolean deleteNand() {
