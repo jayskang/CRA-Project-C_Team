@@ -25,7 +25,7 @@ class SsdFileWriterTest {
     @Spy
     private SsdFileReader reader;
 
-    private final String VALID_VALUE = VALID_VALUE;
+    private final String VALID_VALUE = "0x12341234";
 
     @BeforeEach
     void setUp() {
