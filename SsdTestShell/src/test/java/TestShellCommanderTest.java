@@ -14,6 +14,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TestShellCommanderTest {
+
     @Spy
     ISsdTestShell ssdTestShell;
 
@@ -23,6 +24,7 @@ class TestShellCommanderTest {
 
     @BeforeEach
     void setUp() {
+//        ssdTestShell = spy(ISsdTestShell.class);
         originalOut = System.out;
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
@@ -135,6 +137,26 @@ class TestShellCommanderTest {
     }
 
     @Test
+    void fullwrite_help_호출() {
+        getCommander(new String[]{"help", "fullwrite"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: fullwrite [data]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void fullread_help_호출() {
+        getCommander(new String[]{"help", "fullread"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: fullread" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
     void write_매개변수_없을떄() {
         getCommander(new String[]{"write"});
         testShellCommander.runCommand();
@@ -171,7 +193,47 @@ class TestShellCommanderTest {
 //        assertOutput("0x00000001");
     }
 
+    @Test
+    void fullwrite_매개변수_없을때() {
+        getCommander(new String[]{"fullwrite"});
+        testShellCommander.runCommand();
+
+        String expected = "Fullwrite need data." + System.lineSeparator();
+        expected += "Usage: fullwrite [data]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void fullwrite_호출() {
+        getCommander(new String[] {"fullwrite", "0x00000001"});
+        testShellCommander.runCommand();
+
+        verify(ssdTestShell, times(1)).fullwrite(anyString());
+//        verify(ssdTestShell, times(100)).write(anyString(), "0x00000001");
+    }
+
+    @Test
+    void fullread_매개변수_있을때() {
+        getCommander(new String[]{"fullread", "wrong"});
+        testShellCommander.runCommand();
+
+        String expected = "" + System.lineSeparator();
+        expected += "Usage: fullread" + System.lineSeparator();
+    }
+
+    @Test
+    void fullread_호출() {
+        getCommander(new String[]{"fullread"});
+        testShellCommander.runCommand();
+
+        verify(ssdTestShell, times(1)).fullread();
+    }
+
     private void getCommander(String[] args) {
-        testShellCommander = TestShellCommander.getTestShellCommander(args, ssdTestShell);
+        testShellCommander = new TestShellCommander(args, ssdTestShell);
+        if(!testShellCommander.isValidArgumentLength()) {
+            testShellCommander = null;
+        }
     }
 }

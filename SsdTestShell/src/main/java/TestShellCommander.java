@@ -1,17 +1,15 @@
 import static java.lang.System.exit;
 
 public class TestShellCommander {
-    private static TestShellCommander testShellCommander;
-
-    private Command command;
-    private static String[] args;
+    private String[] args;
     private ISsdTestShell ssdTestShell;
 
-    private TestShellCommander(ISsdTestShell ssdTestShell) {
+    public TestShellCommander(String[] args, ISsdTestShell ssdTestShell) {
+        this.args = args;
         this.ssdTestShell = ssdTestShell;
     }
 
-    private static boolean isValidArgumentLength() {
+    public boolean isValidArgumentLength() {
         if(args.length == 0) {
             System.out.println("There is no command. Please Input Command.");
             return false;
@@ -25,21 +23,8 @@ public class TestShellCommander {
         return true;
     }
 
-    public static TestShellCommander getTestShellCommander(String[] args, ISsdTestShell ssdTestShell) {
-        if(testShellCommander == null) {
-            testShellCommander = new TestShellCommander(ssdTestShell);
-        }
-
-        TestShellCommander.args = args;
-        if(!isValidArgumentLength()) {
-            return null;
-        }
-
-        return testShellCommander;
-    }
-
     public void runCommand() {
-        command = CommandFactory.getCommand(args[0], ssdTestShell);
+        Command command = CommandFactory.getCommand(args[0], ssdTestShell);
         command.setArgument(args);
         command.execute();
     }

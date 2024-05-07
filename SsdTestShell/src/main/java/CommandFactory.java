@@ -3,6 +3,8 @@ public class CommandFactory {
     private static ExitCommand exitCommand;
     private static WriteCommand writeCommand;
     private static ReadCommand readCommand;
+    private static FullWirteCommand fullWirteCommand;
+    private static FullReadCommand fullReadCommand;
 
     public static Command getCommand(String commandString, ISsdTestShell ssdTestShell) {
         Command command = null;
@@ -31,6 +33,18 @@ public class CommandFactory {
                     readCommand = new ReadCommand(ssdTestShell);
                 }
                 command = readCommand;
+                break;
+            case "fullwrite":
+                if(fullWirteCommand == null) {
+                    fullWirteCommand = new FullWirteCommand(ssdTestShell);
+                }
+                command = fullWirteCommand;
+                break;
+            case "fullread":
+                if(fullReadCommand == null) {
+                    fullReadCommand = new FullReadCommand(ssdTestShell);
+                }
+                command = fullReadCommand;
                 break;
         }
 
