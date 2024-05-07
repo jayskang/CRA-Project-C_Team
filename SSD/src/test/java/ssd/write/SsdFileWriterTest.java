@@ -1,17 +1,18 @@
-package write;
+package ssd.write;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import read.SsdFileReader;
+import write.SsdFileWriter;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import static cores.SSDConstraint.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static cores.SSDConstraint.INITIAL_STATE;
+import static cores.SSDConstraint.MAX_BOUNDARY;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class SsdFileWriterTest {
