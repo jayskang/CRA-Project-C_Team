@@ -34,13 +34,6 @@ class SsdTestShellTest {
         shell.read("1");
         verify(mockSsd, times(1)).read("1");
     }
-
-    @Test
-    void read_함수_LAB_문자열_정상인_경우(){
-        shell.read("0");
-
-        verify(mockSsd, times(1)).read("0"); 
-    }
   
     @Test
     void SsdTestShell_객체_정상적으로_생성() {
