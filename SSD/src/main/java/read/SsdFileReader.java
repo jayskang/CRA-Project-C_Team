@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static cores.SSDConstraint.MAX_BOUNDARY;
-import static cores.SSDConstraint.NAND_FILENAME;
+import static cores.SSDConstraint.*;
 import static java.lang.Integer.parseInt;
 
 
@@ -15,7 +14,7 @@ public class SsdFileReader {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(NAND_FILENAME));
+            reader = new BufferedReader(new FileReader(FILE_ABSOLUTE_LOCATION + NAND_FILENAME));
 
             String line;
             while ((line = reader.readLine()) != null) {
