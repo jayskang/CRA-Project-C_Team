@@ -18,14 +18,18 @@ public class ReadModule implements ReadCore {
 
         try {
             fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
-            fileWriter.write(setResult(lba));
+            fileWriter.write(getResult(lba));
             fileWriter.close();
         } catch (IOException e) {
         }
 
     }
 
-    private static String setResult(int lba) throws IOException {
+    public boolean isValidAddress(int lba) {
+        return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
+    }
+
+    private static String getResult(int lba) throws IOException {
         String[] result = SsdFileReader.readFile();
         if (isValueExists(result[lba])) {
             return result[lba];
@@ -35,9 +39,5 @@ public class ReadModule implements ReadCore {
 
     private static boolean isValueExists(String result) {
         return result != null;
-    }
-
-    public boolean isValidAddress(int lba) {
-        return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
     }
 }

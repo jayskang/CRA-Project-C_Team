@@ -15,8 +15,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ReadModuleTest {
 
-    public static final String sampleValue = "0x1289CDEF";
-    public static final int sampleAddress = 20;
+    public static final String SAMPLE_VALUE = "0x1289CDEF";
+    public static final int EXITST_VALUE_ADDRESS = 20;
+    public static final int NULL_VALUE_ADDRESS = 10;
 
     @Spy
     private ReadModule spyReadModule;
@@ -55,7 +56,7 @@ class ReadModuleTest {
 
         fileReadResult = ssdFileReader.readFile();
 
-        assertEquals(sampleValue, fileReadResult[sampleAddress]);
+        assertEquals(SAMPLE_VALUE, fileReadResult[EXITST_VALUE_ADDRESS]);
     }
 
     @Test
@@ -78,9 +79,9 @@ class ReadModuleTest {
     void 결과파일에_값이_있을때() throws IOException {
         writeAllAddressToNandFile();
 
-        readModule.read(sampleAddress);
+        readModule.read(EXITST_VALUE_ADDRESS);
 
-        assertEquals(sampleValue,
+        assertEquals(SAMPLE_VALUE,
                 new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
                         .readLine());
     }
@@ -89,7 +90,7 @@ class ReadModuleTest {
     void 결과파일에_값이_없을때() throws IOException {
         writeAllAddressToNandFile();
 
-        readModule.read(10);
+        readModule.read(NULL_VALUE_ADDRESS);
 
         assertEquals(DEFAULT_VALUE,
                 new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
@@ -99,14 +100,14 @@ class ReadModuleTest {
 
     private void createDefaultNandFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
-        for (int address = 0; address < 100; address++) {
+        for (int address = 0; address < MAX_BOUNDARY; address++) {
             writer.write(address + " \n");
         }
         writer.close();
     }
 
     private static String[] setArrayWithNull() {
-        String expected[] = new String[100];
+        String expected[] = new String[MAX_BOUNDARY];
         for (int index = 0; index < MAX_BOUNDARY; index++) {
             expected[index] = null;
         }
@@ -115,9 +116,9 @@ class ReadModuleTest {
 
     private void writeAllAddressToNandFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
-        for (int address = 0; address < 100; address++) {
-            if (address == sampleAddress) {
-                writer.write(address + " 0x1289CDEF\n");
+        for (int address = 0; address < MAX_BOUNDARY; address++) {
+            if (address == EXITST_VALUE_ADDRESS) {
+                writer.write(address + " "+SAMPLE_VALUE+"\n");
                 continue;
             }
             writer.write(address + " \n");
