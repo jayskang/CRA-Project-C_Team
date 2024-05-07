@@ -57,7 +57,16 @@ class ReadModuleTest {
 
         fileReadResult = ssdFileReader.readFile();
 
-        assertEquals("1289CDEF", fileReadResult[20]);
+        assertEquals("0x1289CDEF", fileReadResult[20]);
+    }
+
+    @Test
+    void 호출한_주소의_값이_없을때() throws IOException {
+        writeAllAddressToNandFile();
+
+        fileReadResult = ssdFileReader.readFile();
+
+        assertEquals(null, fileReadResult[1]);
     }
 
     private void createNandSampleFile() throws IOException {
@@ -86,7 +95,7 @@ class ReadModuleTest {
         BufferedWriter writer = new BufferedWriter(fileWriter);
         for (int address = 0; address < 100; address++) {
             if (address == 20) {
-                writer.write(address + " 1289CDEF\n");
+                writer.write(address + " 0x1289CDEF\n");
                 continue;
             }
             writer.write(address + " \n");

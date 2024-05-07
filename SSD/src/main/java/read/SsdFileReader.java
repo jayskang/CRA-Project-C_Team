@@ -6,7 +6,7 @@ import java.io.*;
 
 import static java.lang.Integer.*;
 
-
+//NAND 가 빈파일일때 cHeck
 public class SsdFileReader {
     public String[] readFile() throws IOException {
         String[] result = new String[SSDConstraint.MAX_BOUNDARY];
