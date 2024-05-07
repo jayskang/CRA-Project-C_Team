@@ -1,6 +1,6 @@
 package write;
 
-import cores.AddressConstraint;
+import cores.SSDConstraint;
 
 public class WriteModule implements WriteCore {
 
@@ -10,10 +10,13 @@ public class WriteModule implements WriteCore {
         this.fileWriter = new SsdFileWriter();
     }
 
+    private boolean checkValueFormat(String value) {
+        return value.matches(SSDConstraint.VALUE_FORMAT_REGEX);
+    }
+
     private int convertHexToUnsignedInt(String value) {
         try {
             String inputValue = value.substring(2);
-
             return Integer.parseUnsignedInt(inputValue, 16);
         } catch (NumberFormatException numberFormatException) {
             return -1;
@@ -21,16 +24,16 @@ public class WriteModule implements WriteCore {
     }
 
     private boolean checkAddressBoundary(int address) {
-        return address >= AddressConstraint.MIN_BOUNDARY && AddressConstraint.MAX_BOUNDARY > address;
+        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
     }
 
     @Override
     public void write(int address, String value) {
-        if(checkAddressBoundary(address)) {
+        if (checkValueFormat(value) && checkAddressBoundary(address)) {
             int convertedValue = convertHexToUnsignedInt(value);
 
-            if(convertedValue >= 0) {
-                this.fileWriter.store(address, convertedValue);
+            if (convertedValue >= 0) {
+                this.fileWriter.store(address, value);
             }
         }
     }
