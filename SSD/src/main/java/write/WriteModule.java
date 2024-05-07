@@ -7,11 +7,16 @@ public class WriteModule implements WriteCore {
     private final SsdFileWriter fileWriter;
 
     public WriteModule() {
+        super();
         this.fileWriter = new SsdFileWriter();
     }
 
     private boolean checkValueFormat(String value) {
         return value.matches(SSDConstraint.VALUE_FORMAT_REGEX);
+    }
+
+    private boolean checkAddressBoundary(int address) {
+        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
     }
 
     private int convertHexToUnsignedInt(String value) {
@@ -21,10 +26,6 @@ public class WriteModule implements WriteCore {
         } catch (NumberFormatException numberFormatException) {
             return -1;
         }
-    }
-
-    private boolean checkAddressBoundary(int address) {
-        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
     }
 
     @Override

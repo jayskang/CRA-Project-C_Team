@@ -5,16 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import read.ReadModule;
 import read.SsdFileReader;
 import write.WriteModule;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class WriteModuleTest {
@@ -28,9 +26,6 @@ class WriteModuleTest {
     private WriteModule writeModule;
 
     @Mock
-    private ReadModule READ_MODULE;
-
-    @Spy
     private SsdFileReader ssdFileReader;
 
     @BeforeEach
@@ -84,8 +79,6 @@ class WriteModuleTest {
         when(this.ssdFileReader.readFile()).thenReturn(readFileContents);
 
         this.writeModule.write(COLLECT_ADDRESS, "0x1234ABCD");
-        this.READ_MODULE.read(COLLECT_ADDRESS);
-
         String[] readFileResult = this.ssdFileReader.readFile();
 
         assertThat(readFileResult[COLLECT_ADDRESS]).isEqualTo("0x1234ABCD");
