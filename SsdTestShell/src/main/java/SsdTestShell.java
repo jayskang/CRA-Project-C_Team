@@ -16,13 +16,9 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void write(String lba, String data) {
-        try {
-            checkIsLbaValid(lba);
-            checkIsDataValid(data);
-            ssd.write(lba, data);
-        } catch(IllegalArgumentException e) {
-//            printError(e);
-        }
+        checkIsLbaValid(lba);
+        checkIsDataValid(data);
+        ssd.write(lba, data);
     }
 
     @Override
@@ -33,21 +29,15 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void fullwrite(String data) {
-
+        checkIsDataValid(data);
+        for (int i = MIN_LBA; i <= MAX_LBA; i++) {
+            ssd.write(Integer.toString(i), data);
+        }
     }
+
     private void checkIsDataValid(String data) throws IllegalArgumentException {
-        if (isInvalidDataFormat(data)) {
+        if (data == null || !data.matches(VALUE_FORMAT_REGEX))
             throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
-        }
-        try {
-            Integer.parseInt(data.substring(2), 16);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
-        }
-    }
-
-    private boolean isInvalidDataFormat(String data) {
-        return data == null || !data.startsWith(DATA_OPTION_HEX_PREFIX) || data.length() != DATA_OPTION_STRING_LENGTH;
     }
 
     private void checkIsLbaValid(String lba) throws IllegalArgumentException{
