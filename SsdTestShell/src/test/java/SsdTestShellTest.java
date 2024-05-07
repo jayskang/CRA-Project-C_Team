@@ -33,7 +33,8 @@ class SsdTestShellTest {
 
     @Test
     void read_함수_LBA_문자열_정상인_경우() throws IOException {
-
+        shell.read("1");
+        verify(mockSsd, times(1)).read("1");
     }
 
     @Test
