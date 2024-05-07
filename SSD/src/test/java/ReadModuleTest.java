@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static cores.SSDConstraint.RESULT_FILENAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ReadModuleTest {
 
-    @Spy
+     @Spy
     private ReadModule readModule;
 
     private File file;
@@ -43,7 +44,7 @@ class ReadModuleTest {
     }
 
     @Test
-    void 주소값이_모두0인파일_호출했을때() throws IOException {
+    void 주소값이_모두0인파일_호출했을때_파일read() throws IOException {
         String[] expected = setArrayWithNull();
 
         fileReadResult = ssdFileReader.readFile();
@@ -52,7 +53,7 @@ class ReadModuleTest {
     }
 
     @Test
-    void 호출한_주소의_값이_있을때() throws IOException {
+    void 호출한_주소의_값이_있을때_파일read() throws IOException {
         writeAllAddressToNandFile();
 
         fileReadResult = ssdFileReader.readFile();
@@ -61,12 +62,19 @@ class ReadModuleTest {
     }
 
     @Test
-    void 호출한_주소의_값이_없을때() throws IOException {
+    void 호출한_주소의_값이_없을때_파일read() throws IOException {
         writeAllAddressToNandFile();
 
         fileReadResult = ssdFileReader.readFile();
 
         assertEquals(null, fileReadResult[1]);
+    }
+
+    @Test
+    void 결과파일생성여부확인(){
+        File resultfile = new File(RESULT_FILENAME);
+
+        assertNotNull(resultfile.exists());
     }
 
     private void createNandSampleFile() throws IOException {
