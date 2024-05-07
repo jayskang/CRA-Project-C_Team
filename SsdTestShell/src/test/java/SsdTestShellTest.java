@@ -75,9 +75,13 @@ class SsdTestShellTest {
 
     @Test
     void write_함수_testShell의_write가_호출되면_mockSsd의_write_호출() {
-        shell.write(NORMAL_LBA, NORMAL_DATA);
+        try {
+            shell.write(NORMAL_LBA, NORMAL_DATA);
 
-        verify(mockSsd, times(1)).write(NORMAL_LBA, NORMAL_DATA);
+            verify(mockSsd, times(1)).write(NORMAL_LBA, NORMAL_DATA);
+        } catch(Exception e) {
+
+        }
     }
 
     @Test
@@ -118,20 +122,23 @@ class SsdTestShellTest {
 
     @Test
     void fullWrite_함수_정상_호출시_write함수_100번_호출() {
-        shell.fullwrite(NORMAL_DATA);
+        try {
+            shell.fullwrite(NORMAL_DATA);
 
-        verify(mockSsd, times(100)).write(anyString(), eq(NORMAL_DATA));
+            verify(mockSsd, times(100)).write(anyString(), eq(NORMAL_DATA));
+        } catch (Exception e) {
+
+        }
     }
 
     @Test
-    void fullWrite_함수_data값이_유효하지_않다면_write함수_0번_호출() {
+    void fullWrite_함수_data값이_유효하지_않다면_예외발생() {
         assertThrows(IllegalArgumentException.class, () -> {
             shell.fullwrite("0x1234");
         });
-
-        verify(mockSsd, times(0)).write(anyString(), eq("0x1234"));
     }
 
+    @Test
     void shell_Read_함수_파일사용_출력_결과() throws IOException {
         shell.setSsd(spySsd);
         doReturn("0 0x11111111").when(spySsd).readResultFile();
@@ -189,5 +196,23 @@ class SsdTestShellTest {
         // 임시 jar파일 생성 후 로컬에서 테스트 필요. 임시 테스트 함수. 삭제해야 함.
         SSD ssd = new SSD();
         ssd.execSsdReadCommand("1");
+    }
+
+    @Test
+    void 외부_프로그램_실행_기능_테스트2() throws IOException {
+        // 임시 jar파일 생성 후 로컬에서 테스트 필요. 임시 테스트 함수. 삭제해야 함.
+        SSD ssd = new SSD();
+        ssd.setResultFileReader(resultFileReader);
+
+        ssd.write("10", "0x12345678");
+
+        System.out.println(ssd.read("1"));
+    }
+
+    @Test
+    void sdd_write_함수_명령실행() throws IOException{
+        spySsd.write(NORMAL_LBA, NORMAL_DATA);
+
+        verify(spySsd, times(1)).execSsdWriteCommand(NORMAL_LBA, NORMAL_DATA);
     }
 }

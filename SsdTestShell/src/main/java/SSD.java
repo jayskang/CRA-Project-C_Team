@@ -13,7 +13,19 @@ public class SSD {
         this.resultFileReader = reader;
     }
 
-    public void write(String lbs, String data) {}
+    public void write(String lba, String data) throws IOException {
+        execSsdWriteCommand(lba, data);
+    }
+
+    public void execSsdWriteCommand(String lba, String data) throws IOException {
+        try {
+            Process process = new ProcessBuilder(
+                    SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, SSD_EXEC_JAR_FILE_PATH
+                    , SSD_WRITE_OPTION_CMD, lba, data).start();
+        } catch(Exception e){
+            throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
+        }
+    }
 
     public String read(String lba) throws IOException{
         execSsdReadCommand(lba);
