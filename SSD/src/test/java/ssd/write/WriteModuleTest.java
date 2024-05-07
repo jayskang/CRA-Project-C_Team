@@ -11,6 +11,8 @@ import read.ReadModule;
 import read.SsdFileReader;
 import write.WriteModule;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +39,7 @@ class WriteModuleTest {
     }
 
     @Test
-    void 주소값이_0_미만일때() {
+    void 주소값이_0_미만일때() throws IOException {
         String[] readFileContents = new String[]{};
         this.writeModule.write(NOT_ALLOWED_ADDRESS, COLLECT_VALUE);
 
@@ -47,7 +49,7 @@ class WriteModuleTest {
     }
 
     @Test
-    void 주소값이_100_이상일때() {
+    void 주소값이_100_이상일때() throws IOException {
         String[] readFileContents = new String[]{};
         this.writeModule.write(SSDConstraint.MAX_BOUNDARY, COLLECT_VALUE);
 
@@ -57,7 +59,7 @@ class WriteModuleTest {
     }
 
     @Test
-    void 저장할_입력값이_포맷을_벗어났을때() {
+    void 저장할_입력값이_포맷을_벗어났을때() throws IOException {
         String[] readFileContents = new String[]{};
         this.writeModule.write(COLLECT_ADDRESS, WRONG_FORMAT_VALUE);
 
@@ -67,7 +69,7 @@ class WriteModuleTest {
     }
 
     @Test
-    void 입력값에_이상한_값이_있을때() {
+    void 입력값에_이상한_값이_있을때() throws IOException {
         String[] readFileContents = new String[]{};
         this.writeModule.write(COLLECT_ADDRESS, NOT_ALLOWED_VALUE);
 
@@ -76,7 +78,7 @@ class WriteModuleTest {
         assertThat(this.ssdFileReader.readFile()).isEqualTo(readFileContents);}
 
     @Test
-    void 값이_제대로_저장되었는지_테스트() {
+    void 값이_제대로_저장되었는지_테스트() throws IOException {
         String[] readFileContents = new String[]{"0x1234ABCD"};
 
         when(this.ssdFileReader.readFile()).thenReturn(readFileContents);
