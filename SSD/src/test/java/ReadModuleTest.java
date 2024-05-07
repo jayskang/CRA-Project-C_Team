@@ -75,7 +75,7 @@ class ReadModuleTest {
     }
 
     @Test
-    void 결과파일_값정상여부확인() throws IOException {
+    void 결과파일에_값이_있을때() throws IOException {
         writeAllAddressToNandFile();
 
         readModule.read(sampleAddress);
