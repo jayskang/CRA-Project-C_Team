@@ -6,7 +6,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -16,8 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class SsdTestShellTest {
     @Mock
     SSD mockSsd;
+    @Mock
+    SSDResultFileReader resultFileReader;
+    @Spy
+    SSD spySsd;
     @Spy
     private SsdTestShell shell;
+    @Spy
+    private SsdTestShell shellForFileRead;
+
+
 
     @BeforeEach
     void setUp() {
@@ -98,18 +105,12 @@ class SsdTestShellTest {
 //        verify(shell, times(1)).printError(any());
     }
 
-    @Spy
-    private SsdTestShell shell_for_fileRead;
-    @Spy
-    SSD spySsd;
-    @Mock
-    SSDResultFileReader resultFileReader;
 
     @Test
     void shell_Read_함수_파일사용_출력_결과() throws IOException {
-        shell_for_fileRead.setSsd(spySsd);
+        shellForFileRead.setSsd(spySsd);
         doReturn("0 0x11111111").when(spySsd).readResultFile();
-        shell_for_fileRead.read("0");
+        shellForFileRead.read("0");
         verify(spySsd, times(1)).execSsdReadCommand("0");
         verify(spySsd, times(1)).readResultFile();
     }
