@@ -49,8 +49,9 @@ public class SsdFileWriter {
 
                 stringBuilder.append(i);
                 stringBuilder.append(" ");
+
                 if (nand != null) {
-                    stringBuilder.append(nand[i]);
+                    stringBuilder.append(nand[i] == null ? DEFAULT_VALUE : nand[i]);
                 } else {
                     stringBuilder.append(DEFAULT_VALUE);
                 }
