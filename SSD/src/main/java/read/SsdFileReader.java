@@ -1,24 +1,29 @@
 package read;
 
-import cores.SSDConstraint;
-
 import java.io.*;
 
+import static cores.SSDConstraint.*;
 import static java.lang.Integer.*;
 
 
 public class SsdFileReader {
-    public String[] readFile() throws IOException {
-        String[] result = new String[SSDConstraint.MAX_BOUNDARY];
+    public static String[] readFile() {
+        String[] result = new String[MAX_BOUNDARY];
 
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(NAND_FILENAME));
 
-        BufferedReader reader = new BufferedReader(new FileReader(SSDConstraint.FILENAME));
-        String str;
-        while ((str = reader.readLine()) != null) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] addressAndValue = line.split(" ");
+                if (addressAndValue.length == 2) {
+                    result[parseInt(addressAndValue[0])] = addressAndValue[1];
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
         }
-        reader.close();
-
-
 
         return result;
     }
