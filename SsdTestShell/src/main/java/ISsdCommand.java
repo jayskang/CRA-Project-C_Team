@@ -1,6 +1,8 @@
+import java.util.ArrayList;
+
 public interface ISsdCommand {
     void write(String lbs, String data);
-    void read(String lbs);
+    String read(String lbs) throws IllegalArgumentException;
     void fullwrite(String data);
-    void fullread();
+    ArrayList<String> fullread() throws IllegalArgumentException;
 }

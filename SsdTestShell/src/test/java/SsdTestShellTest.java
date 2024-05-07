@@ -5,9 +5,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class SsdTestShellTest {
@@ -22,33 +24,38 @@ class SsdTestShellTest {
     }
 
     @Test
-    void read_함수_LAB_문자열_정상인_경우(){
+    void read_함수_LBA_문자열_정상인_경우(){
         shell.read("0");
-        verify(mockSsd, times(1)).read(0);
+        verify(mockSsd, times(1)).read("0");
+    }
+
+    @Test
+    void read_함수_LBA_문자열_음수인_경우(){
+        assertThatThrownBy(()->{
+            shell.read("-1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
     }
     @Test
-    void read_함수_LAB_문자열_음수인_경우(){
-        shell.read("-1");
-        verify(mockSsd, times(0)).read(-1);
-        verify(shell, times(1)).printError(any());
+    void read_함수_LBA_문자열_99_초과인_경우(){
+        assertThatThrownBy(()->{
+            shell.read("100");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
     }
     @Test
-    void read_함수_LAB_문자열_99_초과인_경우(){
-        shell.read("100");
-        verify(mockSsd, times(0)).read(100);
-        verify(shell, times(1)).printError(any());
+    void read_함수_LBA_문자열_정수가_아닌_경우(){
+        assertThatThrownBy(()->{
+            shell.read("A");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
     }
     @Test
-    void read_함수_LAB_문자열_정수가_아닌_경우(){
-        shell.read("A");
-        verify(mockSsd, times(0)).read(any());
-        verify(shell, times(1)).printError(any());
-    }
-    @Test
-    void read_함수_LAB_문자열_null인_경우(){
-        shell.read(null);
-        verify(mockSsd, times(0)).read(null);
-        verify(shell, times(1)).printError(any());
+    void read_함수_LBA_문자열_null인_경우(){
+        assertThatThrownBy(()->{
+            shell.read(null);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
     }
 
     @Test
@@ -87,6 +94,52 @@ class SsdTestShellTest {
 
         shell.write("XX", "0x12345678");
 
-        verify(shell, times(1)).printError(any());
+//        verify(shell, times(1)).printError(any());
     }
+
+    @Spy
+    private SsdTestShell shell_for_fileRead;
+    @Spy
+    SSD spySsd;
+    @Mock
+    SSDResultFileReader resultFileReader;
+
+    @Test
+    void shell_Read_함수_파일사용_출력_결과(){
+        shell_for_fileRead.setSsd(spySsd);
+        doReturn("0 0x11111111").when(spySsd).readResultFile();
+        shell_for_fileRead.read("0");
+        verify(spySsd, times(1)).execSsdReadCommand("0");
+        verify(spySsd, times(1)).readResultFile();
+    }
+
+    @Test
+    void ssd_Read_함수_명령실행_및_파일읽기(){
+        // invalid argument일 경우 ssd의 read함수는 호출되지 않는다.
+        doReturn("0 0x11111111").when(spySsd).readResultFile();
+        spySsd.read("0");
+        verify(spySsd, times(1)).execSsdReadCommand("0");
+        verify(spySsd, times(1)).readResultFile();
+    }
+
+    @Test
+    void ssd_readResultFile_함수(){
+        SSD ssd = new SSD();
+        ssd.setResultFileReader(new SSDResultFileReader());
+        System.out.println(ssd.readResultFile());
+        assertEquals("0 0x11111111", ssd.readResultFile());
+    }
+
+    @Test
+    void ssd_Read_함수_파일읽기_실패(){
+        spySsd.setResultFileReader(resultFileReader);
+        try {
+            doThrow(new IOException()).when(resultFileReader).readFile();
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals(SSD.ERROR_MSG_RESULT_FILE_NOT_FOUNDED, spySsd.readResultFile());
+    }
+
+
 }

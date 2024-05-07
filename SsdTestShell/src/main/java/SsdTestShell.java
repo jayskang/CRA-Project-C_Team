@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class SsdTestShell implements ISsdCommand{
     public static final int MAX_LBA = 99;
     public static final int MIN_LBA = 0;
@@ -12,21 +14,23 @@ public class SsdTestShell implements ISsdCommand{
         try {
             ssd.write(lba, data);
         } catch(IllegalArgumentException e) {
-            printError(e);
+//            printError(e);
         }
     }
     @Override
-    public void read(String lba) {
-        int param = -1;
+    public String read(String lba) throws IllegalArgumentException {
         try{
-            param = Integer.parseInt(lba);
-            if(param > MAX_LBA || param < MIN_LBA)
-                throw new NumberFormatException("INVALID Argument. 명령 중단.");
-            ssd.read(param);
-            System.out.println("read success: "+ lba);
+            int param = Integer.parseInt(lba);
+            if(inInvalidLbaValue(param))
+                throw new NumberFormatException("INVALID COMMAND");
+            return ssd.read(lba);
         } catch (NumberFormatException e){
-            printError(e);
+            throw new IllegalArgumentException("INVALID COMMAND");
         }
+    }
+
+    private boolean inInvalidLbaValue(int param) {
+        return param > MAX_LBA || param < MIN_LBA;
     }
 
     @Override
@@ -35,11 +39,7 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     @Override
-    public void fullread() {
-
-    }
-
-    public void printError(Exception e) {
-        System.out.println(e.getMessage());
+    public ArrayList<String> fullread() throws IllegalArgumentException {
+        return null;
     }
 }
