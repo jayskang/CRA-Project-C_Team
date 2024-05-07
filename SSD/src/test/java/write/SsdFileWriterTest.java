@@ -43,4 +43,16 @@ class SsdFileWriterTest {
         verify(this.writer).store(0, "0x12341234");
         assertThat("0x12341234").isEqualTo(this.virtualNand[0]);
     }
+
+    @Test
+    void 허용되지않는_주소값() {
+        this.writer.store(-1, "0x12341234");
+
+        try {
+            when(this.reader.readFile()).thenReturn(this.virtualNand);
+        } catch (IOException | NullPointerException ignored) {
+        }
+        verify(this.writer).store(-1, "0x12341234");
+        assertThat("0x00000000").isEqualTo(this.virtualNand[0]);
+    }
 }

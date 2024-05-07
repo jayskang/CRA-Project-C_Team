@@ -1,5 +1,6 @@
 package write;
 
+import cores.SSDConstraint;
 import read.SsdFileReader;
 
 import java.io.BufferedWriter;
@@ -18,11 +19,17 @@ public class SsdFileWriter {
         saveData(null);
     }
 
+    private boolean checkAddressBoundary(int address) {
+        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
+    }
+
     public void store(int address, String value) {
         try {
-            String[] nand = this.reader.readFile();
-            nand[address] = value;
-            saveData(nand);
+            if(checkAddressBoundary(address)) {
+                String[] nand = this.reader.readFile();
+                nand[address] = value;
+                saveData(nand);
+            }
         } catch (IOException ignored) {
         }
     }
