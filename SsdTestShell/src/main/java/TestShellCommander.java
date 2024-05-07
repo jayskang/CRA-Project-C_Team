@@ -1,31 +1,41 @@
 import static java.lang.System.exit;
 
 public class TestShellCommander {
+    private static TestShellCommander testShellCommander;
 
-    private final String[] args;
+    private Command command;
+    private static String[] args;
 
-    public TestShellCommander(String[] args) {
+    private static boolean isValidArgumentLength() {
         if(args.length == 0) {
             System.out.println("There is no command. Please Input Command.");
+            return false;
         }
 
         if(args.length > 3) {
             System.out.println("There is more than 3 argument. Please check input.");
+            return false;
         }
 
-        this.args = args;
+        return true;
+    }
+
+    public static TestShellCommander getTestShellCommander(String[] args) {
+        if(testShellCommander == null) {
+            testShellCommander = new TestShellCommander();
+        }
+
+        TestShellCommander.args = args;
+        if(!isValidArgumentLength()) {
+            return null;
+        }
+
+        return testShellCommander;
     }
 
     public void runCommand() {
-        String command = args[0];
-        if("exit".equals(command)) {
-            exit(0);
-        }
-        if("help".equals(command)) {
-            if(args.length == 1) {
-                System.out.println("Please input command to print help.");
-                System.out.println("Usage: help [command]");
-            }
-        }
+        command = CommandFactory.getCommand(args[0]);
+        command.setArgument(args);
+        command.execute();
     }
 }

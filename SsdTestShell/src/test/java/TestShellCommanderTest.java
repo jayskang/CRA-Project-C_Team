@@ -1,9 +1,9 @@
 import com.github.stefanbirkner.systemlambda.SystemLambda;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -11,8 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TestShellCommanderTest {
@@ -20,13 +18,20 @@ class TestShellCommanderTest {
     ISsdTestShell ssdTestShell;
     private TestShellCommander testShellCommander;
     private ByteArrayOutputStream outputStream;
+    private PrintStream originalOut;
 
     @BeforeEach
     void setUp() {
+        originalOut = System.out;
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
     }
 
+    @AfterEach
+    void tearDown() {
+        System.setOut(originalOut);
+        System.out.println(outputStream.toString());
+    }
     @Test
     void TestShell_객체_생성() {
         assertThat(ssdTestShell).isNotNull();
@@ -61,6 +66,18 @@ class TestShellCommanderTest {
     }
 
     @Test
+    void exit_명령어에_다른_매개변수가_있을때() {
+        getCommander(new String[]{"exit", "wrong"});
+        testShellCommander.runCommand();
+
+        String actual = outputStream.toString();
+        String expected = "Exit command need no arguments. Please check Input." + System.lineSeparator();
+        expected += "Usage: exit" + System.lineSeparator();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     void help_명령어만_호출() {
         getCommander(new String[]{"help"});
         testShellCommander.runCommand();
@@ -72,7 +89,29 @@ class TestShellCommanderTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    void 없는_명령어의_help_호출() {
+        getCommander(new String[]{"help", "wrong"});
+        testShellCommander.runCommand();
+
+        String actual = outputStream.toString();
+        String expected = "Wrong command. Please check command." + System.lineSeparator();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void exit_help_호출() {
+        getCommander(new String[]{"help", "exit"});
+        testShellCommander.runCommand();
+
+        String actual = outputStream.toString();
+        String expected = "Usage: exit" + System.lineSeparator();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
     private void getCommander(String[] args) {
-        testShellCommander = new TestShellCommander(args);
+        testShellCommander = TestShellCommander.getTestShellCommander(args);
     }
 }
