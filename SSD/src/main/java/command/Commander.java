@@ -5,6 +5,9 @@ import read.ReadCore;
 import write.WriteCore;
 
 public class Commander {
+    public static final String WRITE = "W";
+    public static final String READ = "R";
+
     private ReadCore readCore;
     private WriteCore writeCore;
 
@@ -13,7 +16,7 @@ public class Commander {
     private String inputData;
 
     public Commander(String[] args, ReadCore readCore, WriteCore writeCore) {
-        if(args.length == 0 || args.length > 3) {
+        if(isInvalidArgsCount(args)) {
             return;
         }
 
@@ -21,20 +24,20 @@ public class Commander {
 
         try {
             lba = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            return;
-        }
 
-        if(command.equals("W")) {
-            try {
+            if(command.equals(WRITE)) {
                 inputData = args[2];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                return;
             }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            return;
         }
 
         this.readCore = readCore;
         this.writeCore = writeCore;
+    }
+
+    private boolean isInvalidArgsCount(String[] args) {
+        return args.length == 0 || args.length > 3;
     }
 
     public void runCommand() {
@@ -43,10 +46,10 @@ public class Commander {
         }
 
         switch (command) {
-            case "R":
+            case READ:
                 readCore.read(lba);
                 break;
-            case "W":
+            case WRITE:
                 if(isInputDataIsNullOrEmpty()) {
                     return;
                 }
@@ -57,11 +60,11 @@ public class Commander {
         }
     }
 
-    private boolean isInputDataIsNullOrEmpty() {
-        return inputData == null || inputData.isEmpty();
-    }
-
     private boolean isInvalidArgument() {
         return command == null || lba == -1;
+    }
+
+    private boolean isInputDataIsNullOrEmpty() {
+        return inputData == null || inputData.isEmpty();
     }
 }
