@@ -2,6 +2,7 @@ import java.io.IOException;
 
 import static constants.Command.*;
 import static constants.Messages.*;
+import static java.lang.Thread.sleep;
 
 public class SSDExecutor {
     SSDResultFileReader resultFileReader;
@@ -23,10 +24,11 @@ public class SSDExecutor {
 
     public void execSsdWriteCommand(String lba, String data) throws IOException {
         try {
-            Thread.sleep(10);
             Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
-                    , SSD_WRITE_OPTION_CMD, lba, data).start();
+                    , SSD_WRITE_OPTION_CMD, lba, data)
+                    .start();
+            process.waitFor();
         } catch(Exception e){
             throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
         }
@@ -39,10 +41,11 @@ public class SSDExecutor {
 
     public void execSsdReadCommand(String lba) throws IOException {
         try {
-            Thread.sleep(10);
-            new ProcessBuilder(
+            Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
-                    , SSD_EXEC_READ_OPTION, lba).start();
+                    , SSD_EXEC_READ_OPTION, lba)
+                    .start();
+            process.waitFor();
         } catch(Exception e){
             throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
         }
