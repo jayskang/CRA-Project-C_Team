@@ -408,10 +408,9 @@ class SsdTestShellTest {
                 .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
-    void eraserange_0미만_Start_LBA_정상_End_LBA(){
-        assertThatThrownBy(()->{
-            shell.eraserange("-1", "100");
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(INVALID_COMMAND_STRING);
+    void eraserange_Start_End_분할명령_실행() throws IOException {
+        shell.eraserange("0", "11");
+        verify(mockSsd, times(1)).erase("0", "10");
+        verify(mockSsd, times(1)).erase("10", "1");
     }
 }
