@@ -47,6 +47,10 @@ class EraseModuleTest {
     @Test
     void 허용되지않는_LBA까지_접근하려는_경우() {
         setUpStates(98, 100, ALL_1BIT_VALUE);
+        /**
+         * 접근 가능한 범위까지(99까지)만,
+         * erase 를 진행합니다.
+         */
         this.eraseModule.E(98, 10);
 
         testStateToEachLba(98, 10, DEFAULT_VALUE);
@@ -59,6 +63,18 @@ class EraseModuleTest {
         this.eraseModule.E(-1, 9);
 
         testStateToEachLba(0, 9, ALL_1BIT_VALUE);
+    }
+
+    @Test
+    void 사이즈가_10을_초과한경우() {
+        setUpStates(0, 11, ALL_1BIT_VALUE);
+        /**
+         * size가 10을 초과하면, (또는 0일경우)
+         * EraseModule 에선 어떠한 동작도 하지 않습니다.
+         */
+        this.eraseModule.E(0, 11);
+
+        testStateToEachLba(0, 11, ALL_1BIT_VALUE);
     }
 
     private String getReadResult() {
