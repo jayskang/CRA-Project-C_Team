@@ -1,6 +1,6 @@
 import java.io.IOException;
 
-public class TestApp2 implements TestScenario {
+public class TestApp2 implements Scenario {
     public static final int LOOP_COUNT = 30;
     public static final String OLD_DATA = "0xAAAABBBB";
     public static final String NEW_DATA = "0x12345678";
@@ -8,13 +8,14 @@ public class TestApp2 implements TestScenario {
     private final int END_LBA = 5;
 
     private final SsdTestShell shell;
+    boolean testResult = false;
 
     TestApp2(SsdTestShell ssdTestShell) {
         this.shell = ssdTestShell;
     }
 
     @Override
-    public boolean run() {
+    public void testRun() {
         try {
             for (int i = 0; i < LOOP_COUNT; i++)
                 rangeWrite(OLD_DATA);
@@ -23,12 +24,13 @@ public class TestApp2 implements TestScenario {
             for (int i = START_LBA; i <= END_LBA; i++) {
                 String readResult = shell.read(Integer.toString(i));
                 if (!readResult.equals(NEW_DATA)) {
-                    return false;
+                    testResult = false;
+                    return;
                 }
             }
-            return true;
+            testResult = true;
         } catch (Exception e) {
-            return false;
+            testResult = false;
         }
     }
 
@@ -36,5 +38,10 @@ public class TestApp2 implements TestScenario {
         for (int i = START_LBA; i <= END_LBA; i++) {
             shell.write(Integer.toString(i), data);
         }
+    }
+
+    @Override
+    public boolean isPassed() {
+        return testResult;
     }
 }
