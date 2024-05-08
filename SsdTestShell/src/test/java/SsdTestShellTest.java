@@ -247,4 +247,33 @@ class SsdTestShellTest {
             System.out.println("외부 프로그램 존재하지 않아 자동 패스합니다.");
         }
     }
+
+    @Test
+    void erase_정상_LBA_정상_SIZE(){
+
+    }
+    @Test
+    void erase_정상_LBA_비정상_SIZE_음수(){
+
+    }
+    @Test
+    void erase_정상_LBA_비정상_SIZE_0값(){
+
+    }
+    @Test
+    void erase_비정상_LBA_음수(){
+
+    }
+    @Test
+    void erase_비정상_LBA_100이상(){
+
+    }
+    @Test
+    void erase_정상_LBA_정상_SIZE_11이상(){
+
+    }
+    @Test
+    void erase_SIZE가_LBA_MAX초과시_처리(){
+
+    }
 }
