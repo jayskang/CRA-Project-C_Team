@@ -24,11 +24,10 @@ public class SsdFileWriter {
     }
 
     private File checkFileExist() {
-        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
+        File file = new File(NAND_FILENAME);
 
         if (!file.exists()) {
             try {
-                file.getParentFile().mkdirs();
                 file.createNewFile();
             } catch (IOException ignored) {
             }

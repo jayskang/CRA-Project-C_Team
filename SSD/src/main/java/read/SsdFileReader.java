@@ -14,7 +14,7 @@ public class SsdFileReader {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(FILE_ABSOLUTE_LOCATION + NAND_FILENAME));
+            reader = new BufferedReader(new FileReader(NAND_FILENAME));
 
             String line;
             while ((line = reader.readLine()) != null) {

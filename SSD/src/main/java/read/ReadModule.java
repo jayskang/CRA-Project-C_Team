@@ -17,7 +17,7 @@ public class ReadModule implements ReadCore {
         }
 
         try {
-            fileWriter = new FileWriter(new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME), false);
+            fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
             fileWriter.write(getResult(lba));
             fileWriter.close();
         } catch (IOException e) {

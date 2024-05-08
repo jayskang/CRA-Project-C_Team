@@ -118,7 +118,7 @@ public class ssdFullTest {
     }
 
     private boolean deleteNand() {
-        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
+        File file = new File(NAND_FILENAME);
         return file.delete();
     }
 
@@ -130,7 +130,7 @@ public class ssdFullTest {
     private String getReadResult() {
         String result = null;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(RESULT_FILENAME));
             result = bufferedReader.readLine();
             bufferedReader.close();
         } catch (IOException ignored) {

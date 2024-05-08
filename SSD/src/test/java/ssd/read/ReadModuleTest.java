@@ -72,7 +72,7 @@ class ReadModuleTest {
 
     @Test
     void 결과파일생성여부확인() {
-        File resultfile = new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME);
+        File resultfile = new File(RESULT_FILENAME);
 
         assertNotNull(resultfile.exists());
     }
@@ -84,7 +84,7 @@ class ReadModuleTest {
         readModule.read(EXITST_VALUE_ADDRESS);
 
         assertEquals(SAMPLE_VALUE,
-                new BufferedReader(new FileReader(new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+                new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
                         .readLine());
     }
 
@@ -95,12 +95,12 @@ class ReadModuleTest {
         readModule.read(NULL_VALUE_ADDRESS);
 
         assertEquals(DEFAULT_VALUE,
-                new BufferedReader(new FileReader(new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+                new BufferedReader(new FileReader(new File(RESULT_FILENAME)))
                         .readLine());
     }
 
     private void createDefaultNandFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME), false));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
         for (int address = 0; address < MAX_BOUNDARY; address++) {
             writer.write(address + " \n");
         }
@@ -116,7 +116,7 @@ class ReadModuleTest {
     }
 
     private void writeAllAddressToNandFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME), false));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(NAND_FILENAME), false));
         for (int address = 0; address < MAX_BOUNDARY; address++) {
             if (address == EXITST_VALUE_ADDRESS) {
                 writer.write(address + " " + SAMPLE_VALUE + "\n");
