@@ -26,8 +26,9 @@ public class SSDExecutor {
         try {
             Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
-                    , SSD_WRITE_OPTION_CMD, lba, data).start();
-            sleep(50); // 성공 최소 시간(30ms)의 1.5배로 설정
+                    , SSD_WRITE_OPTION_CMD, lba, data)
+                    .start();
+            process.waitFor();
         } catch(Exception e){
             throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
         }
@@ -40,10 +41,11 @@ public class SSDExecutor {
 
     public void execSsdReadCommand(String lba) throws IOException {
         try {
-            new ProcessBuilder(
+            Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
-                    , SSD_EXEC_READ_OPTION, lba).start();
-            sleep(120); // 성공 최소 시간(80ms)의 1.5배로 설정
+                    , SSD_EXEC_READ_OPTION, lba)
+                    .start();
+            process.waitFor();
         } catch(Exception e){
             throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
         }
