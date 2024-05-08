@@ -11,7 +11,8 @@ import write.WriteModule;
 import java.io.*;
 
 import static cores.SSDConstraint.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ssdFullTest {
 
@@ -21,7 +22,7 @@ public class ssdFullTest {
 
     private WriteCore writeCore;
     private ReadCore readCore;
-  
+
     private final String VALID_VALUE = "0x12341234";
 
     private WriteModule writeModule;
@@ -32,7 +33,7 @@ public class ssdFullTest {
     void setUp() {
         writeCore = new WriteModule();
         readCore = new ReadModule();
-      
+
         this.writeModule = new WriteModule();
         this.readModule = new ReadModule();
     }
@@ -71,19 +72,6 @@ public class ssdFullTest {
         assertEquals(DEFAULT_VALUE, getReadResult());
 
     }
-
-    private static String getReadResult() throws IOException {
-        return new BufferedReader(new FileReader(
-                (FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
-                .readLine();
-    }
-
-    private static void deleteNandFile() {
-        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
-        if (file.exists()) {
-            file.delete();
-        }
-
 
     @Test
     void 기본_생성함수() {
@@ -174,9 +162,21 @@ public class ssdFullTest {
         assertThat(getReadResult()).isEqualTo("0x00000000");
     }
 
-    private boolean deleteNand() {
+    private static String getReadResult() {
+        try {
+            return new BufferedReader(new FileReader(
+                    (FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+                    .readLine();
+        } catch (IOException e) {
+        }
+        return "";
+    }
+
+    private static void deleteNandFile() {
         File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
-        return file.delete();
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     private void writeDataToAddressAndRead(int address, String inputValue) {
@@ -184,14 +184,9 @@ public class ssdFullTest {
         this.readModule.read(address);
     }
 
-    private String getReadResult() {
-        String result = null;
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME));
-            result = bufferedReader.readLine();
-            bufferedReader.close();
-        } catch (IOException ignored) {
-        }
-        return result;
+    private boolean deleteNand() {
+        File file = new File(FILE_ABSOLUTE_LOCATION + NAND_FILENAME);
+        return file.delete();
     }
+
 }
