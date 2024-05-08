@@ -6,7 +6,7 @@ public class CommandFactory {
     private static FullWirteCommand fullWirteCommand;
     private static FullReadCommand fullReadCommand;
 
-    public static Command getCommand(String commandString, ISsdTestShell ssdTestShell) {
+    public static Command getCommand(String commandString, ISsdCommand ssdTestShell) {
         Command command = null;
         switch (commandString) {
             case "help":

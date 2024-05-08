@@ -4,7 +4,7 @@ public class Command {
     // SSD 프로그램 실행관련 Constants
     public static final String SSD_EXEC_JAVA_COMMAND = "java";
     public static final String SSD_EXEC_JAR_OPTION = "-jar";
-    public static final String SSD_EXEC_JAR_FILE_PATH = "C:\\test\\ssd.jar";
+    public static final String SSD_EXEC_JAR_FILE_PATH = "SSD.jar";
     public static final String SSD_EXEC_READ_OPTION = "R";
     public static final String SSD_WRITE_OPTION_CMD = "W";
 

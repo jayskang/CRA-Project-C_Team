@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 public class FullReadCommand extends AbstractCommand {
-    public FullReadCommand(ISsdTestShell ssdTestShell) {
+    public FullReadCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
         ERROR_MESSAGE = "Exit command need no arguments. Please check Input.";
         HELP_MASSAGE = "Usage: fullread";

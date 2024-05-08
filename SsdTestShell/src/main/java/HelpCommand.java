@@ -1,6 +1,6 @@
 public class HelpCommand extends AbstractCommand {
 
-    public HelpCommand(ISsdTestShell ssdTestShell) {
+    public HelpCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
         ERROR_MESSAGE = "Please input command to print help.";
         HELP_MASSAGE = "Usage: help [command]";

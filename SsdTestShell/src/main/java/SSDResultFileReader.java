@@ -3,11 +3,11 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class SSDResultFileReader {
-    public static final String RESULT_FILE_PATH = "src/test/resources/result.txt";
+    public static final String RESULT_FILE_PATH = "result.txt";
 
     public String readFile() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(RESULT_FILE_PATH));
-        String result =reader.readLine();
+        String result = reader.readLine();
         reader.close();
         return result;
     }

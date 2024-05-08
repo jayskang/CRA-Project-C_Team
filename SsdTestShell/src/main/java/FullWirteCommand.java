@@ -1,5 +1,7 @@
+import java.io.IOException;
+
 public class FullWirteCommand extends AbstractCommand {
-    public FullWirteCommand(ISsdTestShell ssdTestShell) {
+    public FullWirteCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
         ERROR_MESSAGE = "Fullwrite need data.";
         HELP_MASSAGE = "Usage: fullwrite [data]";
@@ -12,7 +14,11 @@ public class FullWirteCommand extends AbstractCommand {
             return;
         }
 
-        ssdTestShell.fullwrite(args[1]);
+        try {
+            ssdTestShell.fullwrite(args[1]);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
