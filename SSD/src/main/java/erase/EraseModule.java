@@ -15,7 +15,7 @@ public class EraseModule extends SSDCommonUtils implements EraseCore {
     }
 
     private boolean checkValidSize(int size) {
-        return 0 < size && size <= 10;
+        return NO_OPERATION_MIN_ERASE_SIZE < size && size <= MAX_ERASE_SIZE;
     }
 
     @Override

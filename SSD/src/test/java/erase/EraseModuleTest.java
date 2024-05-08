@@ -9,10 +9,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static cores.SSDConstraint.*;
+import static cores.SSDConstraint.DEFAULT_VALUE;
 import static cores.SSDConstraint.RESULT_FILENAME;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class EraseModuleTest {
 
@@ -47,10 +47,7 @@ class EraseModuleTest {
     @Test
     void 허용되지않는_LBA까지_접근하려는_경우() {
         setUpStates(98, 100, ALL_1BIT_VALUE);
-        /**
-         * 접근 가능한 범위까지(99까지)만,
-         * erase 를 진행합니다.
-         */
+        // 접근 가능한 범위까지(99까지)만, erase 를 진행합니다.
         this.eraseModule.E(98, 10);
 
         testStateToEachLba(98, 10, DEFAULT_VALUE);
@@ -68,10 +65,7 @@ class EraseModuleTest {
     @Test
     void 사이즈가_10을_초과한경우() {
         setUpStates(0, 11, ALL_1BIT_VALUE);
-        /**
-         * size가 10을 초과하면, (또는 0일경우)
-         * EraseModule 에선 어떠한 동작도 하지 않습니다.
-         */
+        // size가 10을 초과하면, (또는 0일경우) EraseModule 에선 어떠한 동작도 하지 않습니다.
         this.eraseModule.E(0, 11);
 
         testStateToEachLba(0, 11, ALL_1BIT_VALUE);
@@ -97,7 +91,7 @@ class EraseModuleTest {
     }
 
     private void setUpStates(int startLba, int endLba, String value) {
-        for(int lba = startLba; lba < endLba; lba += 1) {
+        for (int lba = startLba; lba < endLba; lba += 1) {
             this.writeModule.write(lba, value);
         }
     }
