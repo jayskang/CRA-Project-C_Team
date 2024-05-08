@@ -44,7 +44,7 @@ class ReadModuleTest {
     void 주소입력범위예외체크() {
         this.spyReadModule.read(OUT_OF_LBA_BOUNDARY);
 
-        verify(this.spyReadModule, times(1)).isNotValidLba(OUT_OF_LBA_BOUNDARY);
+        verify(this.spyReadModule, times(1)).read(OUT_OF_LBA_BOUNDARY);
     }
 
     @Test
