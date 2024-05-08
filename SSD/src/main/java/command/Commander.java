@@ -80,4 +80,28 @@ public class Commander {
     private boolean isInputDataIsNullOrEmpty() {
         return inputData == null || inputData.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "Commander{" +
+                "readCore=" + readCore +
+                ", writeCore=" + writeCore +
+                ", eraseCore=" + eraseCore +
+                ", command='" + command + '\'' +
+                ", lba=" + lba +
+                ", inputData='" + inputData + '\'' +
+                '}';
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public int getLba() {
+        return lba;
+    }
+
+    public String getInputData() {
+        return inputData;
+    }
 }
