@@ -36,11 +36,51 @@ class SsdTestShellMainTest {
 
     @Test
     void 명령어_입력콘솔_출력() throws Exception {
-        catchSystemExit(() -> {
-            withTextFromSystemIn("exit").execute(() -> {
-            SsdTestShellMain.run();}) ;
-        });
+        executeCommand("exit");
 
+        assertThat(getOutputStreamString()).isEqualTo(initOutput());
+    }
+
+    @Test
+    void write_read_실행() throws Exception {
+        String command = "write 0 0x12345678" + System.lineSeparator()
+                + "read 0" + System.lineSeparator()
+                + "exit";
+        executeCommand(command);
+
+        String expected = initOutput();
+        expected += getInputSymbol();
+        expected += "0x12345678" + System.lineSeparator();
+        expected += getInputSymbol();
+
+        assertThat(getOutputStreamString()).isEqualTo(expected);
+    }
+
+    @Test
+    void fullwrite_read_실행() throws Exception {
+        String command = "fullwrite 0x12345678" + System.lineSeparator()
+                + "fullread" + System.lineSeparator()
+                + "exit";
+
+        executeCommand(command);
+
+        String expected = initOutput();
+        expected += getInputSymbol();
+        for(int i = 0; i < 100; i++) {
+            expected += i + " 0x12345678" + System.lineSeparator();
+        }
+        expected += getInputSymbol();
+
+        assertThat(getOutputStreamString()).isEqualTo(expected);
+    }
+
+    private void executeCommand(String command) throws Exception {
+        catchSystemExit(() -> {
+            withTextFromSystemIn(command).execute(SsdTestShellMain::run) ;
+        });
+    }
+
+    private String initOutput() {
         StringBuilder builder = new StringBuilder();
         builder.append("SSD Test Shell Application").append(System.lineSeparator());
         builder.append("-------Command List-------").append(System.lineSeparator());
@@ -54,11 +94,11 @@ class SsdTestShellMainTest {
         builder.append("testapp1").append(System.lineSeparator());
         builder.append("testapp2").append(System.lineSeparator());
         builder.append("--------------------------").append(System.lineSeparator());
-        builder.append("> ");
+        builder.append(getInputSymbol());
+        return builder.toString();
+    }
 
-        String expected = builder.toString();
-        String actual = getOutputStreamString();
-
-        assertThat(actual).isEqualTo(expected);
+    private String getInputSymbol() {
+        return "> ";
     }
 }

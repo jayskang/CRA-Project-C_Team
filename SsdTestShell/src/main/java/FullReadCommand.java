@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FullReadCommand extends AbstractCommand {
     public FullReadCommand(ISsdCommand ssdTestShell) {
@@ -15,7 +16,10 @@ public class FullReadCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.fullread();
+            ArrayList<String> resultList = ssdTestShell.fullread();
+            for(int i = 0; i < resultList.size(); i++) {
+                System.out.println(i + " " + resultList.get(i));
+            }
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
