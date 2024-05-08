@@ -65,7 +65,17 @@ public class SsdTestShell implements ISsdCommand{
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
         checkIsLbaValid(lba);
         checkIsEraseSizeValid(size);
-        ssd.erase(lba, size);
+        int lbaNum = Integer.parseInt(lba);
+        int sizeNum = Integer.parseInt(size);
+        while(sizeNum > 10){
+            ssd.erase(String.valueOf(lbaNum), "10");
+            lbaNum += 10;
+            sizeNum -= 10;
+        }
+        if(sizeNum > 0 && lbaNum <= MAX_LBA){
+            ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
+        }
+
         //Shell 명령어 1 : erase [LBA] [SIZE]
         //• SSD에 명령어를 수행한다.
         //SSD 명령어 : E [LBA] [SIZE]
