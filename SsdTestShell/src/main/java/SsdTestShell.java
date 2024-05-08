@@ -63,6 +63,11 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     @Override
+    public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
+
+    }
+
+    @Override
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
         checkEraseValid(lba, size);
         int lbaNum = Integer.parseInt(lba);
@@ -115,10 +120,5 @@ public class SsdTestShell implements ISsdCommand{
 
     private boolean isSizeOutOfRange(int eraseSizeNum) {
         return eraseSizeNum < MIN_ERASE_SIZE;
-    }
-
-    @Override
-    public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
-        // TODO
     }
 }
