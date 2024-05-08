@@ -277,7 +277,10 @@ class SsdTestShellTest {
     }
     @Test
     void erase_비정상_LBA_100이상(){
-
+        assertThatThrownBy(()->{
+            shell.erase("100","99");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
     void erase_정상_LBA_정상_SIZE_11이상(){
