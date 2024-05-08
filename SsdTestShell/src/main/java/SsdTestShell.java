@@ -5,9 +5,9 @@ import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
 public class SsdTestShell implements ISsdCommand{
-    private SSD ssd;
+    private SSDExecutor ssd;
 
-    public void setSsd(SSD ssd) {
+    public void setSsd(SSDExecutor ssd) {
         this.ssd = ssd;
     }
 

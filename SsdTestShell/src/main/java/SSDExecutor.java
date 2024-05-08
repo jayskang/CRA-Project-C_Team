@@ -1,12 +1,9 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import static constants.Command.*;
 import static constants.Messages.*;
 
-public class SSD {
-
+public class SSDExecutor {
     SSDResultFileReader resultFileReader;
 
     void setResultFileReader(SSDResultFileReader reader){

@@ -17,11 +17,11 @@ class SsdTestShellTest {
     public static final String NORMAL_DATA = "0x12345678";
     public static final String NORMAL_LBA = "3";
     @Mock
-    SSD mockSsd;
+    SSDExecutor mockSsd;
     @Mock
     SSDResultFileReader resultFileReader;
     @Spy
-    SSD spySsd;
+    SSDExecutor spySsd;
     @Spy
     private SsdTestShell shell;
 
@@ -162,7 +162,7 @@ class SsdTestShellTest {
 
     @Test
     void ssd_readResultFile_함수() throws IOException {
-        SSD ssd = new SSD();
+        SSDExecutor ssd = new SSDExecutor();
 
         ssd.setResultFileReader(new SSDResultFileReader());
 
@@ -194,14 +194,14 @@ class SsdTestShellTest {
     @Test
     void 외부_프로그램_실행_기능_테스트() throws IOException {
         // 임시 jar파일 생성 후 로컬에서 테스트 필요. 임시 테스트 함수. 삭제해야 함.
-        SSD ssd = new SSD();
+        SSDExecutor ssd = new SSDExecutor();
         ssd.execSsdReadCommand("1");
     }
 
     @Test
     void 외부_프로그램_실행_기능_테스트2() throws IOException {
         // 임시 jar파일 생성 후 로컬에서 테스트 필요. 임시 테스트 함수. 삭제해야 함.
-        SSD ssd = new SSD();
+        SSDExecutor ssd = new SSDExecutor();
         ssd.setResultFileReader(resultFileReader);
 
         ssd.write("10", "0x12345678");
