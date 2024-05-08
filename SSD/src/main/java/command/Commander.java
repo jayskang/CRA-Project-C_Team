@@ -1,5 +1,6 @@
 package command;
 
+import erase.EraseCore;
 import jdk.jfr.Unsigned;
 import read.ReadCore;
 import write.WriteCore;
@@ -7,15 +8,17 @@ import write.WriteCore;
 public class Commander {
     public static final String WRITE = "W";
     public static final String READ = "R";
+    public static final String ERASE = "E";
 
     private ReadCore readCore;
     private WriteCore writeCore;
+    private EraseCore eraseCore;
 
     private String command;
     private int lba = -1;
     private String inputData;
 
-    public Commander(String[] args, ReadCore readCore, WriteCore writeCore) {
+    public Commander(String[] args, ReadCore readCore, WriteCore writeCore, EraseCore eraseCore) {
         if(isInvalidArgsCount(args)) {
             return;
         }
@@ -25,7 +28,7 @@ public class Commander {
         try {
             lba = Integer.parseInt(args[1]);
 
-            if(command.equals(WRITE)) {
+            if(!command.equals(READ)) {
                 inputData = args[2];
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -34,6 +37,7 @@ public class Commander {
 
         this.readCore = readCore;
         this.writeCore = writeCore;
+        this.eraseCore = eraseCore;
     }
 
     private boolean isInvalidArgsCount(String[] args) {
@@ -55,6 +59,15 @@ public class Commander {
                 }
                 writeCore.write(lba, inputData);
                 break;
+            case ERASE:
+                if(isInputDataIsNullOrEmpty()) {
+                    return;
+                }
+                try {
+                    eraseCore.E(lba, Integer.parseInt(inputData));
+                } catch (NumberFormatException e) {
+                    return;
+                }
             default:
                 return;
         }
