@@ -67,24 +67,31 @@ public class SsdTestShell implements ISsdCommand{
         checkEraseValid(lba, size);
         int lbaNum = Integer.parseInt(lba);
         int sizeNum = Integer.parseInt(size);
-
         int erasableArea = MAX_LBA - lbaNum + 1;
 
-        // 10 이상 size 쪼개서 명령 날리기
-        while(sizeNum >= MAX_SSD_ERASE_SIZE && erasableArea >= MAX_SSD_ERASE_SIZE){
+        while(isPossibleToSeperate(sizeNum, erasableArea)){
             ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
             lbaNum += MAX_SSD_ERASE_SIZE;
             sizeNum -= MAX_SSD_ERASE_SIZE;
         }
 
-        if (!isRemainEraseLba(sizeNum, lbaNum)) return;
-        // 잔여분 처리하기
+        if (isRemainEraseLba(sizeNum, lbaNum)) {
+            eraseRemainLbaArea(lbaNum, sizeNum);
+        }
+    }
+
+    private void eraseRemainLbaArea(int lbaNum, int sizeNum) throws IOException {
+        int erasableArea;
         erasableArea = MAX_LBA - lbaNum + 1;
         if (erasableArea < sizeNum) {
             ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableArea));
-        } else { // 잔여 size만큼 모두 erase 가능하면
+        } else {
             ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
         }
+    }
+
+    private static boolean isPossibleToSeperate(int sizeNum, int erasableArea) {
+        return sizeNum >= MAX_SSD_ERASE_SIZE && erasableArea >= MAX_SSD_ERASE_SIZE;
     }
 
     private void checkEraseValid(String lba, String size) {
@@ -112,9 +119,6 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
-        //erase_range [Start LBA] [End LBA]
-        //• Start LBA 부터 END LBA 직전 까지 내용을 삭제한다.
+        // TODO
     }
-
-
 }
