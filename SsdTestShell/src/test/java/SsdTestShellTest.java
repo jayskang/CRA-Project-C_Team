@@ -6,7 +6,10 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import static constants.Command.MAX_LBA;
+import static constants.Command.MIN_LBA;
 import static constants.Messages.ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -214,5 +217,21 @@ class SsdTestShellTest {
         spySsd.write(NORMAL_LBA, NORMAL_DATA);
 
         verify(spySsd, times(1)).execSsdWriteCommand(NORMAL_LBA, NORMAL_DATA);
+    }
+
+    @Test
+    void Time_Wait_없이_fullread_명령과_result_읽기가_순차적으로_진행되는가() throws IOException, InterruptedException {
+        SsdTestShell shell = new SsdTestShell();
+        SSDExecutor ssd = new SSDExecutor();
+        SSDResultFileReader reader = new SSDResultFileReader();
+        shell.setSsd(ssd);
+        ssd.setResultFileReader(reader);
+
+        shell.fullwrite("0xFFFFFFFF");
+        assertEquals("0xFFFFFFFF", shell.read("99"));
+
+        Thread.sleep(100);
+        ArrayList<String> list = shell.fullread();
+        assertEquals(100, list.size());
     }
 }
