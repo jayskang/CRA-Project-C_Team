@@ -7,10 +7,10 @@ public class TestApp2 implements Scenario {
     private final int START_LBA = 0;
     private final int END_LBA = 5;
 
-    private final SsdTestShell shell;
+    private final ISsdCommand shell;
     boolean testResult = false;
 
-    TestApp2(SsdTestShell ssdTestShell) {
+    TestApp2(ISsdCommand ssdTestShell) {
         this.shell = ssdTestShell;
     }
 
