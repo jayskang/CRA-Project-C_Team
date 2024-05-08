@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SsdTestShellTest {
     public static final String NORMAL_DATA = "0x12345678";
     public static final String NORMAL_LBA = "3";
+    public static final String INVALID_COMMAND_STRING = "INVALID COMMAND";
     @Mock
     SSDExecutor mockSsd;
     @Mock
@@ -258,14 +259,14 @@ class SsdTestShellTest {
         assertThatThrownBy(()->{
             shell.erase("0","-1");
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("INVALID COMMAND");
+                .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
     void erase_정상_LBA_비정상_SIZE_0값(){
         assertThatThrownBy(()->{
             shell.erase("0","0");
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("INVALID COMMAND");
+                .hasMessageContaining(INVALID_COMMAND_STRING);
 
     }
     @Test

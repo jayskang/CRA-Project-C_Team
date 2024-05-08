@@ -5,6 +5,7 @@ import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
 public class SsdTestShell implements ISsdCommand{
+    public static final int MIN_ERASE_SIZE = 1;
     private SSDExecutor ssd;
 
     public void setSsd(SSDExecutor ssd) {
@@ -83,7 +84,7 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     private boolean isSizeOutOfRange(int eraseSizeNum) {
-        return eraseSizeNum <= 0;
+        return eraseSizeNum < MIN_ERASE_SIZE;
     }
 
     @Override

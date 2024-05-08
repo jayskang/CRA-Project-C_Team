@@ -55,4 +55,8 @@ public class SSDExecutor {
             throw new IOException(ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
         }
     }
+
+    public void erase(String lba, String size) {
+
+    }
 }
