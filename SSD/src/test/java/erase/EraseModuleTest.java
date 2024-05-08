@@ -71,6 +71,16 @@ class EraseModuleTest {
         testStateToEachLba(0, 11, ALL_1BIT_VALUE);
     }
 
+    @Test
+    void 유효한_사이즈_값이지만_LBA가_범위를_벗어난경우() {
+        setUpStates(92, 99, ALL_1BIT_VALUE);
+        // 유효한 LBA 값에서 시작했지만 범위를 벗어나면,
+        // MAX_BOUNDARY(100)까지만 erase 합니다.
+        this.eraseModule.E(92, 10);
+
+        testStateToEachLba(92, 99, DEFAULT_VALUE);
+    }
+
     private String getReadResult() {
         try {
             return new BufferedReader(new FileReader(
