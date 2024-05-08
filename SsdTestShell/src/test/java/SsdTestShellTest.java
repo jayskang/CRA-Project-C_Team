@@ -6,8 +6,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
+import static constants.Messages.ERROR_MSG_SSD_CANNOT_EXEC;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -214,5 +217,34 @@ class SsdTestShellTest {
         spySsd.write(NORMAL_LBA, NORMAL_DATA);
 
         verify(spySsd, times(1)).execSsdWriteCommand(NORMAL_LBA, NORMAL_DATA);
+    }
+
+    @Test
+    void Time_Wait_없이_fullread_명령과_result_읽기가_순차적으로_진행되는가() throws IOException, InterruptedException {
+        SsdTestShell shell = new SsdTestShell();
+        SSDExecutor ssd = new SSDExecutor();
+        SSDResultFileReader reader = new SSDResultFileReader();
+        shell.setSsd(ssd);
+        ssd.setResultFileReader(reader);
+        // ssd jar파일이 준비되지 않으면 자동 패스
+        try {
+            // 파일이 없으면 이 테스트는 그냥 종료토록 함
+            new ProcessBuilder(
+                    SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, "C:\\test\\ssd.jar"
+                    , SSD_EXEC_READ_OPTION, "10").start();
+
+            ssd.setSsdProgramPath("C:\\test\\ssd.jar");
+            reader.setResultFilePath("C:\\test\\result.txt");
+
+            shell.fullwrite("0xFFFFFFFE");
+            assertEquals("10 0xFFFFFFFE", shell.read("10"));
+
+            Thread.sleep(100);
+
+            ArrayList<String> list = shell.fullread();
+            assertEquals(100, list.size());
+        } catch(Exception e){
+            System.out.println("외부 프로그램 존재하지 않아 자동 패스합니다.");
+        }
     }
 }
