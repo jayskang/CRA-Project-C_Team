@@ -312,6 +312,16 @@ class TestShellCommanderTest {
         assertOutput(expected);
     }
 
+    @Test
+    void 없는명령어_실행할_떄() {
+        getCommander(new String[]{"wrong"});
+        testShellCommander.runCommand();
+
+        String expected = "INVALID COMMAND" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
     private void getCommander(String[] args) {
         testShellCommander = new TestShellCommander(args, ssdTestShell);
         if(!testShellCommander.isValidArgumentLength()) {
