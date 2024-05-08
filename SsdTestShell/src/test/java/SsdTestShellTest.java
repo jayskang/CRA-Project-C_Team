@@ -343,7 +343,6 @@ class SsdTestShellTest {
     }
     @Test
     void eraserange_정상_Start_LBA_정상_End_LBA() throws IOException {
-        // erase_range [Start LBA] [End LBA]
         shell.eraserange("0", "1");
         verify(mockSsd, times(1)).erase("0","1");
     }
@@ -359,6 +358,7 @@ class SsdTestShellTest {
     void eraserange_정상_Start_LBA_음수_End_LBA(){
 
     }
+
     @Test
     void eraserange_문자_Start_LBA_정상_End_LBA(){
 
