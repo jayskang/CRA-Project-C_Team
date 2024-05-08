@@ -32,7 +32,7 @@ public class SsdFileReader {
 
     private static BufferedReader setNandFileReader() throws FileNotFoundException {
         return new BufferedReader(new FileReader
-                (FILE_ABSOLUTE_LOCATION + NAND_FILENAME));
+                (NAND_FILENAME));
     }
 
     private static boolean fileNotEnd(String line) {

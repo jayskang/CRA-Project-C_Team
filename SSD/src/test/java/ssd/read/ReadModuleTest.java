@@ -84,7 +84,7 @@ class ReadModuleTest {
 
     @Test
     void 결과파일생성여부확인() {
-        File resultfile = new File(FILE_ABSOLUTE_LOCATION + RESULT_FILENAME);
+        File resultfile = new File(RESULT_FILENAME);
 
         assertNotNull(resultfile.exists());
     }
@@ -136,12 +136,12 @@ class ReadModuleTest {
     }
 
     private static String getReadResult() throws IOException {
-        return new BufferedReader(new FileReader((FILE_ABSOLUTE_LOCATION + RESULT_FILENAME)))
+        return new BufferedReader(new FileReader((RESULT_FILENAME)))
                 .readLine();
     }
 
     private static BufferedWriter setNandWriter() throws IOException {
         return new BufferedWriter(new FileWriter(
-                (FILE_ABSOLUTE_LOCATION + NAND_FILENAME), false));
+                (NAND_FILENAME), false));
     }
 }

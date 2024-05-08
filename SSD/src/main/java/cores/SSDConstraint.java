@@ -6,7 +6,6 @@ public interface SSDConstraint {
     String NAND_FILENAME = "nand.txt";
     String RESULT_FILENAME = "result.txt";
 
-    String FILE_ABSOLUTE_LOCATION = "src/main/resources/";
     String DEFAULT_VALUE = "0x00000000";
 
     int MAX_BOUNDARY = 100;
