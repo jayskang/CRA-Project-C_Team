@@ -7,6 +7,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -185,7 +186,7 @@ class TestShellCommanderTest {
     }
 
     @Test
-    void read_호출() {
+    void read_호출() throws IOException {
         getCommander(new String[]{"read", "0"});
         testShellCommander.runCommand();
 
@@ -223,7 +224,7 @@ class TestShellCommanderTest {
     }
 
     @Test
-    void fullread_호출() {
+    void fullread_호출() throws IOException {
         getCommander(new String[]{"fullread"});
         testShellCommander.runCommand();
 

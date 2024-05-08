@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
-public class SsdTestShell implements ISsdCommand{
+public class SsdTestShell implements ISsdTestShell{
 
 
 

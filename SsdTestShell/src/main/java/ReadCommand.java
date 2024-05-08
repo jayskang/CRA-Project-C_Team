@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class ReadCommand extends AbstractCommand {
     public ReadCommand(ISsdTestShell ssdTestShell) {
         super(ssdTestShell);
@@ -12,7 +14,11 @@ public class ReadCommand extends AbstractCommand {
             return;
         }
 
-        ssdTestShell.read(args[1]);
+        try {
+            ssdTestShell.read(args[1]);
+        } catch (IllegalArgumentException | IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
