@@ -256,7 +256,7 @@ class SsdTestShellTest {
     @Test
     void erase_정상_LBA_비정상_SIZE_음수() throws IOException {
         shell.erase("0", "-1");
-        verify(mockSsd, times(0)).erase("0", "10");
+        verify(mockSsd, times(0)).erase("0", "-1");
     }
     @Test
     void erase_정상_LBA_비정상_SIZE_0값(){
