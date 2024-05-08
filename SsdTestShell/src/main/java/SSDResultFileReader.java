@@ -4,6 +4,7 @@ import java.io.IOException;
 
 public class SSDResultFileReader {
     public static final String RESULT_FILE_PATH = "src/test/resources/result.txt";
+    private String resultFilePath;
 
     public String readFile() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(RESULT_FILE_PATH));

@@ -16,6 +16,7 @@ public class SSDExecutor {
 
     public void execSsdWriteCommand(String lba, String data) throws IOException {
         try {
+            Thread.sleep(50);
             Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, SSD_EXEC_JAR_FILE_PATH
                     , SSD_WRITE_OPTION_CMD, lba, data).start();

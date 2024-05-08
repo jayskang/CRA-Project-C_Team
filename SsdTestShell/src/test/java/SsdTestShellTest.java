@@ -228,9 +228,10 @@ class SsdTestShellTest {
         ssd.setResultFileReader(reader);
 
         shell.fullwrite("0xFFFFFFFF");
-        assertEquals("0xFFFFFFFF", shell.read("99"));
+        assertEquals("99 0xFFFFFFFF", shell.read("99"));
 
         Thread.sleep(100);
+
         ArrayList<String> list = shell.fullread();
         assertEquals(100, list.size());
     }
