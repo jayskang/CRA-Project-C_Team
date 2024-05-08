@@ -15,8 +15,8 @@ public class WriteModule implements WriteCore {
         return value.matches(SSDConstraint.VALUE_FORMAT_REGEX);
     }
 
-    private boolean checkAddressBoundary(int address) {
-        return SSDConstraint.MIN_BOUNDARY <= address && address < SSDConstraint.MAX_BOUNDARY;
+    private boolean checkAddressBoundary(int lba) {
+        return SSDConstraint.MIN_BOUNDARY <= lba && lba < SSDConstraint.MAX_BOUNDARY;
     }
 
     private int convertHexToUnsignedInt(String value) {
@@ -29,14 +29,19 @@ public class WriteModule implements WriteCore {
     }
 
     @Override
-    public void write(int address, String value) {
-        if (checkValueFormat(value) && checkAddressBoundary(address)) {
+    public void write(int lba, String value) {
+        if (checkValueFormat(value) && checkAddressBoundary(lba)) {
             int convertedValue = convertHexToUnsignedInt(value);
             long unsignedValue = Long.parseLong(Integer.toUnsignedString(convertedValue));
 
             if (unsignedValue >= 0) {
-                this.fileWriter.store(address, value);
+                this.fileWriter.store(lba, value);
             }
         }
+    }
+
+    @Override
+    public void E(int lba, int size) {
+
     }
 }

@@ -2,5 +2,6 @@ package write;
 
 public interface WriteCore {
 
-    void write(int address, String value);
+    void write(int lda, String value);
+    void E(int lba, int size);
 }
