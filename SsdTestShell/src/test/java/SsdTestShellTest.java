@@ -283,13 +283,12 @@ class SsdTestShellTest {
                 .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
-    void erase_정상_LBA_정상_SIZE_11이상(){
-
+    void erase_정상_LBA_정상_SIZE_11이상() throws IOException {
+        shell.erase("0", "15");
+        verify(mockSsd, times(1)).erase("0","10");
+        verify(mockSsd, times(1)).erase("10","5");
     }
-    @Test
-    void erase_SIZE가_LBA_MAX초과시_처리(){
 
-    }
     @Test
     void erase_비정상_LBA_문자() throws IOException {
         shell.erase("0", "10");
