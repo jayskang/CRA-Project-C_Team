@@ -300,7 +300,19 @@ class SsdTestShellTest {
         verify(mockSsd, times(1)).erase("95","5");
     }
 
+    @Test
+    void erase_LBA_85_정상_SIZE_17_잔여_5개_영역_ERASE() throws IOException {
+        shell.erase("85", "17");
+        verify(mockSsd, times(1)).erase("85","10");
+        verify(mockSsd, times(1)).erase("95","5");
+    }
 
+    @Test
+    void erase_LBA_85_정상_SIZE_15_잔여_5개_영역_ERASE() throws IOException {
+        shell.erase("85", "15");
+        verify(mockSsd, times(1)).erase("85","10");
+        verify(mockSsd, times(1)).erase("95","5");
+    }
 
     @Test
     void erase_비정상_LBA_문자() throws IOException {
