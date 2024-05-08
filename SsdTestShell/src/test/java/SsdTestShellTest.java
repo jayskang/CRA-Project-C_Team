@@ -371,7 +371,10 @@ class SsdTestShellTest {
     }
     @Test
     void eraserange_정상_Start_LBA_문자_End_LBA(){
-
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "AA");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
     void eraserange_Start_LBA_End_LBA_값_역전(){
