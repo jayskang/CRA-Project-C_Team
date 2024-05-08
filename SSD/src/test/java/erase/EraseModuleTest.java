@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EraseModuleTest {
 
+    private String ALL_1BIT_VALUE = ALL_1BIT_VALUE;
+
     private EraseModule eraseModule;
 
     private WriteModule writeModule;
@@ -36,7 +38,7 @@ class EraseModuleTest {
 
     @Test
     void 정상동작_테스트() {
-        setUpStates(0, 10, "0x11111111");
+        setUpStates(0, 10, ALL_1BIT_VALUE);
         this.eraseModule.E(0, 10);
 
         testStateToEachLba(0, 10, DEFAULT_VALUE);
@@ -44,7 +46,7 @@ class EraseModuleTest {
 
     @Test
     void 허용되지않는_LBA까지_접근하려는_경우() {
-        setUpStates(98, 100, "0x11111111");
+        setUpStates(98, 100, ALL_1BIT_VALUE);
         this.eraseModule.E(98, 10);
 
         testStateToEachLba(98, 10, DEFAULT_VALUE);
@@ -52,11 +54,11 @@ class EraseModuleTest {
 
     @Test
     void 시작LBA가_음수_일경우() {
-        setUpStates(0, 9, "0x11111111");
+        setUpStates(0, 9, ALL_1BIT_VALUE);
 
         this.eraseModule.E(-1, 9);
 
-        testStateToEachLba(0, 9, "0x11111111");
+        testStateToEachLba(0, 9, ALL_1BIT_VALUE);
     }
 
     private String getReadResult() {
