@@ -72,13 +72,11 @@ class SsdTestShellMainTest {
         expected += getInputSymbol();
 
         assertThat(getOutputStreamString()).isEqualTo(expected);
-
     }
 
     private void executeCommand(String command) throws Exception {
         catchSystemExit(() -> {
-            withTextFromSystemIn(command).execute(() -> {
-                SsdTestShellMain.run();}) ;
+            withTextFromSystemIn(command).execute(SsdTestShellMain::run) ;
         });
     }
 
