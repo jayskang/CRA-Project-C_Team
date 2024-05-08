@@ -82,7 +82,10 @@ public class SsdTestShell implements ISsdCommand{
         checkIsEraseRangeEndLbaValid(endLba);
         compareStartEndLbaValue(startLba, endLba);
 
-        ssd.erase(startLba, endLba);
+        int startLbaNum = Integer.parseInt(startLba);
+        int endLbaNum = Integer.parseInt(endLba);
+
+        erase(startLba, String.valueOf(endLbaNum - startLbaNum));
     }
 
     private void compareStartEndLbaValue(String startLba, String endLba) {
