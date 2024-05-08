@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
-import static constants.Messages.ERROR_MSG_SSD_CANNOT_EXEC;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -283,10 +282,16 @@ class SsdTestShellTest {
                 .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
-    void erase_정상_LBA_정상_SIZE_11이상() throws IOException {
+    void erase_정상_LBA_정상_SIZE_11이상_모든_영역_ERASE() throws IOException {
         shell.erase("0", "15");
         verify(mockSsd, times(1)).erase("0","10");
         verify(mockSsd, times(1)).erase("10","5");
+    }
+
+    @Test
+    void erase_LBA_99_정상_SIZE_10_1개_영역_ERASE() throws IOException {
+        shell.erase("99", "10");
+        verify(mockSsd, times(1)).erase("99","1");
     }
 
     @Test
