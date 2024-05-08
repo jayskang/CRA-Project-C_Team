@@ -59,4 +59,38 @@ public class SsdTestShell implements ISsdCommand{
         }
         return list;
     }
+
+    @Override
+    public void erase(String lba, String size) throws IllegalArgumentException, IOException {
+        checkIsEraseSizeValid(size);
+        ssd.erase(lba, size);
+        //Shell 명령어 1 : erase [LBA] [SIZE]
+        //• SSD에 명령어를 수행한다.
+        //SSD 명령어 : E [LBA] [SIZE]
+        //• 특정 LBA 부터 특정 Size 까지 내용을 삭제한다.
+        //• 삭제할 수 있는 최대 Size는 최대 10칸이다.
+        //• SSD에서 삭제하면 0x00000000이 된다
+    }
+
+    private void checkIsEraseSizeValid(String size) throws IllegalArgumentException {
+        try {
+            int eraseSizeNum = Integer.parseInt(size);
+            if(isSizeOutOfRange(eraseSizeNum))
+                throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        }
+    }
+
+    private boolean isSizeOutOfRange(int eraseSizeNum) {
+        return eraseSizeNum <= 0;
+    }
+
+    @Override
+    public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
+        //erase_range [Start LBA] [End LBA]
+        //• Start LBA 부터 END LBA 직전 까지 내용을 삭제한다.
+    }
+
+
 }
