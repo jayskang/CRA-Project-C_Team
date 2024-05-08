@@ -422,4 +422,12 @@ class SsdTestShellTest {
         }
     }
 
+    @Test
+    void eraserange_Start_0_End_98_분할명령_실행() throws IOException {
+        shell.eraserange("0", "99");
+        for(int i = 0; i < 90; i += 10){
+            verify(mockSsd, times(1)).erase(String.valueOf(i), "10");
+        }
+        verify(mockSsd, times(1)).erase(String.valueOf("90"), "9");
+    }
 }
