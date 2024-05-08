@@ -1,5 +1,7 @@
+import java.io.IOException;
+
 public class WriteCommand extends AbstractCommand {
-    public WriteCommand(ISsdTestShell ssdTestShell) {
+    public WriteCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
         ERROR_MESSAGE = "Write need LBA and data.";
         HELP_MASSAGE = "Usage: write [LBA] [data]";
@@ -12,7 +14,11 @@ public class WriteCommand extends AbstractCommand {
             return;
         }
 
-        ssdTestShell.write(args[1], args[2]);
+        try {
+            ssdTestShell.write(args[1], args[2]);
+        } catch (IllegalArgumentException | IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

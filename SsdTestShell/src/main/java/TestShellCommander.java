@@ -2,9 +2,9 @@ import static java.lang.System.exit;
 
 public class TestShellCommander {
     private String[] args;
-    private ISsdTestShell ssdTestShell;
+    private ISsdCommand ssdTestShell;
 
-    public TestShellCommander(String[] args, ISsdTestShell ssdTestShell) {
+    public TestShellCommander(String[] args, ISsdCommand ssdTestShell) {
         this.args = args;
         this.ssdTestShell = ssdTestShell;
     }
