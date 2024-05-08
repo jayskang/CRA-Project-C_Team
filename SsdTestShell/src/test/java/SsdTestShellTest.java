@@ -230,7 +230,7 @@ class SsdTestShellTest {
         try {
             new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, "C:\\test\\ssd.jar"
-                    , SSD_EXEC_READ_OPTION, "10").start();
+                    , SSD_READ_OPTION_CMD, "10").start();
 
             ssd.setSsdProgramPath("C:\\test\\ssd.jar");
 

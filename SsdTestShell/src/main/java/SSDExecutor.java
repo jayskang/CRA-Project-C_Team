@@ -43,7 +43,7 @@ public class SSDExecutor {
         try {
             Process process = new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
-                    , SSD_EXEC_READ_OPTION, lba)
+                    , SSD_READ_OPTION_CMD, lba)
                     .start();
             process.waitFor();
         } catch(Exception e){
@@ -59,7 +59,15 @@ public class SSDExecutor {
         }
     }
 
-    public void erase(String lba, String size) {
-
+    public void erase(String lba, String size) throws IOException {
+        try {
+            Process process = new ProcessBuilder(
+                    SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
+                    , SSD_ERASE_OPTION_CMD, lba, size)
+                    .start();
+            process.waitFor();
+        } catch(Exception e){
+            throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
+        }
     }
 }
