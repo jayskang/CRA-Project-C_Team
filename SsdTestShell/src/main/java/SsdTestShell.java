@@ -68,27 +68,22 @@ public class SsdTestShell implements ISsdCommand{
         int lbaNum = Integer.parseInt(lba);
         int sizeNum = Integer.parseInt(size);
 
-        while (true){
-            if(lbaNum > MAX_LBA || sizeNum < MIN_ERASE_SIZE) break; // 나가는 조건
-            int erasableLba = MAX_LBA - lbaNum + 1;
+        int erasableArea = MAX_LBA - lbaNum + 1;
 
-            if(sizeNum > MAX_SSD_ERASE_SIZE){   // size가 10 초과일 때
-                if (erasableLba < MAX_SSD_ERASE_SIZE){  // 우측 lba 10 미만일 때
-                    ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableLba));
-                    break;
-                } else {    // 우측 lba가 10 이상일 때
-                    ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
-                    lbaNum += MAX_SSD_ERASE_SIZE;
-                    sizeNum -= MAX_SSD_ERASE_SIZE;
-                }
-            } else {    // size가 10 이하을 때
-                if (erasableLba < MAX_SSD_ERASE_SIZE) {  // 우측 lba 10 미만일 때
-                    ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableLba));
-                } else {
-                    ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
-                }
-                break;
-            }
+        // 10 이상 size 쪼개서 명령 날리기
+        while(sizeNum >= MAX_SSD_ERASE_SIZE && erasableArea >= MAX_SSD_ERASE_SIZE){
+            ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
+            lbaNum += MAX_SSD_ERASE_SIZE;
+            sizeNum -= MAX_SSD_ERASE_SIZE;
+        }
+
+        if (!isRemainEraseLba(sizeNum, lbaNum)) return;
+        // 잔여분 처리하기
+        erasableArea = MAX_LBA - lbaNum + 1;
+        if (erasableArea < sizeNum) {
+            ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableArea));
+        } else { // 잔여 size만큼 모두 erase 가능하면
+            ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
         }
     }
 
