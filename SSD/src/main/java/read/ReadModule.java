@@ -12,7 +12,7 @@ public class ReadModule implements ReadCore {
 
     public void read(int lba) {
 
-        if (isValidAddress(lba)) {
+        if (isNotValidLba(lba)) {
             return;
         }
 
@@ -25,11 +25,11 @@ public class ReadModule implements ReadCore {
 
     }
 
-    public boolean isValidAddress(int lba) {
+    public boolean isNotValidLba(int lba) {
         return lba >= MAX_BOUNDARY || lba < MIN_BOUNDARY;
     }
 
-    private static String getResult(int lba) throws IOException {
+    public String getResult(int lba) throws IOException {
         SsdFileReader ssdFileReader = new SsdFileReader();
         String[] result = ssdFileReader.readFile();
         if (isValueExists(result[lba])) {
