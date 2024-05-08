@@ -5,17 +5,14 @@ import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
 public class SsdTestShell implements ISsdCommand{
+    private SSDExecutor ssd;
 
-
-
-    private SSD ssd;
-
-    public void setSsd(SSD ssd) {
+    public void setSsd(SSDExecutor ssd) {
         this.ssd = ssd;
     }
 
     @Override
-    public void write(String lba, String data) {
+    public void write(String lba, String data) throws IllegalArgumentException, IOException {
         checkIsLbaValid(lba);
         checkIsDataValid(data);
         ssd.write(lba, data);
@@ -28,7 +25,7 @@ public class SsdTestShell implements ISsdCommand{
     }
 
     @Override
-    public void fullwrite(String data) {
+    public void fullwrite(String data) throws IllegalArgumentException, IOException {
         checkIsDataValid(data);
         for (int i = MIN_LBA; i <= MAX_LBA; i++) {
             ssd.write(Integer.toString(i), data);
