@@ -92,11 +92,11 @@ public class SsdTestShell implements ISsdCommand{
     @Override
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
         checkEraseValid(lba, size);
+
         int lbaNum = Integer.parseInt(lba);
         int sizeNum = Integer.parseInt(size);
-        int erasableArea = MAX_LBA - lbaNum + 1;
 
-        while(isPossibleToSeperate(sizeNum, erasableArea)){
+        while(isPossibleToSeperate(lbaNum, sizeNum)){
             ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
             lbaNum += MAX_SSD_ERASE_SIZE;
             sizeNum -= MAX_SSD_ERASE_SIZE;
@@ -107,9 +107,17 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
+    private static boolean isPossibleToSeperate(int lbaNum, int sizeNum) {
+        int erasableArea = MAX_LBA - lbaNum + 1;
+        return sizeNum >= MAX_SSD_ERASE_SIZE && erasableArea >= MAX_SSD_ERASE_SIZE;
+    }
+
+    private static boolean isRemainEraseLba(int sizeNum, int lbaNum) {
+        return sizeNum >= MIN_ERASE_SIZE && lbaNum <= MAX_LBA;
+    }
+
     private void eraseRemainLbaArea(int lbaNum, int sizeNum) throws IOException {
-        int erasableArea;
-        erasableArea = MAX_LBA - lbaNum + 1;
+        int erasableArea = MAX_LBA - lbaNum + 1;
         if (erasableArea < sizeNum) {
             ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableArea));
         } else {
@@ -117,17 +125,9 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private static boolean isPossibleToSeperate(int sizeNum, int erasableArea) {
-        return sizeNum >= MAX_SSD_ERASE_SIZE && erasableArea >= MAX_SSD_ERASE_SIZE;
-    }
-
     private void checkEraseValid(String lba, String size) {
         checkIsLbaValid(lba);
         checkIsEraseSizeValid(size);
-    }
-
-    private static boolean isRemainEraseLba(int sizeNum, int lbaNum) {
-        return sizeNum >= MIN_ERASE_SIZE && lbaNum <= MAX_LBA;
     }
 
     private void checkIsEraseSizeValid(String size) throws IllegalArgumentException {
