@@ -73,7 +73,12 @@ public class SsdTestShell implements ISsdCommand{
             sizeNum -= 10;
         }
         if(sizeNum > 0 && lbaNum <= MAX_LBA){
-            ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
+            String last = null;
+            if(MAX_LBA - lbaNum + 1 >= sizeNum){ // 잔여 size만큼 모두 erase 가능하면
+                ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
+            } else {
+                ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_LBA- lbaNum + 1));
+            }
         }
 
         //Shell 명령어 1 : erase [LBA] [SIZE]
