@@ -47,7 +47,7 @@ public class Logger {
 
         long kilobyte= file.length() / 1024;
 
-        if (kilobyte > 10) {
+        if (kilobyte >= 10) {
             bw.close();
             File renameFile = new File(newFileName);
             file.renameTo(renameFile);
