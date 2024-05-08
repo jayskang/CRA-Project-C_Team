@@ -345,7 +345,12 @@ class SsdTestShellTest {
     void eraserange_정상_Start_LBA_정상_End_LBA() throws IOException {
         shell.eraserange("0", "1");
         verify(mockSsd, times(1)).erase("0","1");
+
+        shell.eraserange("0", "100");
+        verify(mockSsd, times(1)).erase("0","100");
     }
+
+
     @Test
     void eraserange_음수_Start_LBA_정상_End_LBA() throws IOException {
         assertThatThrownBy(()->{
@@ -396,8 +401,11 @@ class SsdTestShellTest {
                 .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
-    void eraserange_정상_Start_LBA_99초과_End_LBA(){
-
+    void eraserange_정상_Start_LBA_100초과_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "101");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
     void eraserange_0미만_Start_LBA_정상_End_LBA(){
