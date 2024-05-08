@@ -7,7 +7,6 @@ public class WriteModule implements WriteCore {
     private final SsdFileWriter fileWriter;
 
     public WriteModule() {
-        super();
         this.fileWriter = new SsdFileWriter();
     }
 
