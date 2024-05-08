@@ -15,7 +15,6 @@ public class SsdFileWriter {
 
     public SsdFileWriter() {
         this.reader = new SsdFileReader();
-        saveData(null);
     }
 
     public void store(int address, String value) {
