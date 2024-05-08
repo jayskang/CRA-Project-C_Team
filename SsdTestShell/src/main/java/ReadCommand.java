@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 public class ReadCommand extends AbstractCommand {
-    public ReadCommand(ISsdTestShell ssdTestShell) {
+    public ReadCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
         ERROR_MESSAGE = "Write need LBA.";
         HELP_MASSAGE = "Usage: read [LBA]";
@@ -15,7 +15,7 @@ public class ReadCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.read(args[1]);
+            System.out.println(ssdTestShell.read(args[1]));
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }

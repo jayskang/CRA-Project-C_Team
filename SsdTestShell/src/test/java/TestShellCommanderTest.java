@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class TestShellCommanderTest {
 
     @Spy
-    ISsdTestShell ssdTestShell;
+    ISsdCommand ssdTestShell;
 
     private TestShellCommander testShellCommander;
     private ByteArrayOutputStream outputStream;
@@ -25,7 +25,6 @@ class TestShellCommanderTest {
 
     @BeforeEach
     void setUp() {
-//        ssdTestShell = spy(ISsdTestShell.class);
         originalOut = System.out;
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
@@ -167,7 +166,7 @@ class TestShellCommanderTest {
     }
 
     @Test
-    void write_호출() {
+    void write_호출() throws IOException {
         getCommander(new String[]{"write", "0", "0x00000001"});
         testShellCommander.runCommand();
 
@@ -206,7 +205,7 @@ class TestShellCommanderTest {
     }
 
     @Test
-    void fullwrite_호출() {
+    void fullwrite_호출() throws IOException {
         getCommander(new String[] {"fullwrite", "0x00000001"});
         testShellCommander.runCommand();
 

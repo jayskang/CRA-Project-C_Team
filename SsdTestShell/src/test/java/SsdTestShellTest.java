@@ -226,25 +226,25 @@ class SsdTestShellTest {
         SSDResultFileReader reader = new SSDResultFileReader();
         shell.setSsd(ssd);
         ssd.setResultFileReader(reader);
-        // ssd jar파일이 준비되지 않으면 자동 패스
+
         try {
-            // 파일이 없으면 이 테스트는 그냥 종료토록 함
             new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, "C:\\test\\ssd.jar"
                     , SSD_EXEC_READ_OPTION, "10").start();
 
             ssd.setSsdProgramPath("C:\\test\\ssd.jar");
-            reader.setResultFilePath("C:\\test\\result.txt");
 
-            shell.fullwrite("0xFFFFFFFE");
-            assertEquals("10 0xFFFFFFFE", shell.read("10"));
-
-            Thread.sleep(100);
+            shell.fullwrite("0x12345678");
+            assertEquals("0x12345678", shell.read("10"));
 
             ArrayList<String> list = shell.fullread();
+            for (int i = 0; i < 100; i++) {
+                assertEquals("0x12345678", list.get(i));
+            }
             assertEquals(100, list.size());
         } catch(Exception e){
             System.out.println("외부 프로그램 존재하지 않아 자동 패스합니다.");
+            System.out.println("테스트 전 C:\\test\\ssd.jar 파일을 세팅해주세요.");
         }
     }
 }
