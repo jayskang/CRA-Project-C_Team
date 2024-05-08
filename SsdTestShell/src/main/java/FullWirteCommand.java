@@ -16,7 +16,7 @@ public class FullWirteCommand extends AbstractCommand {
 
         try {
             ssdTestShell.fullwrite(args[1]);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
     }

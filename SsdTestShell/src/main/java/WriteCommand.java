@@ -16,7 +16,7 @@ public class WriteCommand extends AbstractCommand {
 
         try {
             ssdTestShell.write(args[1], args[2]);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
     }
