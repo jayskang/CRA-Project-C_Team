@@ -8,6 +8,8 @@ public class Command {
     public static final String SSD_EXEC_READ_OPTION = "R";
     public static final String SSD_WRITE_OPTION_CMD = "W";
 
+    public static final String RESULT_FILE_PATH = "src/test/resources/result.txt";
+
     // 명령 유효성 관련 Constants
     public static final int MAX_LBA = 99;
     public static final int MIN_LBA = 0;
