@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EraseModuleTest {
 
-    private String ALL_1BIT_VALUE = ALL_1BIT_VALUE;
+    private final String ALL_1BIT_VALUE = "0x11111111";
 
     private EraseModule eraseModule;
 
