@@ -42,6 +42,14 @@ class EraseModuleTest {
         testStateToEachLba(0, 10, DEFAULT_VALUE);
     }
 
+    @Test
+    void 허용되지않는_LBA까지_접근하려는_경우() {
+        setUpStates(98, 100, "0x11111111");
+        this.eraseModule.E(98, 10);
+
+        testStateToEachLba(0, 10, DEFAULT_VALUE);
+    }
+
     private String getReadResult() {
         try {
             return new BufferedReader(new FileReader(
