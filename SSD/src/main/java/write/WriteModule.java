@@ -2,7 +2,7 @@ package write;
 
 import cores.SSDConstraint;
 
-public class WriteModule implements WriteCore {
+public class WriteModule implements WriteCore, EraseCore {
 
     private final SsdFileWriter fileWriter;
 
