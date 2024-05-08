@@ -11,7 +11,7 @@ public class TestApp1 implements Scenario {
     }
 
     @Override
-        public void testRun() {
+    public void testRun() {
         try {
             shell.fullwrite(DATA);
 
