@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class TestApp2 implements Scenario {
     public static final int LOOP_COUNT = 30;
     public static final String OLD_DATA = "0xAAAABBBB";
@@ -32,7 +34,7 @@ public class TestApp2 implements Scenario {
         }
     }
 
-    private void rangeWrite(String data) throws IllegalArgumentException{
+    private void rangeWrite(String data) throws IllegalArgumentException, IOException {
         for (int i = START_LBA; i <= END_LBA; i++) {
             shell.write(Integer.toString(i), data);
         }

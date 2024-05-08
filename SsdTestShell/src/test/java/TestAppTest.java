@@ -17,7 +17,7 @@ class TestAppTest {
     SsdTestShell shell;
 
     @Test
-    void TestApp1_정상_동작_테스트() {
+    void TestApp1_정상_동작_테스트() throws IOException {
         Scenario testApp1 = spy(new TestApp1(shell));
 
         testApp1.testRun();
@@ -27,7 +27,7 @@ class TestAppTest {
     }
 
     @Test
-    void TestApp1_예외발생시_테스트_실패() {
+    void TestApp1_예외발생시_테스트_실패() throws IOException {
         Scenario testApp1 = spy(new TestApp1(shell));
         doThrow(new IOException()).when(shell).fullread();
 
@@ -37,7 +37,7 @@ class TestAppTest {
     }
 
     @Test
-    void TestApp1_fullread한_값이_0x12345678이_아니면_테스트_실패() {
+    void TestApp1_fullread한_값이_0x12345678이_아니면_테스트_실패() throws IOException {
         Scenario testApp1 = spy(new TestApp1(shell));
         doReturn(new ArrayList<String>(Arrays.asList("0x87654321"))).when(shell).fullread();
 
