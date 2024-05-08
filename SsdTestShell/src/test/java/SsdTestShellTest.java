@@ -255,11 +255,17 @@ class SsdTestShellTest {
     }
     @Test
     void erase_정상_LBA_비정상_SIZE_음수() throws IOException {
-        shell.erase("0", "-1");
-        verify(mockSsd, times(0)).erase("0", "-1");
+        assertThatThrownBy(()->{
+            shell.erase("0","-1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
     }
     @Test
     void erase_정상_LBA_비정상_SIZE_0값(){
+        assertThatThrownBy(()->{
+            shell.erase("0","0");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("INVALID COMMAND");
 
     }
     @Test
