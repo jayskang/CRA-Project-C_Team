@@ -55,7 +55,7 @@ public class SSDExecutor {
         try {
             return resultFileReader.readFile();
         } catch (IOException e) {
-            return "0x00000000";
+            throw new IOException(ERROR_MSG_RESULT_FILE_NOT_FOUNDED);
         }
     }
 
