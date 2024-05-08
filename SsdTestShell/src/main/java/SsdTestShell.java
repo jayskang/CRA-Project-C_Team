@@ -49,8 +49,22 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private boolean isLbaOutOfRange(int param) {
-        return param > MAX_LBA || param < MIN_LBA;
+    private void checkIsEraseRangeEndLbaValid(String lba) throws IllegalArgumentException{
+        try {
+            int lbaNum = Integer.parseInt(lba);
+            if(isEraseEndLbaOutOfRange(lbaNum))
+                throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        }
+    }
+
+    private boolean isLbaOutOfRange(int lba) {
+        return lba > MAX_LBA || lba < MIN_LBA;
+    }
+
+    private boolean isEraseEndLbaOutOfRange(int endLba) {
+        return endLba > MAX_LBA + 1 || endLba < MIN_LBA + 1;
     }
 
     @Override
@@ -65,11 +79,15 @@ public class SsdTestShell implements ISsdCommand{
     @Override
     public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
         checkIsLbaValid(startLba);
-        checkIsLbaValid(endLba);
-        if(Integer.parseInt(startLba) >= Integer.parseInt(endLba))
-            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        checkIsEraseRangeEndLbaValid(endLba);
+        compareStartEndLbaValue(startLba, endLba);
 
         ssd.erase(startLba, endLba);
+    }
+
+    private void compareStartEndLbaValue(String startLba, String endLba) {
+        if (Integer.parseInt(startLba) >= Integer.parseInt(endLba))
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
     }
 
     @Override
