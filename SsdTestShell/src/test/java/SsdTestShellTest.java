@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_RESULT_FILE_NOT_FOUNDED;
-import static constants.Messages.ERROR_MSG_SSD_CANNOT_EXEC;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SsdTestShellTest {
     public static final String NORMAL_DATA = "0x12345678";
     public static final String NORMAL_LBA = "3";
+    public static final String INVALID_COMMAND_STRING = "INVALID COMMAND";
     @Mock
     SSDExecutor mockSsd;
     @Mock
@@ -38,12 +38,12 @@ class SsdTestShellTest {
         shell.read("1");
         verify(mockSsd, times(1)).read("1");
     }
-  
+
     @Test
     void SsdTestShell_객체_정상적으로_생성() {
         assertNotNull(shell);
     }
-  
+
     @Test
     void read_함수_LBA_문자열_음수인_경우(){
         assertThatThrownBy(()->{
@@ -230,7 +230,7 @@ class SsdTestShellTest {
         try {
             new ProcessBuilder(
                     SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, "C:\\test\\ssd.jar"
-                    , SSD_EXEC_READ_OPTION, "10").start();
+                    , SSD_READ_OPTION_CMD, "10").start();
 
             ssd.setSsdProgramPath("C:\\test\\ssd.jar");
 
@@ -246,5 +246,99 @@ class SsdTestShellTest {
             System.out.println("외부 프로그램 존재하지 않아 자동 패스합니다.");
             System.out.println("테스트 전 C:\\test\\ssd.jar 파일을 세팅해주세요.");
         }
+    }
+
+    @Test
+    void erase_정상_LBA_정상_SIZE_10이하() throws IOException {
+        shell.erase("0", "10");
+        verify(mockSsd, times(1)).erase("0", "10");
+    }
+
+    @Test
+    void erase_정상_LBA_비정상_SIZE_음수() throws IOException {
+        assertThatThrownBy(()->{
+            shell.erase("0","-1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void erase_정상_LBA_비정상_SIZE_0값(){
+        assertThatThrownBy(()->{
+            shell.erase("0","0");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void erase_비정상_LBA_음수(){
+        assertThatThrownBy(()->{
+            shell.erase("-1","1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void erase_비정상_LBA_100이상(){
+        assertThatThrownBy(()->{
+            shell.erase("100","99");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void erase_정상_LBA_정상_SIZE_11이상_모든_영역_ERASE() throws IOException {
+        shell.erase("0", "15");
+        verify(mockSsd, times(1)).erase("0","10");
+        verify(mockSsd, times(1)).erase("10","5");
+    }
+
+    @Test
+    void erase_LBA_99_정상_SIZE_10_1개_영역_ERASE() throws IOException {
+        shell.erase("99", "10");
+        verify(mockSsd, times(1)).erase("99","1");
+    }
+
+    @Test
+    void erase_LBA_95_정상_SIZE_7_5개_영역_ERASE() throws IOException {
+        shell.erase("95", "10");
+        verify(mockSsd, times(1)).erase("95","5");
+    }
+
+    @Test
+    void erase_LBA_85_정상_SIZE_17_잔여_5개_영역_ERASE() throws IOException {
+        shell.erase("85", "17");
+        verify(mockSsd, times(1)).erase("85","10");
+        verify(mockSsd, times(1)).erase("95","5");
+    }
+
+    @Test
+    void erase_LBA_85_정상_SIZE_15_잔여_5개_영역_ERASE() throws IOException {
+        shell.erase("85", "15");
+        verify(mockSsd, times(1)).erase("85","10");
+        verify(mockSsd, times(1)).erase("95","5");
+    }
+
+    @Test
+    void erase_비정상_LBA_문자() throws IOException {
+        assertThatThrownBy(()->{
+            shell.erase("A", "10");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+
+    }
+
+    @Test
+    void erase_비정상_SIZE_문자() throws IOException {
+        assertThatThrownBy(()->{
+            shell.erase("0", "A");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void erase_LBA_95_정상_SIZE_17_5개_영역_ERASE() throws IOException {
+        shell.erase("95", "17");
+        verify(mockSsd, times(1)).erase("95","5");
     }
 }

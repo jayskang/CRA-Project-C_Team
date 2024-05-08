@@ -5,8 +5,9 @@ public class Command {
     public static final String SSD_EXEC_JAVA_COMMAND = "java";
     public static final String SSD_EXEC_JAR_OPTION = "-jar";
     public static final String SSD_EXEC_JAR_FILE_PATH = "./ssd.jar";
-    public static final String SSD_EXEC_READ_OPTION = "R";
+    public static final String SSD_READ_OPTION_CMD = "R";
     public static final String SSD_WRITE_OPTION_CMD = "W";
+    public static final String SSD_ERASE_OPTION_CMD = "E";
 
     public static final String RESULT_FILE_PATH = "./result.txt";
 
