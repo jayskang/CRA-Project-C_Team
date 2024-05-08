@@ -20,8 +20,8 @@ public class EraseModule extends SSDCommonUtils implements EraseCore {
 
     @Override
     public void E(int lba, int size) {
-        if(this.checkLbaBoundary(lba) && checkValidSize(size)) {
-            for(int startLba = lba; startLba < MAX_BOUNDARY; startLba += 1) {
+        if (this.checkLbaBoundary(lba) && checkValidSize(size)) {
+            for (int startLba = lba; startLba < MAX_BOUNDARY && startLba < lba + size; startLba += 1) {
                 fileWriter.store(startLba, DEFAULT_VALUE);
             }
         }

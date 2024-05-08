@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ssdFullTest {
 
     public static final String SAMPLE_VALUE = "0x1289CDEF";
-    public static final int EXITST_VALUE_LBA = 20;
+    public static final int EXITS_VALUE_LUBA = 20;
     public static final int NULL_VALUE_LBA = 10;
 
     private WriteCore writeCore;
@@ -40,15 +40,15 @@ public class ssdFullTest {
 
     @Test
     void 입력한_주소_Value_출력() throws IOException {
-        writeCore.write(EXITST_VALUE_LBA, SAMPLE_VALUE);
-        readCore.read(EXITST_VALUE_LBA);
+        writeCore.write(EXITS_VALUE_LUBA, SAMPLE_VALUE);
+        readCore.read(EXITS_VALUE_LUBA);
 
         assertEquals(SAMPLE_VALUE, getReadResult());
     }
 
     @Test
     void 입력하지않은_주소_Value_출력() throws IOException {
-        writeCore.write(EXITST_VALUE_LBA, SAMPLE_VALUE);
+        writeCore.write(EXITS_VALUE_LUBA, SAMPLE_VALUE);
         readCore.read(NULL_VALUE_LBA);
 
         assertEquals(DEFAULT_VALUE, getReadResult());

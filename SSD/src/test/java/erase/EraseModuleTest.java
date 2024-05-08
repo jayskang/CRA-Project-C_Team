@@ -81,6 +81,39 @@ class EraseModuleTest {
         testStateToEachLba(92, 99, DEFAULT_VALUE);
     }
 
+    @Test
+    void 전체범위_쓰고_지우기() {
+        String[] values = new String[]{
+                "0x11111111",
+                "0x22222222",
+                "0x33333333",
+                "0x44444444",
+                "0x55555555",
+                "0x66666666",
+                "0x77777777",
+                "0xAAAAAAAA",
+                "0xCCCCCCCC",
+                "0xFFFFFFFF",
+        };
+        int[] startLba = new int[]{0, 10, 20, 30 ,40 ,50 ,60 ,70, 80, 90};
+
+        for(int i = 0; i < 10; i += 1) {
+            int lba = startLba[i];
+            setUpStates(lba, lba + 10, values[i]);
+            this.eraseModule.E(lba + 1, 10);
+        }
+
+        for(int i = 0; i < 10; i += 1) {
+            int lba = startLba[i];
+            String expected = values[i];
+
+            this.readModule.read(lba);
+            String actual = getReadResult();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+    }
+
     private String getReadResult() {
         try {
             return new BufferedReader(new FileReader(
