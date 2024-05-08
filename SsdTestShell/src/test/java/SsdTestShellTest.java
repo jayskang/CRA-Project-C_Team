@@ -267,11 +267,13 @@ class SsdTestShellTest {
             shell.erase("0","0");
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(INVALID_COMMAND_STRING);
-
     }
     @Test
     void erase_비정상_LBA_음수(){
-
+        assertThatThrownBy(()->{
+            shell.erase("-1","1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
     }
     @Test
     void erase_비정상_LBA_100이상(){

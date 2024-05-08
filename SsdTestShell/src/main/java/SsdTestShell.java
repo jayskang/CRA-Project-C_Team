@@ -63,6 +63,7 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
+        checkIsLbaValid(lba);
         checkIsEraseSizeValid(size);
         ssd.erase(lba, size);
         //Shell 명령어 1 : erase [LBA] [SIZE]
