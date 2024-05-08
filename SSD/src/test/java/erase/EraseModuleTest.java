@@ -47,7 +47,16 @@ class EraseModuleTest {
         setUpStates(98, 100, "0x11111111");
         this.eraseModule.E(98, 10);
 
-        testStateToEachLba(0, 10, DEFAULT_VALUE);
+        testStateToEachLba(98, 10, DEFAULT_VALUE);
+    }
+
+    @Test
+    void 시작LBA가_음수_일경우() {
+        setUpStates(0, 9, "0x11111111");
+
+        this.eraseModule.E(-1, 9);
+
+        testStateToEachLba(0, 9, "0x11111111");
     }
 
     private String getReadResult() {
