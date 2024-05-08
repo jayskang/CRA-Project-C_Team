@@ -413,4 +413,13 @@ class SsdTestShellTest {
         verify(mockSsd, times(1)).erase("0", "10");
         verify(mockSsd, times(1)).erase("10", "1");
     }
+
+    @Test
+    void eraserange_Start_End_분할명령_실행_Full() throws IOException {
+        shell.eraserange("0", "100");
+        for(int i = 0; i < 100; i += 10){
+            verify(mockSsd, times(1)).erase(String.valueOf(i), "10");
+        }
+    }
+
 }
