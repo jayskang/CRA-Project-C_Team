@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class TestApp1 implements Scenario {
     public final String DATA = "0x12345678";
+
     private final SsdTestShell shell;
     boolean testResult = false;
 
