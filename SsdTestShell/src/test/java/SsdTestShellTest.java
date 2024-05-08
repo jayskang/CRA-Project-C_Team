@@ -249,12 +249,14 @@ class SsdTestShellTest {
     }
 
     @Test
-    void erase_정상_LBA_정상_SIZE(){
-
+    void erase_정상_LBA_정상_SIZE_10이하() throws IOException {
+        shell.erase("0", "10");
+        verify(mockSsd, times(1)).erase("0", "10");
     }
     @Test
-    void erase_정상_LBA_비정상_SIZE_음수(){
-
+    void erase_정상_LBA_비정상_SIZE_음수() throws IOException {
+        shell.erase("0", "-1");
+        verify(mockSsd, times(0)).erase("0", "10");
     }
     @Test
     void erase_정상_LBA_비정상_SIZE_0값(){
@@ -275,5 +277,10 @@ class SsdTestShellTest {
     @Test
     void erase_SIZE가_LBA_MAX초과시_처리(){
 
+    }
+    @Test
+    void erase_비정상_LBA_문자() throws IOException {
+        shell.erase("0", "10");
+        verify(mockSsd, times(1)).erase("0", "10");
     }
 }
