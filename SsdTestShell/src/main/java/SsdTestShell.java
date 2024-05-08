@@ -6,6 +6,7 @@ import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
 public class SsdTestShell implements ISsdCommand{
     public static final int MIN_ERASE_SIZE = 1;
+    public static final int MAX_SSD_ERASE_SIZE = 10;
     private SSDExecutor ssd;
 
     public void setSsd(SSDExecutor ssd) {
@@ -63,30 +64,41 @@ public class SsdTestShell implements ISsdCommand{
 
     @Override
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
-        checkIsLbaValid(lba);
-        checkIsEraseSizeValid(size);
+        checkEraseValid(lba, size);
         int lbaNum = Integer.parseInt(lba);
         int sizeNum = Integer.parseInt(size);
-        while(sizeNum > 10){
-            ssd.erase(String.valueOf(lbaNum), "10");
-            lbaNum += 10;
-            sizeNum -= 10;
-        }
-        if(sizeNum > 0 && lbaNum <= MAX_LBA){
-            String last = null;
-            if(MAX_LBA - lbaNum + 1 >= sizeNum){ // 잔여 size만큼 모두 erase 가능하면
-                ssd.erase(String.valueOf(lbaNum), String.valueOf(sizeNum));
-            } else {
-                ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_LBA- lbaNum + 1));
+
+        while (true){
+            if(lbaNum > MAX_LBA || sizeNum < MIN_ERASE_SIZE) break; // 나가는 조건
+            int erasableLba = MAX_LBA - lbaNum + 1;
+
+            if(sizeNum > MAX_SSD_ERASE_SIZE){   // size가 10 초과일 때
+                if (erasableLba < MAX_SSD_ERASE_SIZE){  // 우측 lba 10 미만일 때
+                    ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableLba));
+                    break;
+                } else {    // 우측 lba가 10 이상일 때
+                    ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
+                    lbaNum += MAX_SSD_ERASE_SIZE;
+                    sizeNum -= MAX_SSD_ERASE_SIZE;
+                }
+            } else {    // size가 10 이하을 때
+                if (erasableLba < MAX_SSD_ERASE_SIZE) {  // 우측 lba 10 미만일 때
+                    ssd.erase(String.valueOf(lbaNum), String.valueOf(erasableLba));
+                } else {
+                    ssd.erase(String.valueOf(lbaNum), String.valueOf(MAX_SSD_ERASE_SIZE));
+                }
+                break;
             }
         }
+    }
 
-        //Shell 명령어 1 : erase [LBA] [SIZE]
-        //• SSD에 명령어를 수행한다.
-        //SSD 명령어 : E [LBA] [SIZE]
-        //• 특정 LBA 부터 특정 Size 까지 내용을 삭제한다.
-        //• 삭제할 수 있는 최대 Size는 최대 10칸이다.
-        //• SSD에서 삭제하면 0x00000000이 된다
+    private void checkEraseValid(String lba, String size) {
+        checkIsLbaValid(lba);
+        checkIsEraseSizeValid(size);
+    }
+
+    private static boolean isRemainEraseLba(int sizeNum, int lbaNum) {
+        return sizeNum >= MIN_ERASE_SIZE && lbaNum <= MAX_LBA;
     }
 
     private void checkIsEraseSizeValid(String size) throws IllegalArgumentException {

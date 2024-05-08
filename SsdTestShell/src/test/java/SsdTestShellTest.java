@@ -327,6 +327,10 @@ class SsdTestShellTest {
             shell.erase("0", "A");
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(INVALID_COMMAND_STRING);
-
+    }
+    @Test
+    void erase_LBA_95_정상_SIZE_17_5개_영역_ERASE() throws IOException {
+        shell.erase("95", "17");
+        verify(mockSsd, times(1)).erase("95","5");
     }
 }
