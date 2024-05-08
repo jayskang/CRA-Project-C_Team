@@ -3,19 +3,23 @@ import java.util.ArrayList;
 public class TestApp1 implements Scenario {
     public final String DATA = "0x12345678";
 
-    private final SsdTestShell shell;
+    private final ISsdCommand shell;
     boolean testResult = false;
 
-    TestApp1(SsdTestShell ssdTestShell) {
+    TestApp1(ISsdCommand ssdTestShell) {
         this.shell = ssdTestShell;
     }
 
     @Override
-    public void testRun() {
+        public void testRun() {
         try {
             shell.fullwrite(DATA);
 
             ArrayList<String> readResult = shell.fullread();
+            if(readResult.isEmpty()) {
+                testResult = false;
+                return;
+            }
             for (String data : readResult) {
                 if (!data.equals(DATA)) {
                     testResult = false;

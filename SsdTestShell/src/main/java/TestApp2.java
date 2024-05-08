@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class TestApp2 implements Scenario {
     public static final int LOOP_COUNT = 30;
     public static final String OLD_DATA = "0xAAAABBBB";
@@ -5,10 +7,10 @@ public class TestApp2 implements Scenario {
     private final int START_LBA = 0;
     private final int END_LBA = 5;
 
-    private final SsdTestShell shell;
+    private final ISsdCommand shell;
     boolean testResult = false;
 
-    TestApp2(SsdTestShell ssdTestShell) {
+    TestApp2(ISsdCommand ssdTestShell) {
         this.shell = ssdTestShell;
     }
 
@@ -32,7 +34,7 @@ public class TestApp2 implements Scenario {
         }
     }
 
-    private void rangeWrite(String data) throws IllegalArgumentException{
+    private void rangeWrite(String data) throws IllegalArgumentException, IOException {
         for (int i = START_LBA; i <= END_LBA; i++) {
             shell.write(Integer.toString(i), data);
         }
