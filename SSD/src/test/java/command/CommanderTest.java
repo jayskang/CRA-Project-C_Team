@@ -125,7 +125,7 @@ class CommanderTest {
     void 정상적인_E명령어_호출됐을때() {
         getCommanderAndRun(new String[]{"E", "0", "2"});
 
-        verify(eraseCore, times(0)).erase(0, 2);
+        verify(eraseCore, times(1)).erase(0, 2);
     }
 
     @Test
