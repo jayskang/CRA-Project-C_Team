@@ -9,9 +9,8 @@ class TestRunnerTest {
 
         SsdTestShell shell = new SsdTestShell();
         SSDExecutor ssd = new SSDExecutor();
-        SSDResultFileReader reader = new SSDResultFileReader();
         shell.setSsd(ssd);
-        ssd.setResultFileReader(reader);
+        ssd.setResultFileReader(new SSDResultFileReader());
 
         TestRunner testRunner = new TestRunner(shell);
         testRunner.runScenariosFromFile("./run_list.lst");

@@ -1,5 +1,5 @@
 public abstract class TestScriptCommand extends AbstractCommand {
-    Scenario scenario;
+    TestScenario scenario;
 
     public TestScriptCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);

@@ -14,8 +14,7 @@ public class TestApp1Command extends TestScriptCommand {
         }
 
         scenario = new TestApp1(ssdTestShell);
-        scenario.testRun();
 
-        printResult(scenario.isPassed());
+        printResult(scenario.run());
     }
 }

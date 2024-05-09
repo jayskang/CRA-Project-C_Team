@@ -13,8 +13,7 @@ public class TestApp2Command extends TestScriptCommand {
         }
 
         scenario = new TestApp2(ssdTestShell);
-        scenario.testRun();
 
-        printResult(scenario.isPassed());
+        printResult(scenario.run());
     }
 }
