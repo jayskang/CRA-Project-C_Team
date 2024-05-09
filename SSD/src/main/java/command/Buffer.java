@@ -4,6 +4,8 @@ import cores.CommandBufferConstraint;
 import cores.SSDCommonUtils;
 import cores.SSDConstraint;
 import erase.EraseModule;
+import read.ReadModule;
+import write.WriteModule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -38,6 +40,21 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         return Buffer.instance;
     }
 
+    private Commander createCommand(String type, String lba, String value) {
+        switch (type) {
+            case "W":
+                return new Commander(new String[]{Commander.WRITE, lba, value},
+                        null, new WriteModule(), null);
+            case "E":
+                return new Commander(new String[]{Commander.ERASE, lba, value},
+                        null, null, new EraseModule());
+            case "R":
+                return new Commander(new String[]{Commander.READ, lba, value},
+                        new ReadModule(), null, null);
+        }
+        return null;
+    }
+
     private void reschedule(Commander newCommand) {
 
         if (this.commanders.isEmpty()) {
@@ -65,14 +82,12 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                 if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
 
                     if (baseLba == eraseStartLba) {
-                        Commander newEraseCommand = new Commander(new String[]{"E", String.valueOf(baseLba + 1), String.valueOf(size - 1)}, null, null, new EraseModule());
-                        reschedule(newEraseCommand);
+                        reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1)));
                     } else if (baseLba == (eraseStartLba + size - 1)) {
-                        Commander newEraseCommand = new Commander(new String[]{"E", String.valueOf(baseLba - 1), String.valueOf(size - 1)}, null, null, new EraseModule());
-                        reschedule(newEraseCommand);
+                        reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
                     } else {
-                        Commander newE1 = new Commander(new String[]{"E", String.valueOf(baseLba + 1), String.valueOf(size - 1)}, null, null, new EraseModule());
-                        Commander newE2 = new Commander(new String[]{"E", String.valueOf(baseLba - 1), String.valueOf(size - 1)}, null, null, new EraseModule());
+                        Commander newE1 = createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1));
+                        Commander newE2 = createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1));
                         reschedule(newE1);
                         reschedule(newE2);
                     }
