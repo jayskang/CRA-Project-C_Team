@@ -4,14 +4,13 @@ import command.Buffer;
 import command.Commander;
 import cores.SSDConstraint;
 import erase.EraseModule;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import read.ReadModule;
 import write.WriteModule;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +30,11 @@ class BufferTest {
     @Test
     void 기본_생성자() {
         assertNotNull(this.buffer);
+    }
+
+    @AfterEach
+    void tearDown() {
+        Buffer.resetInstance();
     }
 
     @Test
@@ -163,6 +167,17 @@ class BufferTest {
         }
         assertThat(commands.size()).isEqualTo(1);
         assertThat(commands.get(0)).isEqualTo(erase);
+    }
+
+    @Test
+    void E_명령어_단순병합() {
+        this.buffer.push(createCommand("E", "5", "3"));
+        this.buffer.push(createCommand("E", "7", "3"));
+
+        Commander actual = this.buffer.getCommanders().get(0);
+
+        assertThat(actual.getLba()).isEqualTo(5);
+        assertThat(actual.getInputData()).isEqualTo("6");
     }
 
     private Commander createCommand(String type, String lba, String value) {
