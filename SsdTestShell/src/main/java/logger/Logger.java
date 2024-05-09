@@ -1,9 +1,15 @@
 package logger;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,13 +20,17 @@ import java.util.List;
 import static constants.Logging.*;
 
 public class Logger {
-    private static BufferedWriter bw;
     private static Logger logger;
-    private static File file;
+    private static FileChannel fileChannel;
+    private static String beforeUntilLogFileName;
+    private static int untilFileSeqNum = 1;
 
     private Logger() throws IOException {
-        file = new File(LATEST_LOGFILE_NAME);
-        bw = new BufferedWriter(new FileWriter(file));
+        beforeUntilLogFileName = LATEST_LOGFILE_NAME;
+        fileChannel = FileChannel.open(
+                Paths.get(LATEST_LOGFILE_NAME)
+                , StandardOpenOption.CREATE
+                , StandardOpenOption.WRITE);
     }
 
     public static Logger makeLog() throws IOException {
@@ -30,13 +40,44 @@ public class Logger {
 
     public void print(String errMessage) throws IOException {
         StackTraceElement calledThread = Thread.currentThread().getStackTrace()[2];
-
         printAndWriteLog(getLogMessage(errMessage, calledThread));
 
-        if (isOver10KB()) {
-            seperateFileForManagingFileSize();
-            checkFileNumberAndZipOldestFile();
+//        if (isOver10KB()) {
+//            seperateFileForManagingFileSize_1();
+//            checkFileNumberAndZipOldestFile();
+//        }
+    }
+
+    private static void printAndWriteLog(String logMessage) throws IOException {
+        System.out.println(logMessage);
+        StringBuffer sb = new StringBuffer(logMessage + "\n");
+
+        // 10KByte가 넘어가면 바로 Write하지 않고 새로 생성해야 한다.
+        if ((fileChannel.size() + sb.toString().getBytes().length) / BYTES > MAX_FILE_SIZE) {
+            fileChannel.close();
+            try {
+                Path oldfile = Paths.get(LATEST_LOGFILE_NAME);
+                Path newfile = Paths.get(getNewLogfileName());
+                Files.move(oldfile, newfile);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+            fileChannel = FileChannel.open(
+                    Paths.get(LATEST_LOGFILE_NAME)
+                    , StandardOpenOption.CREATE
+                    , StandardOpenOption.WRITE);
         }
+
+        //파일 쓰기
+        Charset charset = StandardCharsets.UTF_8;
+        ByteBuffer buffer = charset.encode(sb.toString());
+
+        int byteCnt = fileChannel.write(buffer);
+        if(byteCnt == 0)
+            System.out.println("FileWrite Error");
+
+        checkFileNumberAndZipOldestFile();
+
     }
 
     private static String getLogMessage(String errMessage, StackTraceElement calledThread) {
@@ -48,27 +89,18 @@ public class Logger {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("'" + LOGGING_DATE_FORMAT));
     }
 
-    private static void printAndWriteLog(String logMessage) throws IOException {
-        System.out.println(logMessage);
-        bw.write(logMessage + "\n");
-        bw.flush();
-    }
-
-    private static boolean isOver10KB() {
-        return file.length() / BYTES >= MAX_FILE_SIZE;
-    }
-
-    private static void seperateFileForManagingFileSize() throws IOException {
-        bw.close();
-        File renameFile = new File(getNewLogfileName());
-        file.renameTo(renameFile);
-        bw = new BufferedWriter(new FileWriter(LATEST_LOGFILE_NAME, true));
-    }
 
     private static String getNewLogfileName() {
-        return SEPERATED_LOGFILE_PREFIX
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER))
-                + FILE_TYPE_LOG;
+        StringBuilder newSb = new StringBuilder();
+        newSb.append(SEPERATED_LOGFILE_PREFIX)
+                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER)))
+                .append(FILE_TYPE_LOG);
+
+        if(newSb.toString().equals(beforeUntilLogFileName)){
+            newSb.append(".").append(untilFileSeqNum++);
+        }
+        beforeUntilLogFileName = newSb.toString();
+        return newSb.toString();
     }
 
     private static void checkFileNumberAndZipOldestFile() {

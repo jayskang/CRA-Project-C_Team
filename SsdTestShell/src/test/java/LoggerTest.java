@@ -61,7 +61,6 @@ public class LoggerTest {
 
     @Test
     void 로그파일분리확인() throws IOException {
-
         for (int logCnt = 0; logCnt < 400; logCnt++) {
             log.print("test #" + logCnt);
         }
