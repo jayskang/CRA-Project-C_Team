@@ -48,6 +48,8 @@ public class Buffer {
         if(newCmdType.equals("W")) {
             if(this.dirty[newCommand.getLba()]) {
                 // TODO 같은 LBA 을 보고 있는 옛날 W 삭제
+                this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
+                this.dirty[newCommand.getLba()] = false;
             }
             this.commanders.add(newCommand);
         }

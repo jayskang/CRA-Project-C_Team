@@ -53,6 +53,19 @@ class BufferTest {
         assertThat(actual).isEqualTo(10);
     }
 
+    @Test
+    void 같은_LBA를_가지는_W_명령어가_입력되었을때() {
+        this.buffer.push(createCommand("W", "0", "0x11111111"));
+
+        Commander expected = createCommand("W", "0", "0x22222222");
+
+        this.buffer.push(expected);
+
+        Commander actual = this.buffer.getCommanders().get(0);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":
