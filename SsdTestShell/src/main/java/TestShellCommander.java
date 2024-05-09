@@ -25,6 +25,10 @@ public class TestShellCommander {
 
     public void runCommand() {
         Command command = CommandFactory.getCommand(args[0], ssdTestShell);
+        if(command == null) {
+            System.out.println("INVALID COMMAND");
+            return;
+        }
         command.setArgument(args);
         command.execute();
     }
