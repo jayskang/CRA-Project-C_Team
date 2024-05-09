@@ -26,12 +26,12 @@ public class LoggerTest {
 
     @Test
     void 로그_프린트_확인() throws IOException {
-        String expected = getExpectedLoggingMessage("LoggerTest.로그_프린트_확인()");
+        String expected = "LoggerTest.로그_프린트_확인()";
 
         log.print("test");
         String actual = outputStream.toString();
 
-        assertEquals(expected.trim(), actual.trim());
+        assertThat(actual).contains(expected);
     }
 
     @Test

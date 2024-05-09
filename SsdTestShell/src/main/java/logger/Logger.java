@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,12 +21,9 @@ import static constants.Logging.*;
 public class Logger {
     private static Logger logger;
     private static FileChannel fileChannel;
-    private static String beforeUntilLogFileName;
-    private static int untilFileSeqNum = 1;
     public static final int LOG_METHOD_NAME_MAX_SIZE = 40;
 
     private Logger() throws IOException {
-        beforeUntilLogFileName = LATEST_LOGFILE_NAME;
         fileChannel = FileChannel.open(
                 Paths.get(LATEST_LOGFILE_NAME)
                 , StandardOpenOption.CREATE
@@ -40,47 +36,54 @@ public class Logger {
     }
 
     public void print(String errMessage) throws IOException {
-        StackTraceElement calledThread = Thread.currentThread().getStackTrace()[2];
-        printAndWriteLog(getLogMessage(errMessage, calledThread));
+        StackTraceElement calledMethod = Thread.currentThread().getStackTrace()[2];
 
-//        if (isOver10KB()) {
-//            seperateFileForManagingFileSize_1();
-//            checkFileNumberAndZipOldestFile();
-//        }
+        loggingAndSeperate(getLogMessage(errMessage, calledMethod));
     }
 
-    private static void printAndWriteLog(String logMessage) throws IOException {
-        StringBuffer sb = new StringBuffer(logMessage + "\n");
+    private static void loggingAndSeperate(String logMessage) throws IOException {
 
-        if (isOver10KB(sb)) {
+        seperateLogFile(logMessage);
+        printAndWriteLog(logMessage);
+        checkFileNumberAndZipOldestFile();
+
+    }
+
+    private static void seperateLogFile(String logMessage) throws IOException {
+        StringBuffer messageBuffer = new StringBuffer(logMessage);
+        if (isOver10KB(messageBuffer)) {
             fileChannel.close();
             try {
                 Path oldfile = Paths.get(LATEST_LOGFILE_NAME);
                 Path newfile = Paths.get(getNewLogfileName());
                 Files.move(oldfile, newfile);
             } catch (IOException e) {
-                System.out.println(e.getMessage());
             }
-            fileChannel = FileChannel.open(
-                    Paths.get(LATEST_LOGFILE_NAME)
+            fileChannel = FileChannel.open(Paths.get(LATEST_LOGFILE_NAME)
                     , StandardOpenOption.CREATE
                     , StandardOpenOption.WRITE);
         }
-
-        ByteBuffer buffer = StandardCharsets.UTF_8.encode(sb.toString());
-
-        fileChannel.write(buffer);
-
-        checkFileNumberAndZipOldestFile();
-
     }
 
-    private static boolean isOver10KB(StringBuffer sb) throws IOException {
-        return (fileChannel.size() + sb.toString().getBytes().length) / BYTES >= MAX_FILE_SIZE;
+    private static void printAndWriteLog(String logMessage) throws IOException {
+        System.out.print(logMessage);
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(new StringBuffer(logMessage).toString());
+        fileChannel.write(buffer);
+    }
+
+    private static void checkFileNumberAndZipOldestFile() {
+        List<File> fileList = getExistsFileList();
+        if (isMoreThan2Files(fileList)) {
+            zipOldestFile(fileList);
+        }
     }
 
     private static String getLogMessage(String errMessage, StackTraceElement calledThread) {
-        return getDateForLogging() + " " + getFormattedMethodName(calledThread) + errMessage;
+        return getDateForLogging() + " " + getFormattedMethodName(calledThread) + errMessage +"\n";
+    }
+
+    private static String getDateForLogging() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("'" + LOGGING_DATE_FORMAT));
     }
 
     private static String getFormattedMethodName(StackTraceElement calledThread) {
@@ -95,30 +98,17 @@ public class Logger {
         return methodName;
     }
 
-    private static String getDateForLogging() {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("'" + LOGGING_DATE_FORMAT));
+    private static boolean isOver10KB(StringBuffer messageBuffer) throws IOException {
+        return (fileChannel.size() + messageBuffer.toString().getBytes().length) / BYTES
+                >= MAX_FILE_SIZE;
     }
-
 
     private static String getNewLogfileName() {
-        StringBuilder newSb = new StringBuilder();
-        newSb.append(SEPERATED_LOGFILE_PREFIX)
-                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER)))
-                .append(FILE_TYPE_LOG);
-
-        if (newSb.toString().equals(beforeUntilLogFileName)) {
-            newSb.append(".").append(untilFileSeqNum++);
-        }
-        beforeUntilLogFileName = newSb.toString();
-        return newSb.toString();
+        return SEPERATED_LOGFILE_PREFIX
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER))
+                + FILE_TYPE_LOG;
     }
 
-    private static void checkFileNumberAndZipOldestFile() {
-        List<File> fileList = getExistsFileList();
-        if (isMoreThan2Files(fileList)) {
-            zipOldestFile(fileList);
-        }
-    }
 
     private static List<File> getExistsFileList() {
         File directory = new File(FILE_PATH);
