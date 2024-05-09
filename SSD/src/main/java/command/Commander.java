@@ -19,7 +19,7 @@ public class Commander {
     private String inputData;
 
     public Commander(String[] args, ReadCore readCore, WriteCore writeCore, EraseCore eraseCore) {
-        if(isInvalidArgsCount(args)) {
+        if (isInvalidArgsCount(args)) {
             return;
         }
 
@@ -28,7 +28,7 @@ public class Commander {
         try {
             lba = Integer.parseInt(args[1]);
 
-            if(!command.equals(READ)) {
+            if (!command.equals(READ)) {
                 inputData = args[2];
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -45,7 +45,7 @@ public class Commander {
     }
 
     public void runCommand() {
-        if(isInvalidArgument()) {
+        if (isInvalidArgument()) {
             return;
         }
 
@@ -54,13 +54,13 @@ public class Commander {
                 readCore.read(lba);
                 break;
             case WRITE:
-                if(isInputDataIsNullOrEmpty()) {
+                if (isInputDataIsNullOrEmpty()) {
                     return;
                 }
                 writeCore.write(lba, inputData);
                 break;
             case ERASE:
-                if(isInputDataIsNullOrEmpty()) {
+                if (isInputDataIsNullOrEmpty()) {
                     return;
                 }
                 try {
@@ -84,10 +84,7 @@ public class Commander {
     @Override
     public String toString() {
         return "Commander{" +
-                "readCore=" + (readCore != null ? "O" : "X") +
-                ", writeCore=" + (writeCore != null ? "O" : "X") +
-                ", eraseCore=" + (eraseCore != null ? "O" : "X") +
-                ", command='" + command + '\'' +
+                "command='" + command + '\'' +
                 ", lba=" + lba +
                 ", inputData='" + inputData + '\'' +
                 '}';
