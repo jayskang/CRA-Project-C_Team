@@ -27,7 +27,9 @@ public class Logger {
         fileChannel = FileChannel.open(
                 Paths.get(LATEST_LOGFILE_NAME)
                 , StandardOpenOption.CREATE
-                , StandardOpenOption.WRITE);
+                , StandardOpenOption.WRITE
+                , StandardOpenOption.APPEND
+        );
     }
 
     public static Logger makeLog() throws IOException {
@@ -42,7 +44,6 @@ public class Logger {
     }
 
     private static void loggingAndSeperate(String logMessage) throws IOException {
-
         seperateLogFile(logMessage);
         printAndWriteLog(logMessage);
         checkFileNumberAndZipOldestFile();
@@ -58,6 +59,7 @@ public class Logger {
                 Path newfile = Paths.get(getNewLogfileName());
                 Files.move(oldfile, newfile);
             } catch (IOException e) {
+                throw new IOException(e.getMessage());
             }
             fileChannel = FileChannel.open(Paths.get(LATEST_LOGFILE_NAME)
                     , StandardOpenOption.CREATE
