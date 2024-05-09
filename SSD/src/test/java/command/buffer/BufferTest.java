@@ -73,7 +73,7 @@ class BufferTest {
     }
 
     @Test
-    void 같은_LBA를_까지는_W_명령어가_여러개_입력되었을때() throws IOException {
+    void 같은_LBA를_가지는_W_명령어가_여러개_입력되었을때() throws IOException {
         this.buffer.push(createCommand("W", "0", "0x11111111"));
         this.buffer.push(createCommand("W", "1", "0x22222222"));
         this.buffer.push(createCommand("W", "3", "0x33333333"));
@@ -113,6 +113,20 @@ class BufferTest {
         boolean actual = this.buffer.hit(createCommand("R", "1", null));
 
         assertThat(actual).isEqualTo(false);
+    }
+
+    @Test
+    void W_명령어_입력시_버퍼에_E_명령어_재조정() {
+        this.buffer.push(createCommand("E", "0", "2"));
+        this.buffer.push(createCommand("W", "0", "0x11111111"));
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+
+        Commander e = commands.get(0);
+        Commander w = commands.get(1);
+
+        assertThat(Commander.ERASE).isEqualTo(e.getCommand());
+        assertThat(Commander.WRITE).isEqualTo(w.getCommand());
     }
 
     private Commander createCommand(String type, String lba, String value) {

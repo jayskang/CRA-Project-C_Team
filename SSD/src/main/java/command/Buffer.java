@@ -3,6 +3,7 @@ package command;
 import cores.CommandBufferConstraint;
 import cores.SSDCommonUtils;
 import cores.SSDConstraint;
+import erase.EraseModule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,20 +41,48 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     private void reschedule(Commander newCommand) {
 
         if (this.commanders.isEmpty()) {
-            this.dirty[newCommand.getLba()] = true;
+            if (newCommand.getCommand().equals(Commander.WRITE)) {
+                this.dirty[newCommand.getLba()] = true;
+            }
             this.commanders.add(newCommand);
             return;
         }
         String newCmdType = newCommand.getCommand();
 
-        if (newCmdType.equals("W")) {
-            if (this.dirty[newCommand.getLba()]) {
-                this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
+        if (newCmdType.equals(Commander.WRITE)) {
+            Commander latestCmd = this.commanders.get(this.commanders.size() - 1);
+
+            if (latestCmd.getCommand().equals(Commander.WRITE)) {
+                if (this.dirty[newCommand.getLba()]) {
+                    this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
+                }
+            } else if (latestCmd.getCommand().equals(Commander.ERASE)) {
+                Commander eraseCmd = this.commanders.remove(this.commanders.size() - 1);
+                int baseLba = newCommand.getLba();
+                int eraseStartLba = eraseCmd.getLba();
+                int size = Integer.parseInt(eraseCmd.getInputData());
+
+                if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
+
+                    if (baseLba == eraseStartLba) {
+                        Commander newEraseCommand = new Commander(new String[]{"E", String.valueOf(baseLba + 1), String.valueOf(size - 1)}, null, null, new EraseModule());
+                        reschedule(newEraseCommand);
+                    } else if (baseLba == (eraseStartLba + size - 1)) {
+                        Commander newEraseCommand = new Commander(new String[]{"E", String.valueOf(baseLba - 1), String.valueOf(size - 1)}, null, null, new EraseModule());
+                        reschedule(newEraseCommand);
+                    } else {
+                        Commander newE1 = new Commander(new String[]{"E", String.valueOf(baseLba + 1), String.valueOf(size - 1)}, null, null, new EraseModule());
+                        Commander newE2 = new Commander(new String[]{"E", String.valueOf(baseLba - 1), String.valueOf(size - 1)}, null, null, new EraseModule());
+                        reschedule(newE1);
+                        reschedule(newE2);
+                    }
+                }
             }
             this.commanders.add(newCommand);
             this.dirty[newCommand.getLba()] = true;
         } else {
             // TODO Erase 처리
+            this.commanders.add(newCommand);
         }
     }
 
