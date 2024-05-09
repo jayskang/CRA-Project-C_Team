@@ -24,6 +24,7 @@ public class Logger {
     private static FileChannel fileChannel;
     private static String beforeUntilLogFileName;
     private static int untilFileSeqNum = 1;
+    public static final int LOG_METHOD_NAME_MAX_SIZE = 40;
 
     private Logger() throws IOException {
         beforeUntilLogFileName = LATEST_LOGFILE_NAME;
@@ -49,11 +50,9 @@ public class Logger {
     }
 
     private static void printAndWriteLog(String logMessage) throws IOException {
-        System.out.println(logMessage);
         StringBuffer sb = new StringBuffer(logMessage + "\n");
 
-        // 10KByte가 넘어가면 바로 Write하지 않고 새로 생성해야 한다.
-        if ((fileChannel.size() + sb.toString().getBytes().length) / BYTES >= MAX_FILE_SIZE) {
+        if (isOver10KB(sb)) {
             fileChannel.close();
             try {
                 Path oldfile = Paths.get(LATEST_LOGFILE_NAME);
@@ -68,21 +67,32 @@ public class Logger {
                     , StandardOpenOption.WRITE);
         }
 
-        //파일 쓰기
-        Charset charset = StandardCharsets.UTF_8;
-        ByteBuffer buffer = charset.encode(sb.toString());
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(sb.toString());
 
-        int byteCnt = fileChannel.write(buffer);
-        if(byteCnt == 0)
-            System.out.println("FileWrite Error");
+        fileChannel.write(buffer);
 
         checkFileNumberAndZipOldestFile();
 
     }
 
+    private static boolean isOver10KB(StringBuffer sb) throws IOException {
+        return (fileChannel.size() + sb.toString().getBytes().length) / BYTES >= MAX_FILE_SIZE;
+    }
+
     private static String getLogMessage(String errMessage, StackTraceElement calledThread) {
-        return getDateForLogging() + " " + calledThread.getClassName() + "." +
-                calledThread.getMethodName() + "()" + "\t" + errMessage;
+        return getDateForLogging() + " " + getFormattedMethodName(calledThread) + errMessage;
+    }
+
+    private static String getFormattedMethodName(StackTraceElement calledThread) {
+        return String.format("%-" + LOG_METHOD_NAME_MAX_SIZE + "s", getMethodName(calledThread)).replace(" ", " ");
+    }
+
+    private static String getMethodName(StackTraceElement calledThread) {
+        String methodName = calledThread.getClassName() + "." + calledThread.getMethodName() + "()";
+        if (methodName.length() >= LOG_METHOD_NAME_MAX_SIZE) {
+            methodName = methodName.substring(0, LOG_METHOD_NAME_MAX_SIZE);
+        }
+        return methodName;
     }
 
     private static String getDateForLogging() {
@@ -96,7 +106,7 @@ public class Logger {
                 .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER)))
                 .append(FILE_TYPE_LOG);
 
-        if(newSb.toString().equals(beforeUntilLogFileName)){
+        if (newSb.toString().equals(beforeUntilLogFileName)) {
             newSb.append(".").append(untilFileSeqNum++);
         }
         beforeUntilLogFileName = newSb.toString();
