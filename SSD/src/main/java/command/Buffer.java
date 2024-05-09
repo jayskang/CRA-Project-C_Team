@@ -42,14 +42,14 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
-            case "W":
-                return new Commander(new String[]{Commander.WRITE, lba, value},
+            case Commander.WRITE:
+                return new Commander(new String[]{type, lba, value},
                         null, new WriteModule(), null);
-            case "E":
-                return new Commander(new String[]{Commander.ERASE, lba, value},
+            case Commander.ERASE:
+                return new Commander(new String[]{type, lba, value},
                         null, null, new EraseModule());
-            case "R":
-                return new Commander(new String[]{Commander.READ, lba, value},
+            case Commander.READ:
+                return new Commander(new String[]{type, lba, value},
                         new ReadModule(), null, null);
         }
         return null;
@@ -75,6 +75,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                 }
             } else if (latestCmd.getCommand().equals(Commander.ERASE)) {
                 Commander eraseCmd = this.commanders.remove(this.commanders.size() - 1);
+
                 int baseLba = newCommand.getLba();
                 int eraseStartLba = eraseCmd.getLba();
                 int size = Integer.parseInt(eraseCmd.getInputData());
