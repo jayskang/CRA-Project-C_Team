@@ -49,8 +49,22 @@ public class SsdTestShell implements ISsdCommand{
         }
     }
 
-    private boolean isLbaOutOfRange(int param) {
-        return param > MAX_LBA || param < MIN_LBA;
+    private void checkIsEraseRangeEndLbaValid(String lba) throws IllegalArgumentException{
+        try {
+            int lbaNum = Integer.parseInt(lba);
+            if(isEraseEndLbaOutOfRange(lbaNum))
+                throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
+        }
+    }
+
+    private boolean isLbaOutOfRange(int lba) {
+        return lba > MAX_LBA || lba < MIN_LBA;
+    }
+
+    private boolean isEraseEndLbaOutOfRange(int endLba) {
+        return endLba > MAX_LBA + 1 || endLba < MIN_LBA + 1;
     }
 
     @Override
@@ -60,6 +74,19 @@ public class SsdTestShell implements ISsdCommand{
             list.add(ssd.read(String.valueOf(lba)));
         }
         return list;
+    }
+
+    @Override
+    public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
+        checkStartEndLbaValue(startLba, endLba);
+        erase(startLba, String.valueOf(Integer.parseInt(endLba) - Integer.parseInt(startLba)));
+    }
+
+    private void checkStartEndLbaValue(String startLba, String endLba) {
+        checkIsLbaValid(startLba);
+        checkIsEraseRangeEndLbaValid(endLba);
+        if (Integer.parseInt(startLba) >= Integer.parseInt(endLba))
+            throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
     }
 
     @Override
@@ -106,19 +133,10 @@ public class SsdTestShell implements ISsdCommand{
     private void checkIsEraseSizeValid(String size) throws IllegalArgumentException {
         try {
             int eraseSizeNum = Integer.parseInt(size);
-            if(isSizeOutOfRange(eraseSizeNum))
+            if(eraseSizeNum < MIN_ERASE_SIZE)
                 throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(ERROR_MSG_INVALID_COMMAND);
         }
-    }
-
-    private boolean isSizeOutOfRange(int eraseSizeNum) {
-        return eraseSizeNum < MIN_ERASE_SIZE;
-    }
-
-    @Override
-    public void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException {
-        // TODO
     }
 }

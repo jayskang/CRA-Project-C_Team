@@ -341,4 +341,94 @@ class SsdTestShellTest {
         shell.erase("95", "17");
         verify(mockSsd, times(1)).erase("95","5");
     }
+    @Test
+    void eraserange_정상_Start_LBA_정상_End_LBA() throws IOException {
+        shell.eraserange("0", "1");
+        verify(mockSsd, times(1)).erase("0","1");
+    }
+
+    @Test
+    void eraserange_음수_Start_LBA_정상_End_LBA() throws IOException {
+        assertThatThrownBy(()->{
+            shell.eraserange("-1", "1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_정상_Start_LBA_음수_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "-1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_문자_Start_LBA_정상_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange("AA", "1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_정상_Start_LBA_문자_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "AA");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_Start_LBA_End_LBA_값_역전(){
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "0");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+
+        assertThatThrownBy(()->{
+            shell.eraserange("1", "1");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_Null_Start_LBA_Null_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange(null, null);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_정상_Start_LBA_100초과_End_LBA(){
+        assertThatThrownBy(()->{
+            shell.eraserange("0", "101");
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(INVALID_COMMAND_STRING);
+    }
+
+    @Test
+    void eraserange_Start_End_분할명령_실행() throws IOException {
+        shell.eraserange("0", "11");
+        verify(mockSsd, times(1)).erase("0", "10");
+        verify(mockSsd, times(1)).erase("10", "1");
+    }
+
+    @Test
+    void eraserange_Start_End_분할명령_실행_Full() throws IOException {
+        shell.eraserange("0", "100");
+        for(int i = 0; i < 100; i += 10){
+            verify(mockSsd, times(1)).erase(String.valueOf(i), "10");
+        }
+    }
+
+    @Test
+    void eraserange_Start_0_End_98_분할명령_실행() throws IOException {
+        shell.eraserange("0", "99");
+        for(int i = 0; i < 90; i += 10)
+            verify(mockSsd, times(1)).erase(String.valueOf(i), "10");
+
+        verify(mockSsd, times(1)).erase(String.valueOf("90"), "9");
+    }
 }

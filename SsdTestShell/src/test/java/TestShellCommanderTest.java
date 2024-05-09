@@ -230,7 +230,139 @@ class TestShellCommanderTest {
         verify(ssdTestShell, times(1)).fullread();
     }
 
+    @Test
+    void testapp1_help_호출() {
+        getCommander(new String[]{"help", "testapp1"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: testapp1" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp1_매개변수_있을때() {
+        getCommander(new String[]{"testapp1", "wrong"});
+        testShellCommander.runCommand();
+
+        String expected = "testapp1 command need no arguments. Please check Input." + System.lineSeparator();
+        expected += "Usage: testapp1" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp1_호출() {
+        getRealCommander(new String[]{"testapp1"});
+        testShellCommander.runCommand();
+
+        String expected = "TestApp1...PASS!" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp1_실패하도록_호출() {
+        getCommander(new String[]{"testapp1"});
+        testShellCommander.runCommand();
+
+        String expected = "TestApp1...FAIL!" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp2_help_호출() {
+        getCommander(new String[]{"help", "testapp2"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: testapp2" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp2_매개변수_있을때() {
+        getCommander(new String[]{"testapp2", "wrong"});
+        testShellCommander.runCommand();
+
+        String expected = "testapp2 command need no arguments. Please check Input." + System.lineSeparator();
+        expected += "Usage: testapp2" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp2_호출() {
+        getRealCommander(new String[]{"testapp2"});
+        testShellCommander.runCommand();
+
+        String expected = "TestApp2...PASS!" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void testapp2_실패하도록_호출() {
+        getCommander(new String[]{"testapp2"});
+        testShellCommander.runCommand();
+
+        String expected = "TestApp2...FAIL!" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void 없는명령어_실행할_떄() {
+        getCommander(new String[]{"wrong"});
+        testShellCommander.runCommand();
+
+        String expected = "INVALID COMMAND" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void erase_help_호출() {
+        getCommander(new String[]{"help", "erase"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: erase [lba] [size]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void erase_매개변수_없을때() {
+        getCommander(new String[]{"erase"});
+        testShellCommander.runCommand();
+
+        String expected = "erase need lba and size." + System.lineSeparator();
+        expected += "Usage: erase [lba] [size]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void erase_실행() throws IOException {
+        getCommander(new String[]{"erase", "0", "2"});
+        testShellCommander.runCommand();
+
+        verify(ssdTestShell, times(1)).erase("0", "2");
+    }
+
     private void getCommander(String[] args) {
+        testShellCommander = new TestShellCommander(args, ssdTestShell);
+        if(!testShellCommander.isValidArgumentLength()) {
+            testShellCommander = null;
+        }
+    }
+
+    private void getRealCommander(String[] args) {
+        SsdTestShell ssdTestShell = new SsdTestShell();
+        SSDExecutor ssdExecutor = new SSDExecutor();
+        ssdExecutor.setResultFileReader(new SSDResultFileReader());
+        ssdTestShell.setSsd(ssdExecutor);
         testShellCommander = new TestShellCommander(args, ssdTestShell);
         if(!testShellCommander.isValidArgumentLength()) {
             testShellCommander = null;

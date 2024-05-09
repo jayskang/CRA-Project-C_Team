@@ -1,3 +1,5 @@
+import constants.Messages;
+
 import static java.lang.System.exit;
 
 public class TestShellCommander {
@@ -25,6 +27,10 @@ public class TestShellCommander {
 
     public void runCommand() {
         Command command = CommandFactory.getCommand(args[0], ssdTestShell);
+        if(command == null) {
+            System.out.println(Messages.ERROR_MSG_INVALID_COMMAND);
+            return;
+        }
         command.setArgument(args);
         command.execute();
     }
