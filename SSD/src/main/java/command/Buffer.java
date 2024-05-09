@@ -13,7 +13,7 @@ import java.util.Optional;
 import static cores.CommandBufferConstraint.*;
 import static cores.SSDConstraint.RESULT_FILENAME;
 
-public class Buffer extends SSDCommonUtils {
+public class Buffer extends SSDCommonUtils implements BufferCore {
 
     private final ArrayList<Commander> commanders;
     private boolean[] dirty;
@@ -37,11 +37,6 @@ public class Buffer extends SSDCommonUtils {
         return Buffer.instance;
     }
 
-    public void flush() {
-        this.commanders.forEach(Commander::runCommand);
-        this.commanders.clear();
-    }
-
     private void reschedule(Commander newCommand) {
 
         if (this.commanders.isEmpty()) {
@@ -62,6 +57,13 @@ public class Buffer extends SSDCommonUtils {
         }
     }
 
+    @Override
+    public void flush() {
+        this.commanders.forEach(Commander::runCommand);
+        this.commanders.clear();
+    }
+
+    @Override
     public boolean hit(Commander newCommand) {
         Optional<Commander> foundCommand = this.commanders.stream()
                 .filter(command -> command.getLba() == newCommand.getLba())
@@ -76,6 +78,7 @@ public class Buffer extends SSDCommonUtils {
         return false;
     }
 
+    @Override
     public void push(Commander command) {
         if (this.commanders.size() == MAX_SIZE) {
             flush();
