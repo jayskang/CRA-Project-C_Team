@@ -1,6 +1,7 @@
 package command;
 
 import cores.CommandBufferConstraint;
+import cores.SSDCommonUtils;
 import cores.SSDConstraint;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import static cores.CommandBufferConstraint.*;
 import static cores.SSDConstraint.RESULT_FILENAME;
 
-public class Buffer {
+public class Buffer extends SSDCommonUtils {
 
     private final ArrayList<Commander> commanders;
     private boolean[] dirty;
@@ -20,6 +21,7 @@ public class Buffer {
     private static volatile Buffer instance = null;
 
     private Buffer() {
+        super();
         this.commanders = new ArrayList<>(MAX_SIZE);
         this.dirty = new boolean[SSDConstraint.MAX_BOUNDARY];
     }
@@ -68,12 +70,7 @@ public class Buffer {
         // 결과 출력
         if (foundCommand.isPresent()) {
             Commander findCommand = foundCommand.get();
-            try {
-                FileWriter fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
-                fileWriter.write(findCommand.getInputData());
-                fileWriter.close();
-            } catch (IOException ignored) {
-            }
+            this.writeToFile(RESULT_FILENAME, findCommand.getInputData());
             return true;
         }
         return false;
