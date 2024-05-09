@@ -28,14 +28,18 @@ public class Logger {
         return logger;
     }
 
-    public void print(String errMessage) throws IOException {
+    public void print(String errMessage) {
         StackTraceElement calledThread = Thread.currentThread().getStackTrace()[2];
 
-        printAndWriteLog(getLogMessage(errMessage, calledThread));
+        try {
+            printAndWriteLog(getLogMessage(errMessage, calledThread));
 
-        if (isOver10KB()) {
-            seperateFileForManagingFileSize();
-            checkFileNumberAndZipOldestFile();
+            if (isOver10KB()) {
+                seperateFileForManagingFileSize();
+                checkFileNumberAndZipOldestFile();
+            }
+        } catch (Exception e){
+
         }
     }
 

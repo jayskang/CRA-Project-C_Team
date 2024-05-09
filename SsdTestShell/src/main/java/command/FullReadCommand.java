@@ -22,10 +22,10 @@ public class FullReadCommand extends AbstractCommand {
         try {
             ArrayList<String> resultList = ssdTestShell.fullread();
             for(int i = 0; i < resultList.size(); i++) {
-                System.out.println(i + " " + resultList.get(i));
+                logger.print(i + " " + resultList.get(i));
             }
         } catch (IllegalArgumentException | IOException e) {
-            System.out.println(e.getMessage());
+            logger.print(e.getMessage());
         }
     }
 

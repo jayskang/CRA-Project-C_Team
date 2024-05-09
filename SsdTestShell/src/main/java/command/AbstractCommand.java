@@ -1,14 +1,26 @@
 package command;
 
+import logger.Logger;
 import shell.ISsdCommand;
 
+import java.io.IOException;
+
+import static constants.Messages.ERR_LOGGER_INSTANCE_ALLOC_FAIL;
+
 public abstract class AbstractCommand implements Command {
+
+    Logger logger;
     protected String ERROR_MESSAGE = "";
     protected String HELP_MASSAGE = "";
     protected String[] args;
     protected ISsdCommand ssdTestShell;
 
     public AbstractCommand() {
+        try{
+            logger = Logger.makeLog();
+        } catch (IOException e){
+            System.out.println(ERR_LOGGER_INSTANCE_ALLOC_FAIL);
+        }
     }
 
     public AbstractCommand(ISsdCommand ssdTestShell) {
@@ -25,13 +37,13 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void printError() {
-        System.out.println(ERROR_MESSAGE);
+        logger.print(ERROR_MESSAGE);
         printHelpMessage();
     }
 
     @Override
     public void printHelpMessage() {
-        System.out.println(HELP_MASSAGE);
+        logger.print(HELP_MASSAGE);
     }
 
     @Override

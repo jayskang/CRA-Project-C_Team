@@ -19,9 +19,9 @@ public class ReadCommand extends AbstractCommand {
         }
 
         try {
-            System.out.println(ssdTestShell.read(args[1]));
+            logger.print(ssdTestShell.read(args[1]));
         } catch (IllegalArgumentException | IOException e) {
-            System.out.println(e.getMessage());
+            logger.print(e.getMessage());
         }
     }
 
