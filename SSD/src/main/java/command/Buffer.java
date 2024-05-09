@@ -79,7 +79,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         int targetSize = Integer.parseInt(target.getInputData());
         int diff = Math.abs((baseLba + baseSize) - (targetLba + targetSize));
 
-        if (MAX_ERASE_SIZE < Math.min(baseSize, targetSize) + diff) {
+        if (MAX_ERASE_SIZE < Math.max(baseSize, targetSize) + diff) {
             return false;
         } else if ((targetLba + targetSize) < baseLba) {
             return false;

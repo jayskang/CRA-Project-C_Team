@@ -192,6 +192,28 @@ class BufferTest {
         assertThat(actual.getInputData()).isEqualTo("6");
     }
 
+    @Test
+    void E_명령어_복합_병합동작검사() {
+        this.buffer.push(createCommand("E", "3", "3"));
+        this.buffer.push(createCommand("E", "4", "5"));
+        this.buffer.push(createCommand("E", "7", "6"));
+        this.buffer.push(createCommand("E", "13", "3"));
+
+        int[] lba = new int[]{3, 13};
+        String[] size = new String[]{"10", "3"};
+
+        for(int i = 0; i < 2; i += 1) {
+            try {
+                Commander command = this.buffer.getCommanders().get(i);
+
+                assertThat(command.getLba()).isEqualTo(lba[i]);
+                assertThat(command.getInputData()).isEqualTo(size[i]);
+            } catch (IndexOutOfBoundsException e) {
+                fail();
+            }
+        }
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":
