@@ -1,3 +1,7 @@
+package scenario;
+
+import shell.ISsdCommand;
+
 import java.io.IOException;
 
 public class TestApp2 implements TestScenario {

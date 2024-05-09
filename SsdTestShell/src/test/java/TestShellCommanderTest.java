@@ -1,10 +1,15 @@
 import com.github.stefanbirkner.systemlambda.SystemLambda;
+import shell.ISsdCommand;
+import command.TestShellCommander;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import shell.SSDExecutor;
+import shell.SSDResultFileReader;
+import shell.SsdTestShell;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,7 +49,7 @@ class TestShellCommanderTest {
     void 입력된_명령어가_없을때() {
         getCommander(new String[]{});
 
-        String expected = "There is no command. Please Input Command." + System.lineSeparator();
+        String expected = "There is no command. Please Input command.Command." + System.lineSeparator();
 
         assertOutput(expected);
     }
@@ -256,7 +261,7 @@ class TestShellCommanderTest {
         getRealCommander(new String[]{"testapp1"});
         testShellCommander.runCommand();
 
-        String expected = "TestApp1...PASS!" + System.lineSeparator();
+        String expected = "scenario.TestApp1...PASS!" + System.lineSeparator();
 
         assertOutput(expected);
     }
@@ -266,7 +271,7 @@ class TestShellCommanderTest {
         getCommander(new String[]{"testapp1"});
         testShellCommander.runCommand();
 
-        String expected = "TestApp1...FAIL!" + System.lineSeparator();
+        String expected = "scenario.TestApp1...FAIL!" + System.lineSeparator();
 
         assertOutput(expected);
     }
@@ -297,7 +302,7 @@ class TestShellCommanderTest {
         getRealCommander(new String[]{"testapp2"});
         testShellCommander.runCommand();
 
-        String expected = "TestApp2...PASS!" + System.lineSeparator();
+        String expected = "scenario.TestApp2...PASS!" + System.lineSeparator();
 
         assertOutput(expected);
     }
@@ -307,7 +312,7 @@ class TestShellCommanderTest {
         getCommander(new String[]{"testapp2"});
         testShellCommander.runCommand();
 
-        String expected = "TestApp2...FAIL!" + System.lineSeparator();
+        String expected = "scenario.TestApp2...FAIL!" + System.lineSeparator();
 
         assertOutput(expected);
     }

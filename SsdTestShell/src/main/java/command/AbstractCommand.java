@@ -1,8 +1,15 @@
+package command;
+
+import shell.ISsdCommand;
+
 public abstract class AbstractCommand implements Command {
     protected String ERROR_MESSAGE = "";
     protected String HELP_MASSAGE = "";
     protected String[] args;
     protected ISsdCommand ssdTestShell;
+
+    public AbstractCommand() {
+    }
 
     public AbstractCommand(ISsdCommand ssdTestShell) {
         this.ssdTestShell = ssdTestShell;

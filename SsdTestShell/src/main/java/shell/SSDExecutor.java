@@ -1,3 +1,5 @@
+package shell;
+
 import java.io.IOException;
 
 import static constants.Command.*;
@@ -14,7 +16,7 @@ public class SSDExecutor {
     public void setSsdProgramPath(String ssdProgramPath) {
         this.ssdProgramPath = ssdProgramPath;
     }
-    void setResultFileReader(SSDResultFileReader reader){
+    public void setResultFileReader(SSDResultFileReader reader){
         this.resultFileReader = reader;
     }
 
