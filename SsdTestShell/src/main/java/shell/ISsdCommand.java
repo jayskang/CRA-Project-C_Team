@@ -10,4 +10,5 @@ public interface ISsdCommand {
     ArrayList<String> fullread() throws IllegalArgumentException, IOException;
     void erase(String lba, String size) throws IllegalArgumentException, IOException;
     void eraserange(String startLba, String endLba) throws IllegalArgumentException, IOException;
+    void flush() throws IOException;
 }

@@ -46,6 +46,11 @@ public class SsdTestShell implements ISsdCommand {
     }
 
     @Override
+    public void flush() throws IOException {
+        ssd.flush();
+    }
+
+    @Override
     public void erase(String lba, String size) throws IllegalArgumentException, IOException {
         checkEraseValid(lba, size);
 
