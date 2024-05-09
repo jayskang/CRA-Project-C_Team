@@ -1,5 +1,7 @@
 package write;
 
+import command.Buffer;
+import command.Commander;
 import cores.SSDCommonUtils;
 import cores.SSDConstraint;
 
@@ -35,5 +37,11 @@ public class WriteModule extends SSDCommonUtils implements WriteCore {
                 this.fileWriter.store(lba, value);
             }
         }
+    }
+
+    @Override
+    public void bufferWrite(int lba, String value) {
+        Buffer buffer = Buffer.getInstance();
+        buffer.push(new Commander(new String[]{"W", String.valueOf(lba), value}, null, new WriteModule(), null));
     }
 }

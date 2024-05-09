@@ -206,9 +206,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     }
 
     @Override
-    public boolean hit(Commander newCommand) {
+    public boolean hit(int lba) {
         Optional<Commander> foundCommand = this.commanders.stream()
-                .filter(command -> command.getLba() == newCommand.getLba())
+                .filter(command -> command.getLba() == lba)
                 .findFirst();
 
         // 결과 출력

@@ -91,7 +91,7 @@ class BufferTest {
         String[] checkLbaList = new String[]{"0", "1", "4"};
         String[] values = new String[]{"0xFFFFFFFF", "0xEEEEEEEE", "0xBBBBBBBB"};
         for (int i = 0; i < 3; i += 1) {
-            boolean hit = this.buffer.hit(createCommand("R", checkLbaList[i], null));
+            boolean hit = this.buffer.hit(Integer.parseInt(checkLbaList[i]));
 
             if (hit) {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(SSDConstraint.RESULT_FILENAME));
@@ -107,7 +107,7 @@ class BufferTest {
     @Test
     void R_명령어가_HIT_일때() {
         this.buffer.push(createCommand("W", "0", "0x11111111"));
-        boolean actual = this.buffer.hit(createCommand("R", "0", null));
+        boolean actual = this.buffer.hit(0);
 
         assertThat(actual).isEqualTo(true);
     }
@@ -115,7 +115,7 @@ class BufferTest {
     @Test
     void R_명령어가_MISS_일때() {
         this.buffer.push(createCommand("W", "0", "0x11111111"));
-        boolean actual = this.buffer.hit(createCommand("R", "1", null));
+        boolean actual = this.buffer.hit(1);
 
         assertThat(actual).isEqualTo(false);
     }

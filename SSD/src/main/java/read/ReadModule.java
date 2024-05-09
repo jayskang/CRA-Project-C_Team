@@ -1,5 +1,7 @@
 package read;
 
+import command.Buffer;
+import command.Commander;
 import cores.SSDCommonUtils;
 
 import java.io.File;
@@ -21,6 +23,17 @@ public class ReadModule extends SSDCommonUtils implements ReadCore {
             try {
                 this.writeToFile(RESULT_FILENAME, getResult(lba));
             } catch (IOException ignored) {
+            }
+        }
+    }
+
+    @Override
+    public void bufferRead(int lba) {
+        if (this.checkLbaBoundary(lba)) {
+            Buffer buffer = Buffer.getInstance();
+
+            if(!buffer.hit(lba)) {
+                read(lba);
             }
         }
     }

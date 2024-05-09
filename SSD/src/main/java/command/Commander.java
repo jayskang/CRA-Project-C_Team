@@ -51,13 +51,13 @@ public class Commander {
 
         switch (command) {
             case READ:
-                readCore.read(lba);
+                readCore.bufferRead(lba);
                 break;
             case WRITE:
                 if (isInputDataIsNullOrEmpty()) {
                     return;
                 }
-                writeCore.write(lba, inputData);
+                writeCore.bufferWrite(lba, inputData);
                 break;
             case ERASE:
                 if (isInputDataIsNullOrEmpty()) {
