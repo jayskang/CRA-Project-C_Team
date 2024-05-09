@@ -158,6 +158,7 @@ public class ssdFullTest {
 
     @Test
     void 값이_16진수를_벗어났을경우() {
+        writeDataToAddressAndRead(0, "0x00000000");
         writeDataToAddressAndRead(0, "0x0000000G");
         assertThat(getReadResult()).isEqualTo("0x00000000");
     }
