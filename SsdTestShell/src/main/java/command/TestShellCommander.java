@@ -1,6 +1,6 @@
-import constants.Messages;
+package command;
 
-import static java.lang.System.exit;
+import constants.Messages;
 
 public class TestShellCommander {
     private String[] args;
@@ -13,7 +13,7 @@ public class TestShellCommander {
 
     public boolean isValidArgumentLength() {
         if(args.length == 0) {
-            System.out.println("There is no command. Please Input Command.");
+            System.out.println("There is no command. Please Input command.Command.");
             return false;
         }
 

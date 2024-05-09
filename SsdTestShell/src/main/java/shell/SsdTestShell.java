@@ -1,10 +1,14 @@
+package shell;
+
+import command.ISsdCommand;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static constants.Command.*;
 import static constants.Messages.ERROR_MSG_INVALID_COMMAND;
 
-public class SsdTestShell implements ISsdCommand{
+public class SsdTestShell implements ISsdCommand {
     public static final int MIN_ERASE_SIZE = 1;
     public static final int MAX_SSD_ERASE_SIZE = 10;
     private SSDExecutor ssd;

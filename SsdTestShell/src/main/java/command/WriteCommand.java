@@ -1,10 +1,12 @@
+package command;
+
 import java.io.IOException;
 
-public class ReadCommand extends AbstractCommand {
-    public ReadCommand(ISsdCommand ssdTestShell) {
+public class WriteCommand extends AbstractCommand {
+    public WriteCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
-        ERROR_MESSAGE = "Write need LBA.";
-        HELP_MASSAGE = "Usage: read [LBA]";
+        ERROR_MESSAGE = "Write need LBA and data.";
+        HELP_MASSAGE = "Usage: write [LBA] [data]";
     }
 
     @Override
@@ -15,7 +17,7 @@ public class ReadCommand extends AbstractCommand {
         }
 
         try {
-            System.out.println(ssdTestShell.read(args[1]));
+            ssdTestShell.write(args[1], args[2]);
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
@@ -23,6 +25,6 @@ public class ReadCommand extends AbstractCommand {
 
     @Override
     public boolean isInvalidArguments() {
-        return args.length < 2;
+        return args.length < 3;
     }
 }

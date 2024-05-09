@@ -1,10 +1,12 @@
+package command;
+
 import java.io.IOException;
 
-public class WriteCommand extends AbstractCommand {
-    public WriteCommand(ISsdCommand ssdTestShell) {
+public class EraseCommand extends AbstractCommand {
+    public EraseCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
-        ERROR_MESSAGE = "Write need LBA and data.";
-        HELP_MASSAGE = "Usage: write [LBA] [data]";
+        ERROR_MESSAGE = "erase need lba and size.";
+        HELP_MASSAGE = "Usage: erase [lba] [size]";
     }
 
     @Override
@@ -15,7 +17,7 @@ public class WriteCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.write(args[1], args[2]);
+            ssdTestShell.erase(args[1], args[2]);
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }

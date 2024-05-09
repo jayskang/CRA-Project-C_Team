@@ -1,3 +1,5 @@
+package command;
+
 public class HelpCommand extends AbstractCommand {
 
     public HelpCommand(ISsdCommand ssdTestShell) {

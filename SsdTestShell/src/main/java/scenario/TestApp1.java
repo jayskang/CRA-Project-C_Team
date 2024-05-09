@@ -1,3 +1,7 @@
+package scenario;
+
+import command.ISsdCommand;
+
 import java.util.ArrayList;
 
 public class TestApp1 implements TestScenario {

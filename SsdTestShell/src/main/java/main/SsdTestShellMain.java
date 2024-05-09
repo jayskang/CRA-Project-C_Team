@@ -1,3 +1,11 @@
+package main;
+
+import command.TestShellCommander;
+import runner.TestRunner;
+import shell.SSDExecutor;
+import shell.SSDResultFileReader;
+import shell.SsdTestShell;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -45,7 +53,7 @@ public class SsdTestShellMain {
     private static void printInitMessage() {
         StringBuilder builder = new StringBuilder();
         builder.append("SSD Test Shell Application").append(System.lineSeparator());
-        builder.append("-------Command List-------").append(System.lineSeparator());
+        builder.append("-------command.Command List-------").append(System.lineSeparator());
         builder.append("write").append(System.lineSeparator());
         builder.append("read").append(System.lineSeparator());
         builder.append("fullwrite").append(System.lineSeparator());

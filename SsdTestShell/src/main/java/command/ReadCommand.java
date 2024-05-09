@@ -1,10 +1,12 @@
+package command;
+
 import java.io.IOException;
 
-public class EraseRangeCommand extends AbstractCommand {
-    public EraseRangeCommand(ISsdCommand ssdTestShell) {
+public class ReadCommand extends AbstractCommand {
+    public ReadCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
-        ERROR_MESSAGE = "erase_range need start lba and end lba.";
-        HELP_MASSAGE = "Usage: erase [start lba] [end lba]";
+        ERROR_MESSAGE = "Write need LBA.";
+        HELP_MASSAGE = "Usage: read [LBA]";
     }
 
     @Override
@@ -15,7 +17,7 @@ public class EraseRangeCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.eraserange(args[1], args[2]);
+            System.out.println(ssdTestShell.read(args[1]));
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
@@ -23,6 +25,6 @@ public class EraseRangeCommand extends AbstractCommand {
 
     @Override
     public boolean isInvalidArguments() {
-        return args.length < 3;
+        return args.length < 2;
     }
 }

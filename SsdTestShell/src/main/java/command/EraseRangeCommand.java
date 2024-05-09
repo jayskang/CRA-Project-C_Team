@@ -1,10 +1,12 @@
+package command;
+
 import java.io.IOException;
 
-public class FullWirteCommand extends AbstractCommand {
-    public FullWirteCommand(ISsdCommand ssdTestShell) {
+public class EraseRangeCommand extends AbstractCommand {
+    public EraseRangeCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
-        ERROR_MESSAGE = "Fullwrite need data.";
-        HELP_MASSAGE = "Usage: fullwrite [data]";
+        ERROR_MESSAGE = "erase_range need start lba and end lba.";
+        HELP_MASSAGE = "Usage: erase [start lba] [end lba]";
     }
 
     @Override
@@ -15,7 +17,7 @@ public class FullWirteCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.fullwrite(args[1]);
+            ssdTestShell.eraserange(args[1], args[2]);
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }
@@ -23,6 +25,6 @@ public class FullWirteCommand extends AbstractCommand {
 
     @Override
     public boolean isInvalidArguments() {
-        return args.length < 2;
+        return args.length < 3;
     }
 }

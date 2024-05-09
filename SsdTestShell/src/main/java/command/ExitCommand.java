@@ -1,3 +1,5 @@
+package command;
+
 import static java.lang.System.exit;
 
 public class ExitCommand extends AbstractCommand {
