@@ -2,6 +2,7 @@ package command.buffer;
 
 import command.Buffer;
 import command.Commander;
+import cores.SSDConstraint;
 import erase.EraseModule;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import read.ReadModule;
 import write.WriteModule;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.*;
@@ -65,6 +70,33 @@ class BufferTest {
         Commander actual = this.buffer.getCommanders().get(0);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 같은_LBA를_까지는_W_명령어가_여러개_입력되었을때() throws IOException {
+        this.buffer.push(createCommand("W", "0", "0x11111111"));
+        this.buffer.push(createCommand("W", "1", "0x22222222"));
+        this.buffer.push(createCommand("W", "3", "0x33333333"));
+        this.buffer.push(createCommand("W", "1", "0x55555555"));
+        this.buffer.push(createCommand("W", "4", "0xAAAAAAAA"));
+        this.buffer.push(createCommand("W", "4", "0xBBBBBBBB"));
+        this.buffer.push(createCommand("W", "1", "0xEEEEEEEE"));
+        this.buffer.push(createCommand("W", "0", "0xFFFFFFFF"));
+
+        String[] checkLbaList = new String[]{"0", "1", "4"};
+        String[] values = new String[]{"0xFFFFFFFF", "0xEEEEEEEE", "0xBBBBBBBB"};
+        for (int i = 0; i < 3; i += 1) {
+            boolean hit = this.buffer.hit(createCommand("R", checkLbaList[i], null));
+
+            if (hit) {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(SSDConstraint.RESULT_FILENAME));
+
+                assertThat(bufferedReader.readLine()).isEqualTo(values[i]);
+            } else {
+                fail();
+            }
+        }
+        assertThat(this.buffer.getCommanders().size()).isEqualTo(4);
     }
 
     @Test
