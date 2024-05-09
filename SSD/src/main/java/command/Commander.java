@@ -83,7 +83,7 @@ public class Commander {
 
     @Override
     public String toString() {
-        return command + " " + lba + " " + inputData + "\n";
+        return command + " " + lba + " " + inputData;
     }
 
     public String getCommand() {

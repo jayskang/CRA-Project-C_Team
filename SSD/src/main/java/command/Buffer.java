@@ -203,8 +203,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         }
 
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME, true));
             bufferedWriter.write(command.toString());
+            bufferedWriter.write("\n");
             bufferedWriter.close();
         } catch (IOException ignored) {}
 
