@@ -14,25 +14,28 @@ public class SsdFileReader {
     public String[] readFile() {
         String[] result = new String[MAX_BOUNDARY];
 
+        getFileContents(result);
+
+        return result;
+    }
+
+    private static void getFileContents(String[] result) {
         try {
             BufferedReader reader = setNandFileReader();
+            String fileContents = reader.readLine();
 
-            String line = reader.readLine();
-            while (fileNotEnd(line)) {
-                result[getLba(line)] = getValue(line);
-                line = reader.readLine();
+            while (fileNotEnd(fileContents)) {
+                result[getLba(fileContents)] = getValue(fileContents);
+                fileContents = reader.readLine();
             }
 
             reader.close();
         } catch (IOException ignored) {
         }
-
-        return result;
     }
 
     private static BufferedReader setNandFileReader() throws FileNotFoundException {
-        return new BufferedReader(new FileReader
-                (NAND_FILENAME));
+        return new BufferedReader(new FileReader(NAND_FILENAME));
     }
 
     private static boolean fileNotEnd(String line) {

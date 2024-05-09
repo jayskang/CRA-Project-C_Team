@@ -12,6 +12,19 @@ public class WriteModule extends SSDCommonUtils implements WriteCore {
         this.fileWriter = new SsdFileWriter();
     }
 
+    @Override
+    public void write(int lba, String value) {
+        if (isValidValueFormatAndLbaBoundary(lba, value)) {
+            if (isValueOver0(value)) {
+                this.fileWriter.store(lba, value);
+            }
+        }
+    }
+
+    private boolean isValidValueFormatAndLbaBoundary(int lba, String value) {
+        return checkValueFormat(value) && this.checkLbaBoundary(lba);
+    }
+
     private boolean checkValueFormat(String value) {
         return value.matches(SSDConstraint.VALUE_FORMAT_REGEX);
     }
@@ -25,15 +38,9 @@ public class WriteModule extends SSDCommonUtils implements WriteCore {
         }
     }
 
-    @Override
-    public void write(int lba, String value) {
-        if (checkValueFormat(value) && this.checkLbaBoundary(lba)) {
-            int convertedValue = convertHexToUnsignedInt(value);
-            long unsignedValue = Long.parseLong(Integer.toUnsignedString(convertedValue));
-
-            if (unsignedValue >= 0) {
-                this.fileWriter.store(lba, value);
-            }
-        }
+    private boolean isValueOver0(String value) {
+        int convertedValue = convertHexToUnsignedInt(value);
+        long unsignedValue = Long.parseLong(Integer.toUnsignedString(convertedValue));
+        return unsignedValue >= 0;
     }
 }
