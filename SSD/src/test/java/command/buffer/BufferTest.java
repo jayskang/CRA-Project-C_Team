@@ -35,6 +35,7 @@ class BufferTest {
 
     @AfterEach
     void tearDown() {
+        this.buffer.flush();
         Buffer.resetInstance();
     }
 
