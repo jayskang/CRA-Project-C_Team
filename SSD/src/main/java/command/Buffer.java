@@ -4,6 +4,7 @@ import cores.CommandBufferConstraint;
 import cores.SSDConstraint;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static cores.CommandBufferConstraint.*;
 
@@ -52,9 +53,21 @@ public class Buffer {
             this.dirty[newCommand.getLba()] = true;
         }
         else {
-            // TODO Erase 일 때
-            this.commanders.add(newCommand);
+            // TODO Erase 처리
         }
+    }
+
+    public boolean hit(Commander newCommand) {
+        Optional<Commander> foundCommand = this.commanders.stream()
+                .filter(command -> command.getLba() == newCommand.getLba())
+                .findFirst();
+
+        // 결과 출력
+        if (foundCommand.isPresent()) {
+            newCommand.runCommand();
+            return true;
+        }
+        return false;
     }
 
     public void push(Commander command) {

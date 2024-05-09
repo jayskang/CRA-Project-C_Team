@@ -67,16 +67,24 @@ class BufferTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    void R_명령어가_HIT_일때() {
+        this.buffer.push(createCommand("W", "0", "0x11111111"));
+        boolean actual = this.buffer.hit(createCommand("R", "0", null));
+
+        assertThat(actual).isEqualTo(true);
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":
-                return new Commander(new String[]{type, lba, value},
+                return new Commander(new String[]{Commander.READ, lba, value},
                         null, new WriteModule(), null);
             case "E":
-                return new Commander(new String[]{type, lba, value},
+                return new Commander(new String[]{Commander.ERASE, lba, value},
                         null, null, new EraseModule());
             case "R":
-                return new Commander(new String[]{type, lba, value},
+                return new Commander(new String[]{Commander.READ, lba, value},
                         new ReadModule(), null, null);
         }
         return null;
