@@ -1,34 +1,26 @@
 package command;
 
-import cores.CommandBufferConstraint;
 import cores.SSDCommonUtils;
-import cores.SSDConstraint;
 import erase.EraseModule;
 import read.ReadModule;
 import write.WriteModule;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Optional;
 
-import static cores.CommandBufferConstraint.*;
+import static cores.CommandBufferConstraint.MAX_SIZE;
 import static cores.SSDConstraint.MAX_ERASE_SIZE;
 import static cores.SSDConstraint.RESULT_FILENAME;
 
 public class Buffer extends SSDCommonUtils implements BufferCore {
 
     private final ArrayList<Commander> commanders;
-    private final boolean[] dirty;
 
     private static volatile Buffer instance = null;
 
     private Buffer() {
         super();
         this.commanders = new ArrayList<>(MAX_SIZE);
-        this.dirty = new boolean[SSDConstraint.MAX_BOUNDARY];
     }
 
     public static Buffer getInstance() {
@@ -61,30 +53,26 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         int eraseStartLba = newCommand.getLba();
         int size = Integer.parseInt(newCommand.getInputData());
 
-        this.commanders.removeIf(command -> {
-            if (command.getCommand().equals(Commander.WRITE)
-                    && eraseStartLba <= command.getLba()
-                    && command.getLba() < (eraseStartLba + size)) {
-                this.dirty[command.getLba()] = false;
-                return true;
-            }
-            return false;
-        });
+        this.commanders.removeIf(command -> command.getCommand().equals(Commander.WRITE)
+                && eraseStartLba <= command.getLba()
+                && command.getLba() < (eraseStartLba + size));
     }
 
     private boolean isMergeErase(Commander target, Commander base) {
-        int baseLba = base.getLba();
+        int baseStartLba = base.getLba();
         int baseSize = Integer.parseInt(base.getInputData());
-        int targetLba = target.getLba();
-        int targetSize = Integer.parseInt(target.getInputData());
-        int diff = Math.abs((baseLba + baseSize) - (targetLba + targetSize));
+        int baseEndLba = baseStartLba + baseSize - 1;
 
-        if (MAX_ERASE_SIZE < Math.max(baseSize, targetSize) + diff) {
-            return false;
-        } else if ((targetLba + targetSize) < baseLba) {
+        int targetStartLba = target.getLba();
+        int targetSize = Integer.parseInt(target.getInputData());
+        int targetEndLba = targetStartLba + targetSize - 1;
+
+        int mergeSize = Math.max(baseEndLba, targetEndLba) - Math.min(baseStartLba, targetStartLba) + 1;
+
+        if (MAX_ERASE_SIZE < mergeSize) {
             return false;
         }
-        return (baseLba + baseSize) >= targetLba;
+        return targetEndLba + 1 >= baseStartLba && baseEndLba + 1 >= targetStartLba;
     }
 
     private void mergeEraseCommands() {
@@ -93,27 +81,34 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         for (int i = 0; i < until - 1; i += 1) {
             Commander baseCommand = this.commanders.get(i);
 
-            for (int j = i + 1; j < until; j += 1) {
-                Commander targetCommand = this.commanders.get(j);
+            if(baseCommand.getCommand().equals(Commander.ERASE)) {
+                for (int j = i + 1; j < until; j += 1) {
+                    Commander targetCommand = this.commanders.get(j);
 
-                if (targetCommand.getCommand().equals(Commander.ERASE)) {
+                    if (targetCommand.getCommand().equals(Commander.ERASE)) {
 
-                    if (isMergeErase(targetCommand, baseCommand)) {
+                        if (isMergeErase(targetCommand, baseCommand)) {
 
-                        this.commanders.remove(i--);
-                        this.commanders.remove(targetCommand);
-                        until -= 1;
+                            this.commanders.remove(i--);
+                            this.commanders.remove(targetCommand);
+                            until -= 1;
 
-                        int baseLba = baseCommand.getLba();
-                        int baseSize = Integer.parseInt(baseCommand.getInputData());
-                        int targetLba = targetCommand.getLba();
-                        int targetSize = Integer.parseInt(targetCommand.getInputData());
-                        int diff = Math.abs((baseLba + baseSize) - (targetLba + targetSize));
+                            int baseStartLba = baseCommand.getLba();
+                            int baseSize = Integer.parseInt(baseCommand.getInputData());
+                            int baseEndLba = baseStartLba + baseSize - 1;
 
-                        this.commanders.add(createCommand(Commander.ERASE,
-                                String.valueOf(Math.min(baseLba, targetLba)),
-                                String.valueOf(Math.min(baseSize, targetSize) + diff)));
-                        break;
+                            int targetStartLba = targetCommand.getLba();
+                            int targetSize = Integer.parseInt(targetCommand.getInputData());
+                            int targetEndLba = targetStartLba + targetSize - 1;
+
+                            int mergeLba = Math.min(baseStartLba, targetStartLba);
+                            int mergeSize = Math.max(baseEndLba, targetEndLba) - Math.min(baseStartLba, targetStartLba) + 1;
+
+                            this.commanders.add(createCommand(Commander.ERASE,
+                                    String.valueOf(mergeLba),
+                                    String.valueOf(mergeSize)));
+                            break;
+                        }
                     }
                 }
             }
@@ -126,22 +121,27 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         } else if (baseLba == (eraseStartLba + size - 1)) {
             reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
         } else {
-            Commander newE1 = createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 2));
-            Commander newE2 = createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 2));
+            int newSize = eraseStartLba + size - 1;
+            Commander newE1 = createCommand(Commander.ERASE, String.valueOf(eraseStartLba), String.valueOf(baseLba - eraseStartLba));
+            Commander newE2 = createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(newSize - baseLba));
+
             reschedule(newE1);
             reschedule(newE2);
         }
     }
 
     private void checkRearrangeEraseCommand(Commander newCommand) {
-        Commander eraseCmd = this.commanders.remove(this.commanders.size() - 1);
+        for(int i = this.commanders.size() - 1; i >= 0; i -= 1) {
+            Commander candidateCmd = this.commanders.get(i);
 
-        int baseLba = newCommand.getLba();
-        int eraseStartLba = eraseCmd.getLba();
-        int size = Integer.parseInt(eraseCmd.getInputData());
+            int baseLba = newCommand.getLba();
+            int eraseStartLba = candidateCmd.getLba();
+            int size = Integer.parseInt(candidateCmd.getInputData());
 
-        if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
-            divideEraseCommand(baseLba, eraseStartLba, size);
+            if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
+                this.commanders.remove(this.commanders.size() - 1);
+                divideEraseCommand(baseLba, eraseStartLba, size);
+            }
         }
     }
 
@@ -149,19 +149,16 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         String newCmdType = newCommand.getCommand();
 
         if (newCmdType.equals(Commander.WRITE)) {
-            if(!this.commanders.isEmpty()) {
+            if (!this.commanders.isEmpty()) {
                 Commander latestCmd = this.commanders.get(this.commanders.size() - 1);
 
                 if (latestCmd.getCommand().equals(Commander.WRITE)) {
-                    if (this.dirty[newCommand.getLba()]) {
-                        this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
-                    }
+                    this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
                 } else if (latestCmd.getCommand().equals(Commander.ERASE)) {
                     checkRearrangeEraseCommand(newCommand);
                 }
             }
             this.commanders.add(newCommand);
-            this.dirty[newCommand.getLba()] = true;
         } else if (newCmdType.equals(Commander.ERASE)) {
             overwriteCommandByErase(newCommand);
             this.commanders.add(newCommand);
@@ -200,10 +197,6 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     public ArrayList<Commander> getCommanders() {
         return commanders;
-    }
-
-    public boolean[] getDirty() {
-        return dirty;
     }
 
     public static void resetInstance() {

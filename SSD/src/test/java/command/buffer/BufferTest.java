@@ -15,8 +15,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class BufferTest {
 
@@ -160,11 +161,7 @@ class BufferTest {
         this.buffer.push(erase);
 
         ArrayList<Commander> commands = this.buffer.getCommanders();
-        boolean[] dirty = this.buffer.getDirty();
 
-        for(int i = 1; i <= 3; i += 1) {
-            assertThat(dirty[i]).isEqualTo(false);
-        }
         assertThat(commands.size()).isEqualTo(1);
         assertThat(commands.get(0)).isEqualTo(erase);
     }
@@ -202,7 +199,7 @@ class BufferTest {
         int[] lba = new int[]{3, 13};
         String[] size = new String[]{"10", "3"};
 
-        for(int i = 0; i < 2; i += 1) {
+        for (int i = 0; i < 2; i += 1) {
             try {
                 Commander command = this.buffer.getCommanders().get(i);
 
@@ -212,6 +209,68 @@ class BufferTest {
                 fail();
             }
         }
+    }
+
+    @Test
+    void 교재_최적화_테스트_1() {
+        this.buffer.push(createCommand("E", "0", "1"));
+        this.buffer.push(createCommand("E", "3", "1"));
+        this.buffer.push(createCommand("E", "1", "2"));
+    }
+
+    @Test
+    void E_W_명령어_삽입() {
+        this.buffer.push(createCommand("E", "1", "2"));
+        this.buffer.push(createCommand("W", "4", "1"));
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+    }
+
+    @Test
+    void 교재_최적화_테스트_2() {
+//        W 20
+//        0xABCDABCD
+//        W 21
+//        0x12341234
+//        E 18 5
+        this.buffer.push(createCommand("W", "20", "0xABCDABCD"));
+        this.buffer.push(createCommand("W", "21", "0x12341234"));
+        this.buffer.push(createCommand("E", "18", "5"));
+    }
+
+    @Test
+    void 교재_최적화_테스트_3() {
+//        W 20
+//        0xABCDABCD
+//        E 10 2
+//        E 12 3
+        this.buffer.push(createCommand("W", "20", "0xABCDABCD"));
+        this.buffer.push(createCommand("E", "10", "2"));
+        this.buffer.push(createCommand("E", "12", "3"));
+    }
+
+    @Test
+    void E_명령어_병합() {
+        this.buffer.push(createCommand("E", "0", "2"));
+        this.buffer.push(createCommand("E", "1", "6"));
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+    }
+
+    @Test
+    void E_명령어_병합2() {
+        this.buffer.push(createCommand("E", "0", "10"));
+        this.buffer.push(createCommand("E", "1", "6"));
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+    }
+
+    @Test
+    void 교재_최적화_테스트_4() {
+        this.buffer.push(createCommand("E", "10", "4"));
+        this.buffer.push(createCommand("E", "40", "5"));
+        this.buffer.push(createCommand("W", "12", "0xABCD1234"));
+        this.buffer.push(createCommand("W", "13", "0x4BCD5351"));
     }
 
     private Commander createCommand(String type, String lba, String value) {
@@ -228,4 +287,5 @@ class BufferTest {
         }
         return null;
     }
+
 }
