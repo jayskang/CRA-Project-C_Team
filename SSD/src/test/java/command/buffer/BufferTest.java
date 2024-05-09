@@ -271,6 +271,8 @@ class BufferTest {
         this.buffer.push(createCommand("E", "40", "5"));
         this.buffer.push(createCommand("W", "12", "0xABCD1234"));
         this.buffer.push(createCommand("W", "13", "0x4BCD5351"));
+
+        this.buffer.flush();
     }
 
     private Commander createCommand(String type, String lba, String value) {

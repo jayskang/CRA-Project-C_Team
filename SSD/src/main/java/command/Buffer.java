@@ -5,6 +5,9 @@ import erase.EraseModule;
 import read.ReadModule;
 import write.WriteModule;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -170,6 +173,12 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     public void flush() {
         this.commanders.forEach(Commander::runCommand);
         this.commanders.clear();
+
+        try {
+            FileWriter fileWriter = new FileWriter(BUFFER_FILE_NAME, false);
+            fileWriter.write("");
+            fileWriter.close();
+        } catch (IOException ignored) {}
     }
 
     @Override
@@ -192,6 +201,13 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         if (this.commanders.size() == MAX_SIZE) {
             flush();
         }
+
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME));
+            bufferedWriter.write(command.toString());
+            bufferedWriter.close();
+        } catch (IOException ignored) {}
+
         reschedule(command);
     }
 
