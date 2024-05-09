@@ -15,6 +15,10 @@ public class TestApp1 implements TestScenario {
             shell.fullwrite(DATA);
 
             ArrayList<String> readResult = shell.fullread();
+            if(readResult.isEmpty()) {
+                testResult = false;
+                return;
+            }
             for (String data : readResult) {
                 if (!data.equals(DATA)) {
                     return false;

@@ -5,6 +5,8 @@ public class CommandFactory {
     private static ReadCommand readCommand;
     private static FullWirteCommand fullWirteCommand;
     private static FullReadCommand fullReadCommand;
+    private static TestApp1Command testApp1Command;
+    private static TestApp2Command testApp2Command;
 
     public static Command getCommand(String commandString, ISsdCommand ssdTestShell) {
         Command command = null;
@@ -45,6 +47,18 @@ public class CommandFactory {
                     fullReadCommand = new FullReadCommand(ssdTestShell);
                 }
                 command = fullReadCommand;
+                break;
+            case "testapp1":
+                if(testApp1Command == null) {
+                    testApp1Command = new TestApp1Command(ssdTestShell);
+                }
+                command = testApp1Command;
+                break;
+            case "testapp2":
+                if(testApp2Command == null) {
+                    testApp2Command = new TestApp2Command(ssdTestShell);
+                }
+                command = testApp2Command;
                 break;
         }
 
