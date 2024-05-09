@@ -25,8 +25,7 @@ public class LoggerTest {
 
     @Test
     void 로그_프린트_확인() throws IOException {
-        String method = "LoggerTest.로그_프린트_확인()";
-        String expected = getExpectedLoggingMessage(method);
+        String expected = getExpectedLoggingMessage("LoggerTest.로그_프린트_확인()");
 
         log.print("test");
         String actual = outputStream.toString();
@@ -47,11 +46,12 @@ public class LoggerTest {
 
     @Test
     void log객체_중복_생성_처리_확인() throws IOException {
+        Logger firstLogger = Logger.makeLog();
         Logger seceondLogger = Logger.makeLog();
         int expected = 10;
 
         for (int logCnt = 0; logCnt < expected; logCnt++) {
-            log.print("First Logger #" + logCnt);
+            firstLogger.print("First Logger #" + logCnt);
             seceondLogger.print("Second Logger #" + logCnt);
         }
 
@@ -60,14 +60,13 @@ public class LoggerTest {
 
     @Test
     void 로그파일분리확인() throws IOException {
-        int expected = 10;
 
         for (int logCnt = 0; logCnt < 400; logCnt++) {
             log.print("test #" + logCnt);
         }
 
         assertThat(currentLogFile.length() / BYTES)
-                .isLessThan(expected);
+                .isLessThan(10);
     }
 
     private static String getExpectedLoggingMessage(String method) {

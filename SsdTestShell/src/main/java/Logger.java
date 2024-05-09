@@ -38,11 +38,11 @@ public class Logger {
     }
 
     private static String getLogMessage(String errMessage, StackTraceElement calledThread) {
-        return setDateForLogging() + " " + calledThread.getClassName() + "." +
+        return getDateForLogging() + " " + calledThread.getClassName() + "." +
                 calledThread.getMethodName() + "()" + "\t" + errMessage;
     }
 
-    private static String setDateForLogging() {
+    private static String getDateForLogging() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("'" + LOGGING_DATE_FORMAT));
     }
 
@@ -58,12 +58,12 @@ public class Logger {
 
     private static void seperateFileForManagingFileSize() throws IOException {
         bw.close();
-        File renameFile = new File(setNewLogfileName());
+        File renameFile = new File(getNewLogfileName());
         file.renameTo(renameFile);
         bw = new BufferedWriter(new FileWriter(LATEST_LOGFILE_NAME, true));
     }
 
-    private static String setNewLogfileName() {
+    private static String getNewLogfileName() {
         return SEPERATED_LOGFILE_PREFIX
                 + LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_DATE_FORMATTER))
                 + FILE_TYPE_LOG;
