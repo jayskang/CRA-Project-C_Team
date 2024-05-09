@@ -3,10 +3,14 @@ package command;
 import cores.CommandBufferConstraint;
 import cores.SSDConstraint;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import static cores.CommandBufferConstraint.*;
+import static cores.SSDConstraint.RESULT_FILENAME;
 
 public class Buffer {
 
@@ -38,21 +42,20 @@ public class Buffer {
 
     private void reschedule(Commander newCommand) {
 
-        if(this.commanders.isEmpty()) {
+        if (this.commanders.isEmpty()) {
             this.dirty[newCommand.getLba()] = true;
             this.commanders.add(newCommand);
             return;
         }
         String newCmdType = newCommand.getCommand();
 
-        if(newCmdType.equals("W")) {
-            if(this.dirty[newCommand.getLba()]) {
+        if (newCmdType.equals("W")) {
+            if (this.dirty[newCommand.getLba()]) {
                 this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
             }
             this.commanders.add(newCommand);
             this.dirty[newCommand.getLba()] = true;
-        }
-        else {
+        } else {
             // TODO Erase 처리
         }
     }
@@ -64,14 +67,20 @@ public class Buffer {
 
         // 결과 출력
         if (foundCommand.isPresent()) {
-            newCommand.runCommand();
+            Commander findCommand = foundCommand.get();
+            try {
+                FileWriter fileWriter = new FileWriter(new File(RESULT_FILENAME), false);
+                fileWriter.write(findCommand.getInputData());
+                fileWriter.close();
+            } catch (IOException ignored) {
+            }
             return true;
         }
         return false;
     }
 
     public void push(Commander command) {
-        if(this.commanders.size() == MAX_SIZE) {
+        if (this.commanders.size() == MAX_SIZE) {
             flush();
         }
         reschedule(command);
