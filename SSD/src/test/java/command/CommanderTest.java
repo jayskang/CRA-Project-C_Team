@@ -104,28 +104,28 @@ class CommanderTest {
     void 명령어가_E이지만_데이터가_null일때() {
         getCommanderAndRun(new String[]{"E", "0"});
 
-        verify(eraseCore, times(0)).E(anyInt(), anyInt());
+        verify(eraseCore, times(0)).erase(anyInt(), anyInt());
     }
 
     @Test
     void 명령어가_E이지만_데이터가_비었을때() {
         getCommanderAndRun(new String[]{"E", "0", ""});
 
-        verify(eraseCore, times(0)).E(anyInt(), anyInt());
+        verify(eraseCore, times(0)).erase(anyInt(), anyInt());
     }
 
     @Test
     void 명령어가_E이지만_데이터가_숫자가_아닐때() {
         getCommanderAndRun(new String[]{"E", "0", "A"});
 
-        verify(eraseCore, times(0)).E(anyInt(), anyInt());
+        verify(eraseCore, times(0)).erase(anyInt(), anyInt());
     }
 
     @Test
     void 정상적인_E명령어_호출됐을때() {
         getCommanderAndRun(new String[]{"E", "0", "2"});
 
-        verify(eraseCore, times(0)).E(0, 2);
+        verify(eraseCore, times(0)).erase(0, 2);
     }
 
     @Test

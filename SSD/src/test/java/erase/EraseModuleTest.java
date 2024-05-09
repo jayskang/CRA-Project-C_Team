@@ -39,7 +39,7 @@ class EraseModuleTest {
     @Test
     void 정상동작_테스트() {
         setUpStates(0, 10, ALL_1BIT_VALUE);
-        this.eraseModule.E(0, 10);
+        this.eraseModule.erase(0, 10);
 
         testStateToEachLba(0, 10, DEFAULT_VALUE);
     }
@@ -48,7 +48,7 @@ class EraseModuleTest {
     void 허용되지않는_LBA까지_접근하려는_경우() {
         setUpStates(98, 100, ALL_1BIT_VALUE);
         // 접근 가능한 범위까지(99까지)만, erase 를 진행합니다.
-        this.eraseModule.E(98, 10);
+        this.eraseModule.erase(98, 10);
 
         testStateToEachLba(98, 10, DEFAULT_VALUE);
     }
@@ -57,7 +57,7 @@ class EraseModuleTest {
     void 시작LBA가_음수_일경우() {
         setUpStates(0, 9, ALL_1BIT_VALUE);
 
-        this.eraseModule.E(-1, 9);
+        this.eraseModule.erase(-1, 9);
 
         testStateToEachLba(0, 9, ALL_1BIT_VALUE);
     }
@@ -66,7 +66,7 @@ class EraseModuleTest {
     void 사이즈가_10을_초과한경우() {
         setUpStates(0, 11, ALL_1BIT_VALUE);
         // size가 10을 초과하면, (또는 0일경우) EraseModule 에선 어떠한 동작도 하지 않습니다.
-        this.eraseModule.E(0, 11);
+        this.eraseModule.erase(0, 11);
 
         testStateToEachLba(0, 11, ALL_1BIT_VALUE);
     }
@@ -76,7 +76,7 @@ class EraseModuleTest {
         setUpStates(92, 99, ALL_1BIT_VALUE);
         // 유효한 LBA 값에서 시작했지만 범위를 벗어나면,
         // MAX_BOUNDARY(100)까지만 erase 합니다.
-        this.eraseModule.E(92, 10);
+        this.eraseModule.erase(92, 10);
 
         testStateToEachLba(92, 99, DEFAULT_VALUE);
     }
@@ -100,7 +100,7 @@ class EraseModuleTest {
         for(int i = 0; i < 10; i += 1) {
             int lba = startLba[i];
             setUpStates(lba, lba + 10, values[i]);
-            this.eraseModule.E(lba + 1, 10);
+            this.eraseModule.erase(lba + 1, 10);
         }
 
         for(int i = 0; i < 10; i += 1) {

@@ -1,7 +1,6 @@
 package command;
 
 import erase.EraseCore;
-import jdk.jfr.Unsigned;
 import read.ReadCore;
 import write.WriteCore;
 
@@ -64,7 +63,7 @@ public class Commander {
                     return;
                 }
                 try {
-                    eraseCore.E(lba, Integer.parseInt(inputData));
+                    eraseCore.erase(lba, Integer.parseInt(inputData));
                 } catch (NumberFormatException e) {
                     return;
                 }
