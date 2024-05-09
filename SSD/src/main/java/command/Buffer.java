@@ -77,8 +77,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         int baseSize = Integer.parseInt(base.getInputData());
         int targetLba = target.getLba();
         int targetSize = Integer.parseInt(target.getInputData());
+        int diff = Math.abs((baseLba + baseSize) - (targetLba + targetSize));
 
-        if (MAX_ERASE_SIZE < baseSize + targetSize) {
+        if (MAX_ERASE_SIZE < Math.min(baseSize, targetSize) + diff) {
             return false;
         } else if ((targetLba + targetSize) < baseLba) {
             return false;
@@ -103,12 +104,15 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                         this.commanders.remove(targetCommand);
                         until -= 1;
 
-                        int newLba = Math.min(targetCommand.getLba(), baseCommand.getLba());
-                        int newSize = Integer.parseInt(targetCommand.getInputData()) + Integer.parseInt(baseCommand.getInputData());
+                        int baseLba = baseCommand.getLba();
+                        int baseSize = Integer.parseInt(baseCommand.getInputData());
+                        int targetLba = targetCommand.getLba();
+                        int targetSize = Integer.parseInt(targetCommand.getInputData());
+                        int diff = Math.abs((baseLba + baseSize) - (targetLba + targetSize));
 
                         this.commanders.add(createCommand(Commander.ERASE,
-                                String.valueOf(newLba),
-                                String.valueOf(newSize)));
+                                String.valueOf(Math.min(baseLba, targetLba)),
+                                String.valueOf(Math.min(baseSize, targetSize) + diff)));
                         break;
                     }
                 }

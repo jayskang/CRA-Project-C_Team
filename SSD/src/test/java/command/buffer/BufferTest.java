@@ -177,6 +177,18 @@ class BufferTest {
         Commander actual = this.buffer.getCommanders().get(0);
 
         assertThat(actual.getLba()).isEqualTo(5);
+        assertThat(actual.getInputData()).isEqualTo("5");
+    }
+
+    @Test
+    void E_명령어_연쇄적인_병합() {
+        this.buffer.push(createCommand("E", "5", "3"));
+        this.buffer.push(createCommand("E", "7", "3"));
+        this.buffer.push(createCommand("E", "4", "4"));
+
+        Commander actual = this.buffer.getCommanders().get(0);
+
+        assertThat(actual.getLba()).isEqualTo(4);
         assertThat(actual.getInputData()).isEqualTo("6");
     }
 
