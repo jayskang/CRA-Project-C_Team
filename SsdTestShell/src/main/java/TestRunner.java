@@ -2,31 +2,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static constants.Messages.ERROR_MSG_RUN_LIST_FILE_NOT_FOUNDED;
 
 public class TestRunner {
-    private final SsdTestShell shell;
-    private Map<String, TestScenario> scenarios;
+    ISsdCommand shell;
 
-    public TestRunner(SsdTestShell shell) {
+    public TestRunner(ISsdCommand shell) {
         this.shell = shell;
-        scenarios = new HashMap<>();
-        initScenarios();
-    }
-
-    private void initScenarios() {
-        scenarios.put("TestApp1", new TestApp1(shell));
-        scenarios.put("TestApp2", new TestApp2(shell));
     }
 
     public void runScenariosFromFile(String runListFilePath) throws IOException {
         ArrayList<String> scenarioNames = loadScenariosFromFile(runListFilePath);
         for (String scenarioName : scenarioNames) {
             System.out.print(scenarioName + "\t---\tRun...");
-            if (runScenario(scenarioName)) {
+            System.out.flush();
+            if (runScenarioByName(scenarioName)) {
                 System.out.println("Pass");
             } else {
                 System.out.println("FAIL!");
@@ -54,8 +45,8 @@ public class TestRunner {
         }
     }
 
-    private boolean runScenario(String scenarioName) {
-        TestScenario testScenario = scenarios.get(scenarioName);
+    private boolean runScenarioByName(String scenarioName) {
+        TestScenario testScenario = TestScenarioFactory.getScenario(scenarioName, shell);
         if (testScenario != null) {
             return testScenario.run();
         }

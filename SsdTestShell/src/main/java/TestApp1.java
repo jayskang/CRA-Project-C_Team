@@ -3,9 +3,9 @@ import java.util.ArrayList;
 public class TestApp1 implements TestScenario {
     public final String DATA = "0x12345678";
 
-    private final SsdTestShell shell;
+    private final ISsdCommand shell;
 
-    TestApp1(SsdTestShell ssdTestShell) {
+    TestApp1(ISsdCommand ssdTestShell) {
         this.shell = ssdTestShell;
     }
 
