@@ -72,4 +72,16 @@ public class SSDExecutor {
             throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
         }
     }
+
+    public void flush() throws IOException {
+        try {
+            Process process = new ProcessBuilder(
+                    SSD_EXEC_JAVA_COMMAND, SSD_EXEC_JAR_OPTION, ssdProgramPath
+                    , SSD_FLUSH_OPTION_CMD)
+                    .start();
+            process.waitFor();
+        } catch(Exception e){
+            throw new IOException(ERROR_MSG_SSD_CANNOT_EXEC);
+        }
+    }
 }
