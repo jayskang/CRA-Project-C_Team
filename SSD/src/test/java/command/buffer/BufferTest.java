@@ -275,6 +275,16 @@ class BufferTest {
         this.buffer.flush();
     }
 
+    @Test
+    void 교재_최적화_테스트_4_2() {
+        this.buffer.push(createCommand("E", "50", "1"));
+        this.buffer.push(createCommand("E", "40", "5"));
+        this.buffer.push(createCommand("W", "50", "0xABCD1234"));
+
+        System.out.println(this.buffer.getCommanders());
+        // E 50 1, E 40 5, W 50 -> E 40 5, W 50
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":

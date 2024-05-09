@@ -120,9 +120,13 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     private void divideEraseCommand(int baseLba, int eraseStartLba, int size) {
         if (baseLba == eraseStartLba) {
-            reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1)));
+            if(size - 1 > 0) {
+                reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1)));
+            }
         } else if (baseLba == (eraseStartLba + size - 1)) {
-            reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
+            if(size - 1 > 0) {
+                reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
+            }
         } else {
             int newSize = eraseStartLba + size - 1;
             Commander newE1 = createCommand(Commander.ERASE, String.valueOf(eraseStartLba), String.valueOf(baseLba - eraseStartLba));
@@ -142,7 +146,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
             int size = Integer.parseInt(candidateCmd.getInputData());
 
             if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
-                this.commanders.remove(this.commanders.size() - 1);
+                this.commanders.remove(i);
                 divideEraseCommand(baseLba, eraseStartLba, size);
             }
         }
