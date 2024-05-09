@@ -13,6 +13,8 @@ public class SsdTestShellMain {
         builder.append("read").append(System.lineSeparator());
         builder.append("fullwrite").append(System.lineSeparator());
         builder.append("fullread").append(System.lineSeparator());
+        builder.append("erase").append(System.lineSeparator());
+        builder.append("erase_range").append(System.lineSeparator());
         builder.append("help").append(System.lineSeparator());
         builder.append("exit").append(System.lineSeparator());
         builder.append("-----Test Script List-----").append(System.lineSeparator());

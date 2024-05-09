@@ -322,6 +322,35 @@ class TestShellCommanderTest {
         assertOutput(expected);
     }
 
+    @Test
+    void erase_help_호출() {
+        getCommander(new String[]{"help", "erase"});
+        testShellCommander.runCommand();
+
+        String expected = "Usage: erase [lba] [size]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void erase_매개변수_없을때() {
+        getCommander(new String[]{"erase"});
+        testShellCommander.runCommand();
+
+        String expected = "erase need lba and size." + System.lineSeparator();
+        expected += "Usage: erase [lba] [size]" + System.lineSeparator();
+
+        assertOutput(expected);
+    }
+
+    @Test
+    void erase_실행() throws IOException {
+        getCommander(new String[]{"erase", "0", "2"});
+        testShellCommander.runCommand();
+
+        verify(ssdTestShell, times(1)).erase("0", "2");
+    }
+
     private void getCommander(String[] args) {
         testShellCommander = new TestShellCommander(args, ssdTestShell);
         if(!testShellCommander.isValidArgumentLength()) {

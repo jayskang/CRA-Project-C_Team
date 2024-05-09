@@ -7,6 +7,8 @@ public class CommandFactory {
     private static FullReadCommand fullReadCommand;
     private static TestApp1Command testApp1Command;
     private static TestApp2Command testApp2Command;
+    private static EraseCommand eraseCommand;
+    private static EraseRangeCommand eraseRangeCommand;
 
     public static Command getCommand(String commandString, ISsdCommand ssdTestShell) {
         Command command = null;
@@ -59,6 +61,18 @@ public class CommandFactory {
                     testApp2Command = new TestApp2Command(ssdTestShell);
                 }
                 command = testApp2Command;
+                break;
+            case "erase":
+                if(eraseCommand == null) {
+                    eraseCommand = new EraseCommand(ssdTestShell);
+                }
+                command = eraseCommand;
+                break;
+            case "erase_range":
+                if(eraseRangeCommand == null) {
+                    eraseRangeCommand = new EraseRangeCommand(ssdTestShell);
+                }
+                command = eraseRangeCommand;
                 break;
         }
 
