@@ -53,7 +53,7 @@ public class Logger {
         StringBuffer sb = new StringBuffer(logMessage + "\n");
 
         // 10KByte가 넘어가면 바로 Write하지 않고 새로 생성해야 한다.
-        if ((fileChannel.size() + sb.toString().getBytes().length) / BYTES > MAX_FILE_SIZE) {
+        if ((fileChannel.size() + sb.toString().getBytes().length) / BYTES >= MAX_FILE_SIZE) {
             fileChannel.close();
             try {
                 Path oldfile = Paths.get(LATEST_LOGFILE_NAME);
