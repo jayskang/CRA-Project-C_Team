@@ -84,9 +84,9 @@ public class Commander {
     @Override
     public String toString() {
         return "Commander{" +
-                "readCore=" + readCore +
-                ", writeCore=" + writeCore +
-                ", eraseCore=" + eraseCore +
+                "readCore=" + (readCore != null ? "O" : "X") +
+                ", writeCore=" + (writeCore != null ? "O" : "X") +
+                ", eraseCore=" + (eraseCore != null ? "O" : "X") +
                 ", command='" + command + '\'' +
                 ", lba=" + lba +
                 ", inputData='" + inputData + '\'' +

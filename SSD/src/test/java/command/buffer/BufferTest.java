@@ -29,18 +29,49 @@ class BufferTest {
     }
 
     @Test
-    void NEW_E_OLD_W() {
-        Commander erase = new Commander(new String[]{"E", "0", "1"},
-                null, null, new EraseModule());
-
+    void write_명령어를_10개_입력() {
         this.buffer.push(
-                new Commander(new String[]{"W", "0", "0x00000001"},
-                null, new WriteModule(), null)
+                new Commander(new String[]{"W", "0", "0x0000000F"},
+                        null, new WriteModule(), null)
         );
-        this.buffer.push(erase);
+        this.buffer.push(
+                new Commander(new String[]{"W", "1", "0x00000001"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "2", "0x00000002"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "3", "0x00000003"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "4", "0x00000004"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "5", "0x00000005"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "6", "0x00000006"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "7", "0x00000007"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "8", "0x00000008"},
+                        null, new WriteModule(), null)
+        );
+        this.buffer.push(
+                new Commander(new String[]{"W", "9", "0x00000009"},
+                        null, new WriteModule(), null)
+        );
+        int actual = this.buffer.getCommanders().size();
 
-        Commander command = this.buffer.getCommanders().get(0);
-
-        assertThat(command).isEqualTo(erase);
+        assertThat(actual).isEqualTo(10);
     }
 }

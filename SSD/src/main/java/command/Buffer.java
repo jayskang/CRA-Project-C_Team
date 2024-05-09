@@ -43,25 +43,17 @@ public class Buffer {
             return;
         }
         Commander oldCommand = this.commanders.get(this.commanders.size() - 1);
-        String oldCmdType = oldCommand.getCommand();
         String newCmdType = newCommand.getCommand();
 
-        if(oldCmdType.equals("W") && newCmdType.equals("E")) {
-            int lba = newCommand.getLba();
-            int size = Integer.parseInt(newCommand.getInputData());
-
-            for(int i = lba; i < lba + size; i += 1) {
-                if(this.dirty[i]) {
-                    int deletedIndex = i;
-                    this.commanders.removeIf(candidate -> candidate.getLba() == deletedIndex);
-                }
-                this.dirty[i] = false;
+        if(newCmdType.equals("W")) {
+            if(this.dirty[newCommand.getLba()]) {
+                // TODO 같은 LBA 을 보고 있는 옛날 W 삭제
             }
             this.commanders.add(newCommand);
         }
         else {
-            // TODO LBA가 겹치는 경우가 없다
-            this.dirty[newCommand.getLba()] = true;
+            // TODO Erase 일 때
+            this.commanders.add(newCommand);
         }
     }
 
