@@ -4,6 +4,7 @@ import erase.EraseCore;
 import erase.EraseModule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import read.ReadCore;
@@ -24,14 +25,15 @@ class CommanderTest {
     @Mock
     EraseCore eraseCore;
 
+    @InjectMocks
     private Commander commander;
 
     private Commander getCommander(String[] args) {
-        return new Commander(args, readCore, writeCore, eraseCore);
+        return new Commander(args);
     }
 
     private Commander getRealCommander(String[] args) {
-        return  new Commander(args, new ReadModule(), new WriteModule(), new EraseModule());
+        return  new Commander(args);
     }
 
     private void verifySsdNotWork() {
