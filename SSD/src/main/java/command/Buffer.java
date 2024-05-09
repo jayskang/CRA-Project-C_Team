@@ -97,7 +97,14 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
             this.commanders.add(newCommand);
             this.dirty[newCommand.getLba()] = true;
         } else {
-            // TODO Erase 처리
+            int endLba = newCommand.getLba() + Integer.parseInt(newCommand.getInputData());
+            for (int lba = newCommand.getLba(); lba < endLba; lba += 1) {
+                if (this.dirty[lba]) {
+                    int finalLba = lba;
+                    this.commanders.removeIf(command -> finalLba == command.getLba() && command.getCommand().equals(Commander.WRITE));
+                }
+                this.dirty[lba] = false;
+            }
             this.commanders.add(newCommand);
         }
     }
@@ -133,5 +140,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     public ArrayList<Commander> getCommanders() {
         return commanders;
+    }
+
+    public boolean[] getDirty() {
+        return dirty;
     }
 }

@@ -145,6 +145,26 @@ class BufferTest {
         assertThat(Commander.WRITE).isEqualTo(w.getCommand());
     }
 
+    @Test
+    void E_명령어_DIRTY_초기화_동작검사() {
+        this.buffer.push(createCommand("W", "1", "0x11111111"));
+        this.buffer.push(createCommand("W", "2", "0x22222222"));
+        this.buffer.push(createCommand("W", "3", "0x33333333"));
+
+        Commander erase = createCommand("E", "1", "3");
+
+        this.buffer.push(erase);
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+        boolean[] dirty = this.buffer.getDirty();
+
+        for(int i = 1; i <= 3; i += 1) {
+            assertThat(dirty[i]).isEqualTo(false);
+        }
+        assertThat(commands.size()).isEqualTo(1);
+        assertThat(commands.get(0)).isEqualTo(erase);
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":
