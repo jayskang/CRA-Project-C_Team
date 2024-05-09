@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class SsdTestShellMain {
     public static void main(String[] args) {
-        if(args.length != 0) {
+        if(isTestRunnerScriptExist(args)) {
             TestRunner testRunner = new TestRunner(getSsdTestShell());
             try {
                 testRunner.runScenariosFromFile(args[0]);
@@ -15,6 +15,10 @@ public class SsdTestShellMain {
         }
 
         SsdTestShellMain.run();
+    }
+
+    private static boolean isTestRunnerScriptExist(String[] args) {
+        return args.length != 0;
     }
 
     public static void run() {
