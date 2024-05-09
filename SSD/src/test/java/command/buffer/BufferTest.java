@@ -35,7 +35,6 @@ class BufferTest {
 
     @AfterEach
     void tearDown() {
-        this.buffer.flush();
         Buffer.resetInstance();
     }
 
@@ -196,6 +195,14 @@ class BufferTest {
         this.buffer.push(createCommand("E", "4", "5"));
         this.buffer.push(createCommand("E", "7", "6"));
         this.buffer.push(createCommand("E", "13", "3"));
+        this.buffer.push(createCommand("E", "71", "6"));
+        this.buffer.push(createCommand("E", "23", "3"));
+        this.buffer.push(createCommand("E", "37", "6"));
+        this.buffer.push(createCommand("E", "53", "3"));
+        this.buffer.push(createCommand("E", "66", "6"));
+        this.buffer.push(createCommand("E", "23", "3"));
+        this.buffer.push(createCommand("E", "73", "6"));
+        this.buffer.push(createCommand("E", "80", "3"));
 
         int[] lba = new int[]{3, 13};
         String[] size = new String[]{"10", "3"};

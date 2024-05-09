@@ -5,9 +5,7 @@ import erase.EraseModule;
 import read.ReadModule;
 import write.WriteModule;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -24,6 +22,24 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     private Buffer() {
         super();
         this.commanders = new ArrayList<>(MAX_SIZE);
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(BUFFER_FILE_NAME));
+            String line;
+
+            while (true) {
+
+                line = bufferedReader.readLine();
+
+                if (line == null) {
+                    break;
+                }
+                String[] data = line.split(" ");
+                System.out.println(data[0] + " " + data[1] + " " + data[2]);
+                this.commanders.add(createCommand(data[0], data[1], data[2]));
+            }
+        } catch (IOException ignored) {
+        }
     }
 
     public static Buffer getInstance() {
@@ -84,7 +100,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
         for (int i = 0; i < until - 1; i += 1) {
             Commander baseCommand = this.commanders.get(i);
 
-            if(baseCommand.getCommand().equals(Commander.ERASE)) {
+            if (baseCommand.getCommand().equals(Commander.ERASE)) {
                 for (int j = i + 1; j < until; j += 1) {
                     Commander targetCommand = this.commanders.get(j);
 
@@ -120,11 +136,11 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     private void divideEraseCommand(int baseLba, int eraseStartLba, int size) {
         if (baseLba == eraseStartLba) {
-            if(size - 1 > 0) {
+            if (size - 1 > 0) {
                 reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1)));
             }
         } else if (baseLba == (eraseStartLba + size - 1)) {
-            if(size - 1 > 0) {
+            if (size - 1 > 0) {
                 reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
             }
         } else {
@@ -138,16 +154,19 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     }
 
     private void checkRearrangeEraseCommand(Commander newCommand) {
-        for(int i = this.commanders.size() - 1; i >= 0; i -= 1) {
+        for (int i = this.commanders.size() - 1; i >= 0; i -= 1) {
             Commander candidateCmd = this.commanders.get(i);
 
-            int baseLba = newCommand.getLba();
-            int eraseStartLba = candidateCmd.getLba();
-            int size = Integer.parseInt(candidateCmd.getInputData());
+            if (candidateCmd.getCommand().equals(Commander.ERASE)) {
 
-            if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
-                this.commanders.remove(i);
-                divideEraseCommand(baseLba, eraseStartLba, size);
+                int baseLba = newCommand.getLba();
+                int eraseStartLba = candidateCmd.getLba();
+                int size = Integer.parseInt(candidateCmd.getInputData());
+
+                if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
+                    this.commanders.remove(i);
+                    divideEraseCommand(baseLba, eraseStartLba, size);
+                }
             }
         }
     }
@@ -182,7 +201,8 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
             FileWriter fileWriter = new FileWriter(BUFFER_FILE_NAME, false);
             fileWriter.write("");
             fileWriter.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
@@ -202,16 +222,20 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     @Override
     public void push(Commander command) {
+        System.out.println(this.commanders.size());
         if (this.commanders.size() == MAX_SIZE) {
             flush();
         }
 
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME, true));
-            bufferedWriter.write(command.toString());
-            bufferedWriter.write("\n");
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME, false));
+            for(Commander currentCommand : this.commanders) {
+                bufferedWriter.write(currentCommand.toString());
+                bufferedWriter.write("\n");
+            }
             bufferedWriter.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         reschedule(command);
     }
