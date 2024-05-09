@@ -1,6 +1,6 @@
 package runner;
 
-import command.ISsdCommand;
+import shell.ISsdCommand;
 import scenario.TestScenario;
 import scenario.TestScenarioFactory;
 

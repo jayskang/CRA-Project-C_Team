@@ -1,6 +1,6 @@
 package scenario;
 
-import command.ISsdCommand;
+import shell.ISsdCommand;
 
 import java.util.ArrayList;
 

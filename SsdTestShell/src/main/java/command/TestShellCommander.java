@@ -1,6 +1,7 @@
 package command;
 
 import constants.Messages;
+import shell.ISsdCommand;
 
 public class TestShellCommander {
     private String[] args;

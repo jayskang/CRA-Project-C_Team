@@ -1,5 +1,7 @@
 package command;
 
+import shell.ISsdCommand;
+
 import java.io.IOException;
 
 public class FullWirteCommand extends AbstractCommand {

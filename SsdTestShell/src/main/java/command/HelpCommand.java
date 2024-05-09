@@ -1,5 +1,7 @@
 package command;
 
+import shell.ISsdCommand;
+
 public class HelpCommand extends AbstractCommand {
 
     public HelpCommand(ISsdCommand ssdTestShell) {

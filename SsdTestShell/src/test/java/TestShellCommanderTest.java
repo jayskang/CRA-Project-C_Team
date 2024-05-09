@@ -1,5 +1,5 @@
 import com.github.stefanbirkner.systemlambda.SystemLambda;
-import command.ISsdCommand;
+import shell.ISsdCommand;
 import command.TestShellCommander;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

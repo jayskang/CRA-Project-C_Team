@@ -1,5 +1,7 @@
 package command;
 
+import shell.ISsdCommand;
+
 public abstract class AbstractCommand implements Command {
     protected String ERROR_MESSAGE = "";
     protected String HELP_MASSAGE = "";
