@@ -129,6 +129,22 @@ class BufferTest {
         assertThat(Commander.WRITE).isEqualTo(w.getCommand());
     }
 
+    @Test
+    void W_명령어_입력시_버퍼에_E_명령어가_2개로_나눠질때_재조정() {
+        this.buffer.push(createCommand("E", "0", "3"));
+        this.buffer.push(createCommand("W", "1", "0x11111111"));
+
+        ArrayList<Commander> commands = this.buffer.getCommanders();
+
+        Commander e1 = commands.get(0);
+        Commander e2 = commands.get(1);
+        Commander w = commands.get(2);
+
+        assertThat(Commander.ERASE).isEqualTo(e1.getCommand());
+        assertThat(Commander.ERASE).isEqualTo(e2.getCommand());
+        assertThat(Commander.WRITE).isEqualTo(w.getCommand());
+    }
+
     private Commander createCommand(String type, String lba, String value) {
         switch (type) {
             case "W":

@@ -87,8 +87,8 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                     } else if (baseLba == (eraseStartLba + size - 1)) {
                         reschedule(createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1)));
                     } else {
-                        Commander newE1 = createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 1));
-                        Commander newE2 = createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 1));
+                        Commander newE1 = createCommand(Commander.ERASE, String.valueOf(baseLba + 1), String.valueOf(size - 2));
+                        Commander newE2 = createCommand(Commander.ERASE, String.valueOf(baseLba - 1), String.valueOf(size - 2));
                         reschedule(newE1);
                         reschedule(newE2);
                     }
