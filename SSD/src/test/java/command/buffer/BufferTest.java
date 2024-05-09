@@ -30,48 +30,41 @@ class BufferTest {
 
     @Test
     void write_명령어를_10개_입력() {
-        this.buffer.push(
-                new Commander(new String[]{"W", "0", "0x0000000F"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "1", "0x00000001"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "2", "0x00000002"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "3", "0x00000003"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "4", "0x00000004"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "5", "0x00000005"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "6", "0x00000006"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "7", "0x00000007"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "8", "0x00000008"},
-                        null, new WriteModule(), null)
-        );
-        this.buffer.push(
-                new Commander(new String[]{"W", "9", "0x00000009"},
-                        null, new WriteModule(), null)
-        );
+        String[] lbaList = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        String[] values = new String[]{
+                "0x0000000F",
+                "0x00000001",
+                "0x00000002",
+                "0x00000003",
+                "0x00000004",
+                "0x00000005",
+                "0x00000006",
+                "0x00000007",
+                "0x00000008",
+                "0x00000009",
+        };
+
+        for (int i = 0; i < 10; i += 1) {
+            this.buffer.push(createCommand("W", lbaList[i], values[i]));
+        }
+
         int actual = this.buffer.getCommanders().size();
 
         assertThat(actual).isEqualTo(10);
+    }
+
+    private Commander createCommand(String type, String lba, String value) {
+        switch (type) {
+            case "W":
+                return new Commander(new String[]{type, lba, value},
+                        null, new WriteModule(), null);
+            case "E":
+                return new Commander(new String[]{type, lba, value},
+                        null, null, new EraseModule());
+            case "R":
+                return new Commander(new String[]{type, lba, value},
+                        new ReadModule(), null, null);
+        }
+        return null;
     }
 }
