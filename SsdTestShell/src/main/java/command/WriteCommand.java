@@ -1,10 +1,14 @@
+package command;
+
+import shell.ISsdCommand;
+
 import java.io.IOException;
 
-public class EraseRangeCommand extends AbstractCommand {
-    public EraseRangeCommand(ISsdCommand ssdTestShell) {
+public class WriteCommand extends AbstractCommand {
+    public WriteCommand(ISsdCommand ssdTestShell) {
         super(ssdTestShell);
-        ERROR_MESSAGE = "erase_range need start lba and end lba.";
-        HELP_MASSAGE = "Usage: erase [start lba] [end lba]";
+        ERROR_MESSAGE = "Write need LBA and data.";
+        HELP_MASSAGE = "Usage: write [LBA] [data]";
     }
 
     @Override
@@ -15,7 +19,7 @@ public class EraseRangeCommand extends AbstractCommand {
         }
 
         try {
-            ssdTestShell.eraserange(args[1], args[2]);
+            ssdTestShell.write(args[1], args[2]);
         } catch (IllegalArgumentException | IOException e) {
             System.out.println(e.getMessage());
         }

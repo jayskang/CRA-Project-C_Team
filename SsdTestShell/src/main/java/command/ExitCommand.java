@@ -1,3 +1,7 @@
+package command;
+
+import shell.ISsdCommand;
+
 import static java.lang.System.exit;
 
 public class ExitCommand extends AbstractCommand {

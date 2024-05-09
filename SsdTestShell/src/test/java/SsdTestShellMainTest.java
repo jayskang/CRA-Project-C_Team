@@ -1,5 +1,5 @@
-import com.github.stefanbirkner.systemlambda.SystemLambda;
-import org.assertj.core.api.Assertions;
+import command.TestShellCommander;
+import main.SsdTestShellMain;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import java.io.PrintStream;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withTextFromSystemIn;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class SsdTestShellMainTest {
     private TestShellCommander testShellCommander;
@@ -83,7 +82,7 @@ class SsdTestShellMainTest {
     private String initOutput() {
         StringBuilder builder = new StringBuilder();
         builder.append("SSD Test Shell Application").append(System.lineSeparator());
-        builder.append("-------Command List-------").append(System.lineSeparator());
+        builder.append("-------command.Command List-------").append(System.lineSeparator());
         builder.append("write").append(System.lineSeparator());
         builder.append("read").append(System.lineSeparator());
         builder.append("fullwrite").append(System.lineSeparator());

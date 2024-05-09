@@ -1,3 +1,4 @@
+import logger.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,8 +52,8 @@ public class LoggerTest {
         int expected = 10;
 
         for (int logCnt = 0; logCnt < expected; logCnt++) {
-            firstLogger.print("First Logger #" + logCnt);
-            seceondLogger.print("Second Logger #" + logCnt);
+            firstLogger.print("First logger.Logger #" + logCnt);
+            seceondLogger.print("Second logger.Logger #" + logCnt);
         }
 
         assertEquals(expected * 2, getLogFileLineCount("log객체_중복_생성_처리_확인"));
