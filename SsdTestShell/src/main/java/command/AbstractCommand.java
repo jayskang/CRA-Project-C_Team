@@ -24,6 +24,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     public AbstractCommand(ISsdCommand ssdTestShell) {
+        this();
         this.ssdTestShell = ssdTestShell;
     }
 
