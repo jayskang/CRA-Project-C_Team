@@ -62,6 +62,10 @@ public class CommandFactory {
                     commandTable.put(ERASE_RANGE, new EraseRangeCommand(ssdTestShell));
                 }
                 break;
+            case FLUSH:
+                if(!commandTable.containsKey(FLUSH)) {
+                    commandTable.put(FLUSH, new FlushCommand(ssdTestShell));
+                }
         }
 
         return commandTable.get(commandString);

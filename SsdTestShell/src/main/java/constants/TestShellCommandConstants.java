@@ -11,4 +11,5 @@ public class TestShellCommandConstants {
     public static final String TESTAPP_2 = "testapp2";
     public static final String ERASE = "erase";
     public static final String ERASE_RANGE = "erase_range";
+    public static final String FLUSH = "flush";
 }
