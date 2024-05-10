@@ -21,7 +21,7 @@ public class EraseRangeCommand extends AbstractCommand {
         try {
             ssdTestShell.eraserange(args[1], args[2]);
         } catch (IllegalArgumentException | IOException e) {
-            System.out.println(e.getMessage());
+            logger.print(e.getMessage());
         }
     }
 

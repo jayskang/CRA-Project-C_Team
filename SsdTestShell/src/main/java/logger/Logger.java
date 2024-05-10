@@ -37,10 +37,13 @@ public class Logger {
         return logger;
     }
 
-    public void print(String errMessage) throws IOException {
-        StackTraceElement calledMethod = Thread.currentThread().getStackTrace()[2];
 
-        loggingAndSeperate(getLogMessage(errMessage, calledMethod));
+    public void print(String errMessage) {
+        try{
+            StackTraceElement calledMethod = Thread.currentThread().getStackTrace()[2];
+            loggingAndSeperate(getLogMessage(errMessage, calledMethod));
+        }catch(IOException e){
+        }
     }
 
     private static void loggingAndSeperate(String logMessage) throws IOException {
@@ -49,7 +52,6 @@ public class Logger {
         checkFileNumberAndZipOldestFile();
 
     }
-
     private static void seperateLogFile(String logMessage) throws IOException {
         StringBuffer messageBuffer = new StringBuffer(logMessage);
         if (isOver10KB(messageBuffer)) {
@@ -66,7 +68,6 @@ public class Logger {
                     , StandardOpenOption.WRITE);
         }
     }
-
     private static void printAndWriteLog(String logMessage) throws IOException {
         System.out.print(logMessage);
         ByteBuffer buffer = StandardCharsets.UTF_8.encode(new StringBuffer(logMessage).toString());
