@@ -35,9 +35,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                     break;
                 }
                 String[] data = line.split(" ");
-                System.out.println(data[0] + " " + data[1] + " " + data[2]);
                 this.commanders.add(createCommand(data[0], data[1], data[2]));
             }
+            bufferedReader.close();
         } catch (IOException ignored) {
         }
     }
@@ -194,6 +194,11 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     @Override
     public void flush() {
+        this.commanders.forEach(commander -> {
+            if (commander.getCommand().equals(Commander.WRITE)) {
+                commander.setCommand(Commander.FILE_WRITE);
+            }
+        });
         this.commanders.forEach(Commander::runCommand);
         this.commanders.clear();
 
@@ -222,14 +227,13 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     @Override
     public void push(Commander command) {
-        System.out.println(this.commanders.size());
         if (this.commanders.size() == MAX_SIZE) {
             flush();
         }
 
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME, false));
-            for(Commander currentCommand : this.commanders) {
+            for (Commander currentCommand : this.commanders) {
                 bufferedWriter.write(currentCommand.toString());
                 bufferedWriter.write("\n");
             }

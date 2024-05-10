@@ -35,7 +35,7 @@ class CommanderTest {
     }
 
     private void verifySsdNotWork() {
-        verify(readCore, never()).read(anyInt());
+        verify(readCore, never()).bufferRead(anyInt());
         verify(writeCore, never()).write(anyInt(), anyString());
     }
 
@@ -90,7 +90,7 @@ class CommanderTest {
     void 정상적인_R명령어_입력됐을때() {
         getCommanderAndRun(new String[]{"R", "0"});
 
-        verify(readCore, times(1)).read(0);
+        verify(readCore, times(1)).bufferRead(0);
     }
 
     @Test
