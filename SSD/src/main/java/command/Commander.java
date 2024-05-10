@@ -1,22 +1,25 @@
 package command;
 
-import jdk.jfr.Unsigned;
+import erase.EraseCore;
 import read.ReadCore;
 import write.WriteCore;
 
 public class Commander {
     public static final String WRITE = "W";
     public static final String READ = "R";
+    public static final String ERASE = "E";
+    public static final String FILE_WRITE = "FW";
 
     private ReadCore readCore;
     private WriteCore writeCore;
+    private EraseCore eraseCore;
 
     private String command;
     private int lba = -1;
     private String inputData;
 
-    public Commander(String[] args, ReadCore readCore, WriteCore writeCore) {
-        if(isInvalidArgsCount(args)) {
+    public Commander(String[] args, ReadCore readCore, WriteCore writeCore, EraseCore eraseCore) {
+        if (isInvalidArgsCount(args)) {
             return;
         }
 
@@ -25,7 +28,7 @@ public class Commander {
         try {
             lba = Integer.parseInt(args[1]);
 
-            if(command.equals(WRITE)) {
+            if (!command.equals(READ)) {
                 inputData = args[2];
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -34,6 +37,7 @@ public class Commander {
 
         this.readCore = readCore;
         this.writeCore = writeCore;
+        this.eraseCore = eraseCore;
     }
 
     private boolean isInvalidArgsCount(String[] args) {
@@ -41,20 +45,34 @@ public class Commander {
     }
 
     public void runCommand() {
-        if(isInvalidArgument()) {
+        if (isInvalidArgument()) {
             return;
         }
 
         switch (command) {
             case READ:
-                readCore.read(lba);
+                readCore.bufferRead(lba);
                 break;
             case WRITE:
-                if(isInputDataIsNullOrEmpty()) {
+                if (isInputDataIsNullOrEmpty()) {
                     return;
                 }
-                writeCore.write(lba, inputData);
+                writeCore.bufferWrite(lba, inputData);
                 break;
+            case ERASE:
+                if (isInputDataIsNullOrEmpty()) {
+                    return;
+                }
+                try {
+                    eraseCore.erase(lba, Integer.parseInt(inputData));
+                } catch (NumberFormatException e) {
+                    return;
+                }
+                break;
+            case FILE_WRITE:
+                try {
+                    writeCore.write(lba, inputData);
+                } catch (Exception ignored) {}
             default:
                 return;
         }
@@ -66,5 +84,26 @@ public class Commander {
 
     private boolean isInputDataIsNullOrEmpty() {
         return inputData == null || inputData.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return command + " " + lba + " " + inputData;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public int getLba() {
+        return lba;
+    }
+
+    public String getInputData() {
+        return inputData;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 }
