@@ -434,4 +434,21 @@ class SsdTestShellTest {
 
         verify(mockSsd, times(1)).erase(String.valueOf("90"), "9");
     }
+
+    @Test
+    void flush_함수_정상실행() throws IOException {
+        shell.flush();
+
+        verify(mockSsd, times(1)).flush();
+    }
+
+    @Test
+    void flush_함수_예외발생시_예외던짐() throws IOException {
+        doThrow(new IOException()).when(mockSsd).flush();
+
+        assertThrows(IOException.class, () -> {
+            shell.flush();
+        });
+    }
+
 }

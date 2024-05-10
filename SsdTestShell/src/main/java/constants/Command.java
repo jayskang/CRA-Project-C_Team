@@ -8,6 +8,7 @@ public class Command {
     public static final String SSD_READ_OPTION_CMD = "R";
     public static final String SSD_WRITE_OPTION_CMD = "W";
     public static final String SSD_ERASE_OPTION_CMD = "E";
+    public static final String SSD_FLUSH_OPTION_CMD = "F";
 
     public static final String RESULT_FILE_PATH = "./result.txt";
 

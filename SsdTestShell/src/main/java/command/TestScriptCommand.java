@@ -21,10 +21,10 @@ public class TestScriptCommand extends AbstractCommand {
 
     protected void printResult(boolean testResult) {
         if (testResult) {
-            System.out.println(scenario.getClass().getSimpleName() + "...PASS!");
+            logger.print(scenario.getClass().getSimpleName() + "...PASS!");
             return;
         }
-        System.out.println(scenario.getClass().getSimpleName() + "...FAIL!");
+        logger.print(scenario.getClass().getSimpleName() + "...FAIL!");
     }
 
     @Override

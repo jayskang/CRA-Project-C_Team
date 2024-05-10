@@ -20,7 +20,7 @@ public class HelpCommand extends AbstractCommand {
         String commandString = args[1];
         Command command = CommandFactory.getCommand(commandString, ssdTestShell);
         if(command == null) {
-            System.out.println("Wrong command. Please check command.");
+            logger.print("Wrong command. Please check command.");
             return;
         }
         command.printHelpMessage();
