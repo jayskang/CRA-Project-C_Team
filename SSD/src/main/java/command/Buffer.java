@@ -8,8 +8,7 @@ import java.util.Optional;
 
 import static command.CommandConstant.*;
 import static cores.CommandBufferConstraint.MAX_SIZE;
-import static cores.SSDConstraint.MAX_ERASE_SIZE;
-import static cores.SSDConstraint.RESULT_FILENAME;
+import static cores.SSDConstraint.*;
 
 public class Buffer extends SSDCommonUtils implements BufferCore {
 
@@ -181,7 +180,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     @Override
     public void flush() {
-        for(Command command : commands) {
+        for (Command command : commands) {
             command.executeBuffer();
         }
 //        this.commands.forEach(Command::executeCommand);
@@ -198,13 +197,28 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
     @Override
     public boolean hit(int lba) {
         Optional<Command> foundCommand = this.commands.stream()
-                .filter(command -> command instanceof WriteCommand && command.getLba() == lba)
+                .filter(command -> {
+                    if (command instanceof WriteCommand && command.getLba() == lba) {
+                        return true;
+                    } else if (command instanceof EraseCommand) {
+                        int commandLba = command.getLba();
+                        int size = Integer.parseInt(command.getInputData());
+
+                        return commandLba <= lba && lba < (commandLba + size);
+                    }
+                    return false;
+                })
                 .findFirst();
 
         // 결과 출력
         if (foundCommand.isPresent()) {
             Command findCommand = foundCommand.get();
-            this.writeToFile(RESULT_FILENAME, findCommand.getInputData());
+            String value = findCommand.getInputData();
+
+            if(findCommand instanceof EraseCommand) {
+                value = DEFAULT_VALUE;
+            }
+            this.writeToFile(RESULT_FILENAME, value);
             return true;
         }
         return false;
