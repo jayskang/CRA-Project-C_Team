@@ -8,6 +8,7 @@ public class Commander {
     public static final String WRITE = "W";
     public static final String READ = "R";
     public static final String ERASE = "E";
+    public static final String FILE_WRITE = "FW";
 
     private ReadCore readCore;
     private WriteCore writeCore;
@@ -67,6 +68,11 @@ public class Commander {
                 } catch (NumberFormatException e) {
                     return;
                 }
+                break;
+            case FILE_WRITE:
+                try {
+                    writeCore.write(lba, inputData);
+                } catch (Exception ignored) {}
             default:
                 return;
         }
@@ -95,5 +101,9 @@ public class Commander {
 
     public String getInputData() {
         return inputData;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 }

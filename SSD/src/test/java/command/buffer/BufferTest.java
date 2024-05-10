@@ -114,6 +114,7 @@ class BufferTest {
 
     @Test
     void R_명령어가_MISS_일때() {
+        this.buffer.flush();
         this.buffer.push(createCommand("W", "0", "0x11111111"));
         boolean actual = this.buffer.hit(1);
 
