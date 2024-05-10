@@ -1,5 +1,7 @@
 package erase;
 
+import command.Buffer;
+import command.CommandFactory;
 import cores.SSDCommonUtils;
 import write.SsdFileWriter;
 
@@ -24,6 +26,15 @@ public class EraseModule extends SSDCommonUtils implements EraseCore {
             for (int startLba = lba; startLba < MAX_BOUNDARY && startLba < lba + size; startLba += 1) {
                 fileWriter.store(startLba, DEFAULT_VALUE);
             }
+        }
+    }
+
+    @Override
+    public void bufferErase(int lba, int size) {
+        Buffer buffer = Buffer.getInstance();
+
+        if (this.checkLbaBoundary(lba) && checkValidSize(size)) {
+            buffer.push(CommandFactory.getCommand(new String[]{"E", String.valueOf(lba), String.valueOf(size)}));
         }
     }
 }

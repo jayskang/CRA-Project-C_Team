@@ -1,7 +1,6 @@
 package command.buffer;
 
-import command.Buffer;
-import command.Commander;
+import command.*;
 import cores.SSDConstraint;
 import erase.EraseModule;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +25,7 @@ class BufferTest {
     @BeforeEach
     void setUp() {
         this.buffer = Buffer.getInstance();
+        buffer.flush();
     }
 
     @Test
@@ -58,7 +58,7 @@ class BufferTest {
             this.buffer.push(createCommand("W", lbaList[i], values[i]));
         }
 
-        int actual = this.buffer.getCommanders().size();
+        int actual = this.buffer.getCommands().size();
 
         assertThat(actual).isEqualTo(10);
     }
@@ -68,11 +68,11 @@ class BufferTest {
         this.buffer.push(createCommand("W", "0", "0x11111111"));
         this.buffer.push(createCommand("W", "0", "0x22222222"));
         this.buffer.push(createCommand("W", "0", "0x33333333"));
-        Commander expected = createCommand("W", "0", "0xFFFFFFFF");
+        Command expected = createCommand("W", "0", "0xFFFFFFFF");
 
         this.buffer.push(expected);
 
-        Commander actual = this.buffer.getCommanders().get(0);
+        Command actual = this.buffer.getCommands().get(0);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -101,7 +101,7 @@ class BufferTest {
                 fail();
             }
         }
-        assertThat(this.buffer.getCommanders().size()).isEqualTo(4);
+        assertThat(this.buffer.getCommands().size()).isEqualTo(4);
     }
 
     @Test
@@ -126,13 +126,13 @@ class BufferTest {
         this.buffer.push(createCommand("E", "0", "2"));
         this.buffer.push(createCommand("W", "0", "0x11111111"));
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
 
-        Commander e = commands.get(0);
-        Commander w = commands.get(1);
+        Command e = commands.get(0);
+        Command w = commands.get(1);
 
-        assertThat(Commander.ERASE).isEqualTo(e.getCommand());
-        assertThat(Commander.WRITE).isEqualTo(w.getCommand());
+        assertThat(e).isInstanceOf(EraseCommand.class);
+        assertThat(w).isInstanceOf(WriteCommand.class);
     }
 
     @Test
@@ -140,15 +140,15 @@ class BufferTest {
         this.buffer.push(createCommand("E", "0", "3"));
         this.buffer.push(createCommand("W", "1", "0x11111111"));
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
 
-        Commander e1 = commands.get(0);
-        Commander e2 = commands.get(1);
-        Commander w = commands.get(2);
+        Command e1 = commands.get(0);
+        Command e2 = commands.get(1);
+        Command w = commands.get(2);
 
-        assertThat(Commander.ERASE).isEqualTo(e1.getCommand());
-        assertThat(Commander.ERASE).isEqualTo(e2.getCommand());
-        assertThat(Commander.WRITE).isEqualTo(w.getCommand());
+        assertThat(e1).isInstanceOf(EraseCommand.class);
+        assertThat(e2).isInstanceOf(EraseCommand.class);
+        assertThat(w).isInstanceOf(WriteCommand.class);
     }
 
     @Test
@@ -157,11 +157,11 @@ class BufferTest {
         this.buffer.push(createCommand("W", "2", "0x22222222"));
         this.buffer.push(createCommand("W", "3", "0x33333333"));
 
-        Commander erase = createCommand("E", "1", "3");
+        Command erase = createCommand("E", "1", "3");
 
         this.buffer.push(erase);
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
 
         assertThat(commands.size()).isEqualTo(1);
         assertThat(commands.get(0)).isEqualTo(erase);
@@ -172,7 +172,7 @@ class BufferTest {
         this.buffer.push(createCommand("E", "5", "3"));
         this.buffer.push(createCommand("E", "7", "3"));
 
-        Commander actual = this.buffer.getCommanders().get(0);
+        Command actual = this.buffer.getCommands().get(0);
 
         assertThat(actual.getLba()).isEqualTo(5);
         assertThat(actual.getInputData()).isEqualTo("5");
@@ -184,7 +184,7 @@ class BufferTest {
         this.buffer.push(createCommand("E", "7", "3"));
         this.buffer.push(createCommand("E", "4", "4"));
 
-        Commander actual = this.buffer.getCommanders().get(0);
+        Command actual = this.buffer.getCommands().get(0);
 
         assertThat(actual.getLba()).isEqualTo(4);
         assertThat(actual.getInputData()).isEqualTo("6");
@@ -210,7 +210,7 @@ class BufferTest {
 
         for (int i = 0; i < 2; i += 1) {
             try {
-                Commander command = this.buffer.getCommanders().get(i);
+                Command command = this.buffer.getCommands().get(i);
 
                 assertThat(command.getLba()).isEqualTo(lba[i]);
                 assertThat(command.getInputData()).isEqualTo(size[i]);
@@ -232,7 +232,7 @@ class BufferTest {
         this.buffer.push(createCommand("E", "1", "2"));
         this.buffer.push(createCommand("W", "4", "1"));
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
     }
 
     @Test
@@ -263,7 +263,7 @@ class BufferTest {
         this.buffer.push(createCommand("E", "0", "2"));
         this.buffer.push(createCommand("E", "1", "6"));
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
     }
 
     @Test
@@ -271,7 +271,7 @@ class BufferTest {
         this.buffer.push(createCommand("E", "0", "10"));
         this.buffer.push(createCommand("E", "1", "6"));
 
-        ArrayList<Commander> commands = this.buffer.getCommanders();
+        ArrayList<Command> commands = this.buffer.getCommands();
     }
 
     @Test
@@ -290,23 +290,12 @@ class BufferTest {
         this.buffer.push(createCommand("E", "40", "5"));
         this.buffer.push(createCommand("W", "50", "0xABCD1234"));
 
-        System.out.println(this.buffer.getCommanders());
+        System.out.println(this.buffer.getCommands());
         // E 50 1, E 40 5, W 50 -> E 40 5, W 50
     }
 
-    private Commander createCommand(String type, String lba, String value) {
-        switch (type) {
-            case "W":
-                return new Commander(new String[]{Commander.WRITE, lba, value},
-                        null, new WriteModule(), null);
-            case "E":
-                return new Commander(new String[]{Commander.ERASE, lba, value},
-                        null, null, new EraseModule());
-            case "R":
-                return new Commander(new String[]{Commander.READ, lba, value},
-                        new ReadModule(), null, null);
-        }
-        return null;
+    private Command createCommand(String type, String lba, String value) {
+        return CommandFactory.getCommand(new String[]{type, lba, value});
     }
 
 }
