@@ -181,7 +181,10 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
     @Override
     public void flush() {
-        this.commands.forEach(Command::executeCommand);
+        for(Command command : commands) {
+            command.executeBuffer();
+        }
+//        this.commands.forEach(Command::executeCommand);
         this.commands.clear();
 
         try {
@@ -213,6 +216,8 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
             flush();
         }
 
+        reschedule(command);
+
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(BUFFER_FILE_NAME, false));
             for (Command currentCommand : this.commands) {
@@ -222,8 +227,6 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
             bufferedWriter.close();
         } catch (IOException ignored) {
         }
-
-        reschedule(command);
     }
 
     public ArrayList<Command> getCommands() {

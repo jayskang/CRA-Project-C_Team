@@ -23,6 +23,11 @@ public abstract class AbstractCommand implements Command {
     @Override
     public abstract void executeCommand();
 
+    @Override
+    public void executeBuffer() {
+        executeCommand();
+    }
+
     protected boolean isValidLba() {
         return lba != -1;
     }

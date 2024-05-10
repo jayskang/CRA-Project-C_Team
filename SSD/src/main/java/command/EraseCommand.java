@@ -12,6 +12,16 @@ public class EraseCommand extends AbstractCommand {
     public void executeCommand() {
         EraseCore eraseCore = new EraseModule();
         try {
+            eraseCore.bufferErase(lba, Integer.parseInt(inputData));
+        } catch (NumberFormatException e) {
+            return;
+        }
+    }
+
+    @Override
+    public void executeBuffer() {
+        EraseCore eraseCore = new EraseModule();
+        try {
             eraseCore.erase(lba, Integer.parseInt(inputData));
         } catch (NumberFormatException e) {
             return;
