@@ -39,16 +39,45 @@ public class Logger {
 
 
     public void print(String errMessage) {
-        StackTraceElement calledThread = Thread.currentThread().getStackTrace()[2];
+        try{
+            StackTraceElement calledMethod = Thread.currentThread().getStackTrace()[2];
+            loggingAndSeperate(getLogMessage(errMessage, calledMethod));
+        }catch(IOException e){
+        }
+    }
 
-        try {
-            printAndWriteLog(getLogMessage(errMessage, calledThread));
+    private static void loggingAndSeperate(String logMessage) throws IOException {
+        seperateLogFile(logMessage);
+        printAndWriteLog(logMessage);
+        checkFileNumberAndZipOldestFile();
 
-            if (isOver10KB()) {
-                seperateFileForManagingFileSize();
-                checkFileNumberAndZipOldestFile();
+    }
+    private static void seperateLogFile(String logMessage) throws IOException {
+        StringBuffer messageBuffer = new StringBuffer(logMessage);
+        if (isOver10KB(messageBuffer)) {
+            fileChannel.close();
+            try {
+                Path oldfile = Paths.get(LATEST_LOGFILE_NAME);
+                Path newfile = Paths.get(getNewLogfileName());
+                Files.move(oldfile, newfile);
+            } catch (IOException e) {
+                throw new IOException(e.getMessage());
             }
-        } catch (Exception e){
+            fileChannel = FileChannel.open(Paths.get(LATEST_LOGFILE_NAME)
+                    , StandardOpenOption.CREATE
+                    , StandardOpenOption.WRITE);
+        }
+    }
+    private static void printAndWriteLog(String logMessage) throws IOException {
+        System.out.print(logMessage);
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(new StringBuffer(logMessage).toString());
+        fileChannel.write(buffer);
+    }
+
+    private static void checkFileNumberAndZipOldestFile() {
+        List<File> fileList = getExistsFileList();
+        if (isMoreThan2Files(fileList)) {
+            zipOldestFile(fileList);
         }
     }
 
