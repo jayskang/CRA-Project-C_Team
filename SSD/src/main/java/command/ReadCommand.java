@@ -16,6 +16,6 @@ public class ReadCommand extends AbstractCommand {
     @Override
     public void executeCommand() {
         ReadCore readCore = new ReadModule();
-        readCore.read(lba);
+        readCore.bufferRead(lba);
     }
 }
