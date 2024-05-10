@@ -1,9 +1,14 @@
 package logger;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,19 +19,24 @@ import java.util.List;
 import static constants.Logging.*;
 
 public class Logger {
-    private static BufferedWriter bw;
     private static Logger logger;
-    private static File file;
+    private static FileChannel fileChannel;
+    public static final int LOG_METHOD_NAME_MAX_SIZE = 40;
 
     private Logger() throws IOException {
-        file = new File(LATEST_LOGFILE_NAME);
-        bw = new BufferedWriter(new FileWriter(file));
+        fileChannel = FileChannel.open(
+                Paths.get(LATEST_LOGFILE_NAME)
+                , StandardOpenOption.CREATE
+                , StandardOpenOption.WRITE
+                , StandardOpenOption.APPEND
+        );
     }
 
     public static Logger makeLog() throws IOException {
         if (logger == null) logger = new Logger();
         return logger;
     }
+
 
     public void print(String errMessage) {
         StackTraceElement calledThread = Thread.currentThread().getStackTrace()[2];
@@ -39,34 +49,32 @@ public class Logger {
                 checkFileNumberAndZipOldestFile();
             }
         } catch (Exception e){
-
         }
     }
 
     private static String getLogMessage(String errMessage, StackTraceElement calledThread) {
-        return getDateForLogging() + " " + calledThread.getClassName() + "." +
-                calledThread.getMethodName() + "()" + "\t" + errMessage;
+        return getDateForLogging() + " " + getFormattedMethodName(calledThread) + errMessage +"\n";
     }
 
     private static String getDateForLogging() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("'" + LOGGING_DATE_FORMAT));
     }
 
-    private static void printAndWriteLog(String logMessage) throws IOException {
-        System.out.println(logMessage);
-        bw.write(logMessage + "\n");
-        bw.flush();
+    private static String getFormattedMethodName(StackTraceElement calledThread) {
+        return String.format("%-" + LOG_METHOD_NAME_MAX_SIZE + "s", getMethodName(calledThread)).replace(" ", " ");
     }
 
-    private static boolean isOver10KB() {
-        return file.length() / BYTES >= MAX_FILE_SIZE;
+    private static String getMethodName(StackTraceElement calledThread) {
+        String methodName = calledThread.getClassName() + "." + calledThread.getMethodName() + "()";
+        if (methodName.length() >= LOG_METHOD_NAME_MAX_SIZE) {
+            methodName = methodName.substring(0, LOG_METHOD_NAME_MAX_SIZE);
+        }
+        return methodName;
     }
 
-    private static void seperateFileForManagingFileSize() throws IOException {
-        bw.close();
-        File renameFile = new File(getNewLogfileName());
-        file.renameTo(renameFile);
-        bw = new BufferedWriter(new FileWriter(LATEST_LOGFILE_NAME, true));
+    private static boolean isOver10KB(StringBuffer messageBuffer) throws IOException {
+        return (fileChannel.size() + messageBuffer.toString().getBytes().length) / BYTES
+                >= MAX_FILE_SIZE;
     }
 
     private static String getNewLogfileName() {
@@ -75,12 +83,6 @@ public class Logger {
                 + FILE_TYPE_LOG;
     }
 
-    private static void checkFileNumberAndZipOldestFile() {
-        List<File> fileList = getExistsFileList();
-        if (isMoreThan2Files(fileList)) {
-            zipOldestFile(fileList);
-        }
-    }
 
     private static List<File> getExistsFileList() {
         File directory = new File(FILE_PATH);
