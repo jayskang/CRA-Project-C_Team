@@ -5,7 +5,7 @@ import write.WriteModule;
 
 public class Ssd {
     public static void main(String[] args) {
-        Commander commander = new Commander(args, new ReadModule(), new WriteModule(), new EraseModule());
+        Commander commander = new Commander(args);
         commander.runCommand();
     }
 }

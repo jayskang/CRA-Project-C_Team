@@ -6,5 +6,5 @@ public interface BufferCore {
 
     void flush();
     boolean hit(int lba);
-    void push(Commander command);
+    void push(Command command);
 }
