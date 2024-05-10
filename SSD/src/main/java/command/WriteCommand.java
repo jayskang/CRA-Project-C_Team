@@ -11,6 +11,12 @@ public class WriteCommand extends AbstractCommand {
     @Override
     public void executeCommand() {
         WriteCore writeCore = new WriteModule();
+        writeCore.bufferWrite(lba, inputData);
+    }
+
+    @Override
+    public void executeBuffer() {
+        WriteCore writeCore = new WriteModule();
         writeCore.write(lba, inputData);
     }
 }

@@ -23,6 +23,9 @@ public class CommandFactory {
             case ERASE:
                 command = new EraseCommand(args);
                 break;
+            case FLUSH:
+                command = new FlushCommand(args);
+                break;
         }
 
         return command;
