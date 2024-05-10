@@ -166,6 +166,7 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
                 if ((eraseStartLba <= baseLba && baseLba < (eraseStartLba + size))) {
                     this.commanders.remove(i);
                     divideEraseCommand(baseLba, eraseStartLba, size);
+                    break;
                 }
             }
         }
@@ -176,13 +177,9 @@ public class Buffer extends SSDCommonUtils implements BufferCore {
 
         if (newCmdType.equals(Commander.WRITE)) {
             if (!this.commanders.isEmpty()) {
-                Commander latestCmd = this.commanders.get(this.commanders.size() - 1);
-
-                if (latestCmd.getCommand().equals(Commander.WRITE)) {
-                    this.commanders.removeIf(commander -> commander.getLba() == newCommand.getLba());
-                } else if (latestCmd.getCommand().equals(Commander.ERASE)) {
-                    checkRearrangeEraseCommand(newCommand);
-                }
+                this.commanders.removeIf(commander -> commander.getCommand().equals(Commander.WRITE)
+                        && commander.getLba() == newCommand.getLba());
+                checkRearrangeEraseCommand(newCommand);
             }
             this.commanders.add(newCommand);
         } else if (newCmdType.equals(Commander.ERASE)) {
