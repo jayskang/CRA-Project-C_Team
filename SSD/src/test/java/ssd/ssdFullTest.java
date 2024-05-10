@@ -41,7 +41,7 @@ public class ssdFullTest {
     @Test
     void 입력한_주소_Value_출력() throws IOException {
         writeCore.write(EXITS_VALUE_LUBA, SAMPLE_VALUE);
-        readCore.read(EXITS_VALUE_LUBA);
+        readCore.bufferRead(EXITS_VALUE_LUBA);
 
         assertEquals(SAMPLE_VALUE, getReadResult());
     }
@@ -49,7 +49,7 @@ public class ssdFullTest {
     @Test
     void 입력하지않은_주소_Value_출력() throws IOException {
         writeCore.write(EXITS_VALUE_LUBA, SAMPLE_VALUE);
-        readCore.read(NULL_VALUE_LBA);
+        readCore.bufferRead(NULL_VALUE_LBA);
 
         assertEquals(DEFAULT_VALUE, getReadResult());
 
@@ -57,7 +57,7 @@ public class ssdFullTest {
 
     @Test
     void write하지않고_read() throws IOException {
-        readCore.read(NULL_VALUE_LBA);
+        readCore.bufferRead(NULL_VALUE_LBA);
 
         assertEquals(DEFAULT_VALUE, getReadResult());
 
@@ -67,7 +67,7 @@ public class ssdFullTest {
     void nand_파일_미존재() throws IOException {
         deleteNandFile();
 
-        readCore.read(NULL_VALUE_LBA);
+        readCore.bufferRead(NULL_VALUE_LBA);
 
         assertEquals(DEFAULT_VALUE, getReadResult());
 
@@ -158,6 +158,7 @@ public class ssdFullTest {
 
     @Test
     void 값이_16진수를_벗어났을경우() {
+        writeDataToAddressAndRead(0, "0x00000000");
         writeDataToAddressAndRead(0, "0x0000000G");
         assertThat(getReadResult()).isNotEqualTo("0x0000000G");
     }
